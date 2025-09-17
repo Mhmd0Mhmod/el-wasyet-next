@@ -24,7 +24,7 @@ function NewBranchButton({
         {children ? (
           children
         ) : (
-          <Button variant="outline" className="w-full">
+          <Button className="w-full">
             <Plus className="ml-2" />{" "}
             {branch ? "تعديل الفرع" : "إضافة فرع جديد"}
           </Button>
