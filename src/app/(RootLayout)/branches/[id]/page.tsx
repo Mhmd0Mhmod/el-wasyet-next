@@ -36,12 +36,15 @@ async function BranchDetailsPage({
           <p className="text-gray-500">تفاصيل واداره الفرع</p>
         </div>
         <div>
-          <NewBranchButton branch={branch}>
-            <Button>
-              <Edit2 />
-              تعديل الفرع
-            </Button>
-          </NewBranchButton>
+          <NewBranchButton
+            branch={branch}
+            Trigger={() => (
+              <Button>
+                <Edit2 />
+                تعديل الفرع
+              </Button>
+            )}
+          />
         </div>
       </div>
 

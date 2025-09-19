@@ -1,6 +1,5 @@
 import {
   TableBody,
-  TableCell,
   Table as TableComponent,
   TableHead,
   TableHeader,

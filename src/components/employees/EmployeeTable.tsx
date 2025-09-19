@@ -9,7 +9,6 @@ import { useState } from "react";
 import Input from "../general/Input";
 import Table from "../general/Table";
 import { TableCell, TableRow } from "../ui/table";
-import Error from "next/error";
 
 const EMPLOYEE_TABLE_COLUMNS = [
   { id: "name", label: "الاسم" },
