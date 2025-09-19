@@ -1,4 +1,4 @@
-import NewBranchButton from "@/components/Branches/NewBranchButton";
+import NewBranch from "@/components/Branches/NewBranch";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,19 +9,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { branchesMock } from "@/lib/mock/branches.mock";
-import { Edit2, Eye } from "lucide-react";
+import { Edit2, Eye, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 function page() {
   return (
     <section className="container space-y-12 pt-6">
-      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row text-center sm:text-start">
+      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">الفروع</h1>
-          <p className=" text-gray-500">إدارة جميع فروع الشركة</p>
+          <p className="text-gray-500">إدارة جميع فروع الشركة</p>
         </div>
         <div>
-          <NewBranchButton />
+          <NewBranch
+            Trigger={() => (
+              <Button>
+                <Plus />
+                إضافة فرع جديد
+              </Button>
+            )}
+          />
         </div>
       </div>
       <div>
@@ -65,11 +72,14 @@ function BranchesTableData() {
                   <Eye />
                 </Link>
               </Button>
-              <NewBranchButton branch={branch}>
-                <Button variant="outline">
-                  <Edit2 />
-                </Button>
-              </NewBranchButton>
+              <NewBranch
+                branch={branch}
+                Trigger={() => (
+                  <Button variant="outline">
+                    <Edit2 />
+                  </Button>
+                )}
+              />
             </TableCell>
           </TableRow>
         ))}

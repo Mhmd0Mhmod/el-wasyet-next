@@ -1,6 +1,6 @@
 import BranchInfoItem from "@/components/Branches/BranchInfoItem";
 import LastActivities from "@/components/Branches/LastActivities";
-import NewBranchButton from "@/components/Branches/NewBranchButton";
+import NewBranchButton from "@/components/Branches/NewBranch";
 import ServicesTable from "@/components/Branches/ServicesTable";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +30,7 @@ async function BranchDetailsPage({
   return (
     <section className="container space-y-12 pt-6">
       {/* Page Header */}
-      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row text-center sm:text-start">
+      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">فرع {branch.name}</h1>
           <p className="text-gray-500">تفاصيل واداره الفرع</p>
@@ -51,35 +51,35 @@ async function BranchDetailsPage({
           <CardTitle className="text-2xl">معلومات الفرع</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <BranchInfoItem
-              icon={<MapPin className="w-6 h-6 text-gray-600" />}
+              icon={<MapPin className="h-6 w-6 text-gray-600" />}
               title="العنوان"
               value="شارع النصر، المعادي"
             />
             <BranchInfoItem
-              icon={<User className="w-6 h-6 text-gray-600" />}
+              icon={<User className="h-6 w-6 text-gray-600" />}
               title="مدير الفرع"
               value="أحمد محمد"
             />
             <BranchInfoItem
-              icon={<Clock className="w-6 h-6 text-gray-600" />}
+              icon={<Clock className="h-6 w-6 text-gray-600" />}
               title="ساعات العمل"
               value="9:00 ص - 5:00 م"
             />
             <BranchInfoItem
-              icon={<Phone className="w-6 h-6 text-gray-600" />}
+              icon={<Phone className="h-6 w-6 text-gray-600" />}
               title="رقم الهاتف"
               value="02-25551234"
             />
           </div>
         </CardContent>
         <CardFooter className="border-t pt-6">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex w-full items-center justify-between">
             <span className="text-gray-600">حالة التشغيل</span>
             <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-green-500 font-medium">نشط</span>
+              <CheckCircle className="h-5 w-5 text-green-500" />
+              <span className="font-medium text-green-500">نشط</span>
             </div>
           </div>
         </CardFooter>
@@ -87,7 +87,7 @@ async function BranchDetailsPage({
 
       {/* Tabs Section */}
       <Tabs defaultValue="services" className="w-full">
-        <TabsList dir="rtl" className="w-full border-b mb-4">
+        <TabsList dir="rtl" className="mb-4 w-full border-b">
           <TabsTrigger value="services">الخدمات</TabsTrigger>
           <TabsTrigger value="last-activities">الانشطه الاخيره</TabsTrigger>
         </TabsList>

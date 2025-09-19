@@ -1,0 +1,13 @@
+interface Employee extends ShortEmployee {
+  abilityDTOs: Ability[];
+}
+interface ShortEmployee {
+  id: number;
+  name: string;
+  role: string;
+  userName: string;
+  phone: string;
+  email: string;
+  managerName: string | null;
+  suspended: boolean;
+}

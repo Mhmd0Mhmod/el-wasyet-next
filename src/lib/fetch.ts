@@ -1,32 +1,69 @@
 import { ApiResponse } from "./api-response";
 
+interface RequestOptions {
+  query?: Record<
+    string | number,
+    string | number | string[] | number[] | null | undefined
+  >;
+  body?: Record<string, unknown>;
+  headers?: HeadersInit;
+}
+
 export class FetchClient {
   private baseUrl: string;
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
+
+  private buildQueryString(
+    query: Record<
+      string | number,
+      string | number | string[] | number[] | null | undefined
+    >,
+  ): string {
+    const params = new URLSearchParams();
+    Object.entries(query).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item) => params.append(key, String(item)));
+      }
+      if (value !== null && value !== undefined) {
+        params.append(key, String(value));
+      }
+    });
+    return params.toString();
+  }
+
   private async request<T>(
     url: string,
     method: string,
-    body?: Record<string, unknown>,
-    options?: HeadersInit
+    options?: RequestOptions,
   ): Promise<ApiResponse<T>> {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      ...options,
+      ...options?.headers,
     };
+
+    let fullUrl = `${this.baseUrl}/${url}`;
+    if (options?.query) {
+      const queryString = this.buildQueryString(options.query);
+      if (queryString) {
+        fullUrl += `?${queryString}`;
+      }
+    }
 
     const fetchOptions: RequestInit = {
       method,
       headers,
     };
 
-    if (body) {
-      fetchOptions.body = JSON.stringify(body);
+    if (options?.body) {
+      fetchOptions.body = JSON.stringify(options.body);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/${url}`, fetchOptions);
+      const response = await fetch(fullUrl, fetchOptions);
+      console.log(fullUrl);
+
       if (!response.ok) {
         return {
           data: null,
@@ -61,39 +98,36 @@ export class FetchClient {
 
   public get<T>(
     endpoint: string,
-    options?: HeadersInit
+    options?: RequestOptions,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, "GET", undefined, options);
+    return this.request<T>(endpoint, "GET", options);
   }
 
   public post<T>(
     endpoint: string,
-    body: Record<string, unknown>,
-    options?: HeadersInit
+    options?: RequestOptions,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, "POST", body, options);
+    return this.request<T>(endpoint, "POST", options);
   }
 
   public put<T>(
     endpoint: string,
-    body: Record<string, unknown>,
-    options?: HeadersInit
+    options?: RequestOptions,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, "PUT", body, options);
+    return this.request<T>(endpoint, "PUT", options);
   }
 
   public patch<T>(
     endpoint: string,
-    body: Record<string, unknown>,
-    options?: HeadersInit
+    options?: RequestOptions,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, "PATCH", body, options);
+    return this.request<T>(endpoint, "PATCH", options);
   }
   public delete<T = void>(
     endpoint: string,
-    options?: HeadersInit
+    options?: RequestOptions,
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, "DELETE", undefined, options);
+    return this.request<T>(endpoint, "DELETE", options);
   }
 }
 const fetchClient = new FetchClient(process.env.NEXT_PUBLIC_API_BASE_URL || "");
