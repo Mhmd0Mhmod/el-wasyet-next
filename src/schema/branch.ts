@@ -1,8 +1,8 @@
 import { z } from "zod";
 export const branchSchema = z.object({
   branchName: z.string().min(1, "اسم الفرع مطلوب"),
-  branchManager: z.string().min(1, "مدير الفرع مطلوب"),
-  phoneNumber: z.string().min(1, "رقم الهاتف مطلوب"),
+  managerName: z.string().min(1, "مدير الفرع مطلوب"),
+  telephone: z.string().min(1, "رقم الهاتف مطلوب"),
   email: z
     .string()
     .email("البريد الإلكتروني غير صحيح")

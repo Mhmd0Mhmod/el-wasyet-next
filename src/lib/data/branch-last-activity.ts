@@ -1,4 +1,9 @@
-import { BranchActivity } from "../types/branch";
+interface BranchActivity {
+  id: string;
+  title: string;
+  time: string;
+  status: "completed" | "in-progress" | "failed";
+}
 
 export const ACTIVITIES_DATA: BranchActivity[] = [
   {

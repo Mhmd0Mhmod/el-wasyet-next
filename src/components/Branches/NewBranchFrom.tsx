@@ -17,19 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Branch } from "@/lib/types/branch";
 import { BranchFormData, branchSchema } from "@/schema/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { DialogClose } from "../ui/dialog";
-import { Branch } from "@/lib/types/branch";
 
 function NewBranchFrom({ branch }: { branch?: Branch }) {
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchSchema),
     defaultValues: {
       branchName: branch ? branch.name : "",
-      branchManager: branch ? branch.manager : "",
-      phoneNumber: branch ? branch.phone || "" : "",
+      managerName: branch ? branch.managerName : "",
+      telephone: branch ? branch.telephone || "" : "",
       email: branch ? branch.email : "",
       address: branch ? branch.address : "",
     },
@@ -43,7 +43,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
     <div dir="rtl">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
               name="branchName"
@@ -64,13 +64,13 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
 
             <FormField
               control={form.control}
-              name="branchManager"
+              name="managerName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right">مدير الفرع</FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="text-right w-full" dir="rtl">
+                      <SelectTrigger className="w-full text-right" dir="rtl">
                         <SelectValue placeholder="اختر مدير الفرع" />
                       </SelectTrigger>
                       <SelectContent dir="rtl">
@@ -87,7 +87,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
 
             <FormField
               control={form.control}
-              name="phoneNumber"
+              name="telephone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right">رقم الهاتف</FormLabel>
@@ -143,7 +143,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
             )}
           />
 
-          <div className="grid grid-cols-2 gap-4 ">
+          <div className="grid grid-cols-2 gap-4">
             <DialogClose asChild>
               <Button type="button" variant="outline" className="px-8">
                 الغاء

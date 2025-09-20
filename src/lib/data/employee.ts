@@ -22,10 +22,12 @@ export async function getEmployees({
   return (
     data || {
       items: [],
-      totalItems: 0,
       totalPages: 0,
-      currentPage: 1,
       pageSize: defaults.pageSize,
+      pageNumber: page,
+      hasNextPage: false,
+      hasPreviousPage: false,
+      totalRecords: 0,
     }
   );
 }
