@@ -65,7 +65,7 @@ async function BranchesTableData({
           <TableRow key={branch.id}>
             <TableCell>{branch.name}</TableCell>
             <TableCell>{branch.address}</TableCell>
-            <TableCell>{branch.manager}</TableCell>
+            <TableCell>{branch.managerName}</TableCell>
             <TableCell>{branch.email}</TableCell>
             <TableCell className="flex gap-2">
               <Button asChild variant="outline">

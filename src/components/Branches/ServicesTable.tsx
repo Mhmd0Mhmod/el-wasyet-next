@@ -1,64 +1,58 @@
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  SERVICES_DATA,
-  ServicesTableHeaders,
-} from "@/lib/data/branch-services";
-import { Edit2, Eye } from "lucide-react";
 
-function ServicesTable() {
+import { ServicesTableHeaders } from "@/lib/data/branch-services";
+import { Service } from "@/lib/types/service";
+import { Edit2, Eye } from "lucide-react";
+import Table from "../general/Table";
+import { TableCell, TableRow } from "../ui/table";
+import Dialog from "../general/Dialog";
+import ServicesTabs from "./ServicesTabs";
+
+function ServicesTable({ services }: { services: Service[] }) {
   return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {ServicesTableHeaders.map((header) => (
-              <TableHead key={header.id} className="text-right">
-                {header.label}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {SERVICES_DATA.map((service) => (
-            <TableRow key={service.id}>
-              <TableCell className="font-medium">
-                {service.serviceName}
-              </TableCell>
-              <TableCell>{service.fee}</TableCell>
-              <TableCell>
-                <Button variant="link" className="text-blue-600 p-0 h-auto">
-                  {service.documents}
-                </Button>
-              </TableCell>
-              <TableCell>
-                <Button variant="link" className="text-blue-600 p-0 h-auto">
-                  {service.serviceSteps}
-                </Button>
-              </TableCell>
-              <TableCell>{service.additionalFees}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" aria-label="تعديل">
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
+    <Table
+      columns={ServicesTableHeaders}
+      renderData={services.map((service) => (
+        <TableRow key={service.id}>
+          <TableCell className="font-medium">{service.name}</TableCell>
+          <TableCell>
+            {Intl.NumberFormat("ar-EG", {
+              style: "currency",
+              currency: "EGP",
+            }).format(service.defaultFees)}
+          </TableCell>
+          <TableCell className="underline">
+            مستندات ({service.documents.length})
+          </TableCell>
+          <TableCell className="underline">
+            خطوات ({service.workflows.length})
+          </TableCell>
+          <TableCell>
+            {Intl.NumberFormat("ar-EG", {
+              style: "currency",
+              currency: "EGP",
+            }).format(service.banktFees)}
+          </TableCell>
+          <TableCell>
+            <div className="flex items-center gap-2">
+              <Dialog>
+                <Dialog.Trigger>
                   <Button variant="ghost" size="sm" aria-label="عرض">
                     <Eye className="h-4 w-4" />
                   </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+                </Dialog.Trigger>
+                <Dialog.Content title="تفاصيل الخدمة">
+                  <ServicesTabs services={service} />
+                </Dialog.Content>
+              </Dialog>
+              <Button variant="ghost" size="sm" aria-label="تعديل">
+                <Edit2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </TableCell>
+        </TableRow>
+      ))}
+    />
   );
 }
 export default ServicesTable;

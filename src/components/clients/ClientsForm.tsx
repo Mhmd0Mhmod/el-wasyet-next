@@ -80,15 +80,9 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-right text-gray-700">
-                      الاسم الكامل
-                    </FormLabel>
+                    <FormLabel>الاسم الكامل</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="أدخل الاسم الكامل"
-                        className="border-gray-300 text-right"
-                        {...field}
-                      />
+                      <Input placeholder="أدخل الاسم الكامل" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -100,14 +94,11 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-right text-gray-700">
-                      البريد الإلكتروني
-                    </FormLabel>
+                    <FormLabel>البريد الإلكتروني</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="أدخل البريد الإلكتروني"
-                        className="border-gray-300 text-right"
                         {...field}
                       />
                     </FormControl>
@@ -123,14 +114,12 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                 name="phone1"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-right text-gray-700">
-                      رقم الهاتف 1
-                    </FormLabel>
+                    <FormLabel>رقم الهاتف 1</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
                         placeholder="أدخل رقم الهاتف الأول"
-                        className="border-gray-300 text-right"
+                        className="text-right"
                         {...field}
                       />
                     </FormControl>
@@ -144,14 +133,12 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                 name="phone2"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-right text-gray-700">
-                      رقم الهاتف 2
-                    </FormLabel>
+                    <FormLabel>رقم الهاتف 2</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
                         placeholder="أدخل رقم الهاتف الثاني"
-                        className="border-gray-300 text-right"
+                        className="text-right"
                         {...field}
                       />
                     </FormControl>
@@ -166,15 +153,9 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right text-gray-700">
-                    العنوان
-                  </FormLabel>
+                  <FormLabel>العنوان</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل العنوان الكامل"
-                      className="border-gray-300 text-right"
-                      {...field}
-                    />
+                    <Input placeholder="أدخل العنوان الكامل" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,9 +168,7 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right text-gray-700">
-                    نوع العميل
-                  </FormLabel>
+                  <FormLabel>نوع العميل</FormLabel>
                   <FormControl>
                     <RadioGroup
                       dir="rtl"
@@ -223,14 +202,7 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
             onOpenChange={setIsAdditionalOpen}
           >
             <CollapsibleTrigger asChild>
-              <Button
-                type="button"
-                variant="default"
-                className={cn(
-                  "w-full rounded-lg bg-blue-600 py-3 text-white transition-all duration-200 hover:bg-blue-700",
-                  "flex items-center justify-center gap-2",
-                )}
-              >
+              <Button type="button" variant="default" className="mb-3 w-full">
                 <Plus className="h-4 w-4" />
                 <span>إضافة عميل مفترض</span>
                 {isAdditionalOpen ? (
@@ -241,8 +213,8 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
               </Button>
             </CollapsibleTrigger>
 
-            <CollapsibleContent className="mt-6 space-y-4 rounded-lg border bg-gray-50 p-4">
-              <h3 className="mb-4 text-right text-lg font-medium text-gray-800">
+            <CollapsibleContent className="space-y-4 rounded-lg border bg-gray-50 p-4">
+              <h3 className="text-right text-lg font-medium text-gray-800">
                 بيانات العميل الإضافي
               </h3>
 
@@ -252,15 +224,9 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                   name="additionalCustomer.fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-right text-gray-700">
-                        الاسم الكامل
-                      </FormLabel>
+                      <FormLabel>الاسم الكامل</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="أدخل الاسم الكامل"
-                          className="text-right"
-                          {...field}
-                        />
+                        <Input placeholder="أدخل الاسم الكامل" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -272,14 +238,11 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                   name="additionalCustomer.email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-right text-gray-700">
-                        البريد الإلكتروني
-                      </FormLabel>
+                      <FormLabel>البريد الإلكتروني</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
                           placeholder="أدخل البريد الإلكتروني"
-                          className="text-right"
                           {...field}
                         />
                       </FormControl>
@@ -295,9 +258,7 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                   name="additionalCustomer.phone1"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-right text-gray-700">
-                        رقم الهاتف 1
-                      </FormLabel>
+                      <FormLabel>رقم الهاتف 1</FormLabel>
                       <FormControl>
                         <Input
                           type="tel"
@@ -316,9 +277,7 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                   name="additionalCustomer.phone2"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-right text-gray-700">
-                        رقم الهاتف 2
-                      </FormLabel>
+                      <FormLabel>رقم الهاتف 2</FormLabel>
                       <FormControl>
                         <Input
                           type="tel"
@@ -338,15 +297,9 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                 name="additionalCustomer.address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-right text-gray-700">
-                      العنوان
-                    </FormLabel>
+                    <FormLabel>العنوان</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="أدخل العنوان الكامل"
-                        className="text-right"
-                        {...field}
-                      />
+                      <Input placeholder="أدخل العنوان الكامل" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -360,7 +313,10 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
             <Button
               type="submit"
               disabled={isLoading}
-              className="flex-1 rounded-lg bg-blue-600 py-3 text-white hover:bg-blue-700"
+              className={cn(
+                "flex-1 rounded-lg py-3",
+                isLoading && "opacity-70",
+              )}
             >
               {isLoading ? "جاري الحفظ..." : "حفظ"}
             </Button>
@@ -369,7 +325,10 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
               variant="outline"
               onClick={handleCancel}
               disabled={isLoading}
-              className="flex-1 rounded-lg border-gray-300 py-3 text-gray-700 hover:bg-gray-50"
+              className={cn(
+                "flex-1 rounded-lg py-3",
+                isLoading && "opacity-70",
+              )}
             >
               إلغاء
             </Button>

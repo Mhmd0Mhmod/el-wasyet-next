@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { branchesMock } from "@/lib/mock/branches.mock";
+import { getBranchById } from "@/lib/data/branches";
 import { CheckCircle, Clock, Edit2, MapPin, Phone, User } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -21,7 +21,7 @@ async function BranchDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const branch = branchesMock.find((branch) => branch.id === id);
+  const branch = await getBranchById(id);
 
   if (!branch) {
     notFound();
@@ -58,12 +58,12 @@ async function BranchDetailsPage({
             <BranchInfoItem
               icon={<MapPin className="h-6 w-6 text-gray-600" />}
               title="العنوان"
-              value="شارع النصر، المعادي"
+              value={branch.address}
             />
             <BranchInfoItem
               icon={<User className="h-6 w-6 text-gray-600" />}
               title="مدير الفرع"
-              value="أحمد محمد"
+              value={branch.managerName}
             />
             <BranchInfoItem
               icon={<Clock className="h-6 w-6 text-gray-600" />}
@@ -73,7 +73,7 @@ async function BranchDetailsPage({
             <BranchInfoItem
               icon={<Phone className="h-6 w-6 text-gray-600" />}
               title="رقم الهاتف"
-              value="02-25551234"
+              value={branch.telephone}
             />
           </div>
         </CardContent>
@@ -81,22 +81,30 @@ async function BranchDetailsPage({
           <div className="flex w-full items-center justify-between">
             <span className="text-gray-600">حالة التشغيل</span>
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              <span className="font-medium text-green-500">نشط</span>
+              {branch.suspended ? (
+                <>
+                  <span className="text-red-600">موقوف</span>
+                  <Clock className="h-5 w-5 text-red-600" />
+                </>
+              ) : (
+                <>
+                  <span className="text-green-600">نشط</span>
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                </>
+              )}
             </div>
           </div>
         </CardFooter>
       </Card>
 
-      {/* Tabs Section */}
       <Tabs defaultValue="services" className="w-full">
         <TabsList dir="rtl" className="mb-4 w-full border-b">
           <TabsTrigger value="services">الخدمات</TabsTrigger>
           <TabsTrigger value="last-activities">الانشطه الاخيره</TabsTrigger>
         </TabsList>
-        <Card dir="rtl">
+        <Card dir="rtl" className="p-6">
           <TabsContent value="services">
-            <ServicesTable />
+            <ServicesTable services={branch.services} />
           </TabsContent>
           <TabsContent value="last-activities">
             <LastActivities />

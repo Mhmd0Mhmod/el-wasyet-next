@@ -24,3 +24,13 @@ export async function getBranches({
   }
   return data || [];
 }
+
+export async function getBranchById(id: string): Promise<Branch | null> {
+  const { data, error, message } = await fetchClient.get<Branch | null>(
+    `Branch/${id}`,
+  );
+  if (error) {
+    throw new Error(message);
+  }
+  return data;
+}

@@ -1,33 +1,10 @@
 export interface Branch {
-  id: string;
+  services: Service[];
+  id: number;
   name: string;
   address: string;
-  manager: string;
+  telephone: string;
   email: string;
-  phone?: string;
-}
-export interface CreateBranchDTO {
-  name: string;
-  address: string;
-  manager: string;
-  email: string;
-  manager: string;
-  email: string;
-  phone?: string;
-}
-
-export interface BranchService {
-  id: string;
-  serviceName: string;
-  fee: string;
-  documents: string;
-  serviceSteps: string;
-  additionalFees: string;
-}
-
-export interface BranchActivity {
-  id: string;
-  title: string;
-  time: string;
-  status: "completed" | "in-progress";
+  managerName: string;
+  suspended: boolean;
 }
