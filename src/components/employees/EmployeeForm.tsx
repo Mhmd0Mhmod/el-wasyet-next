@@ -19,9 +19,8 @@ import {
 } from "@/schema/employee";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Label } from "../ui/label";
-import Dialog from "../general/Dialog";
 import { DialogClose } from "../ui/dialog";
+import { Label } from "../ui/label";
 interface EmployeeFormProps {
   initialData?: Partial<Employee>;
   disabled?: boolean;

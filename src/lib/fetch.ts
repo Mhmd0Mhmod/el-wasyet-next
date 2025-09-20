@@ -26,7 +26,9 @@ export class FetchClient {
       if (Array.isArray(value)) {
         value.forEach((item) => params.append(key, String(item)));
       }
-      if (value !== null && value !== undefined) {
+      console.log(key, value);
+
+      if (value !== null && value !== undefined && !!value) {
         params.append(key, String(value));
       }
     });
