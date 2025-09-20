@@ -2,6 +2,7 @@ import BranchInfoItem from "@/components/Branches/BranchInfoItem";
 import LastActivities from "@/components/Branches/LastActivities";
 import NewBranchButton from "@/components/Branches/NewBranch";
 import ServicesTable from "@/components/Branches/ServicesTable";
+import { TabsList, TabsTrigger } from "@/components/general/Tabs";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { getBranchById } from "@/lib/data/branches";
 import { CheckCircle, Clock, Edit2, MapPin, Phone, User } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -98,7 +99,7 @@ async function BranchDetailsPage({
       </Card>
 
       <Tabs defaultValue="services" className="w-full">
-        <TabsList dir="rtl" className="mb-4 w-full border-b">
+        <TabsList dir="rtl" className="m-auto w-2xl">
           <TabsTrigger value="services">الخدمات</TabsTrigger>
           <TabsTrigger value="last-activities">الانشطه الاخيره</TabsTrigger>
         </TabsList>

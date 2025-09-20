@@ -1,5 +1,11 @@
 "use client";
+import { LoginFormValues } from "@/schema/login";
+import { Branch, ShortBranch } from "@/types/branch";
+import { EyeClosed, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import Input from "../general/Input";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -8,8 +14,6 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
-import Input from "../general/Input";
-import { EyeClosed, User } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,10 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
-import { LoginFormValues } from "@/schema/login";
-function LoginForm() {
+function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const router = useRouter();
   const form = useForm<LoginFormValues>();
   const handleSubmit = (data: LoginFormValues) => {
@@ -63,9 +64,14 @@ function LoginForm() {
                     <SelectValue placeholder="اختر الفرع" />
                   </SelectTrigger>
                   <SelectContent dir="rtl">
-                    <SelectItem value="cairo">القاهرة</SelectItem>
-                    <SelectItem value="giza">الجيزة</SelectItem>
-                    <SelectItem value="alex">الإسكندرية</SelectItem>
+                    {branches?.map((branch) => (
+                      <SelectItem
+                        key={branch.branchId}
+                        value={String(branch.branchId)}
+                      >
+                        {branch.branchName}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormControl>

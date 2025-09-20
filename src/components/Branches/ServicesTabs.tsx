@@ -1,7 +1,8 @@
 import { Service } from "@/types/service";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Table from "../general/Table";
+import { TabsList, TabsTrigger } from "../general/Tabs";
 import { TableCell, TableRow } from "../ui/table";
+import { Tabs, TabsContent } from "../ui/tabs";
 
 const TABSLIST = [
   { label: "رسوم إضافية", value: "overheads" },
@@ -11,8 +12,8 @@ const TABSLIST = [
 
 function ServicesTabs({ services }: { services: Service }) {
   return (
-    <Tabs defaultValue={TABSLIST[0].value}>
-      <TabsList className="mb-4 w-full border-b">
+    <Tabs defaultValue={TABSLIST.at(-1)?.value}>
+      <TabsList>
         {TABSLIST.map((tab) => (
           <TabsTrigger key={tab.value} value={tab.value}>
             {tab.label}

@@ -7,10 +7,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-function Page() {
+import { fetchClient } from "@/lib/fetch";
+import { ShortBranch } from "@/types/branch";
+async function Page() {
+  const { data: branches } =
+    await fetchClient.get<ShortBranch[]>("Auth/branches");
+
   return (
-    <div className="container flex flex-col items-center justify-center min-h-screen px-4">
-      <Card className="w-full max-w-md p-8 space-y-6 flex-col bg-gray-100 border">
+    <div className="container flex min-h-screen flex-col items-center justify-center px-4">
+      <Card className="w-full max-w-md flex-col space-y-6 border bg-gray-100 p-8">
         <CardHeader className="flex flex-col items-center">
           <Logo />
           <CardTitle className="mt-4 text-2xl font-bold">
@@ -21,7 +26,7 @@ function Page() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LoginForm />
+          <LoginForm branches={branches} />
         </CardContent>
       </Card>
     </div>

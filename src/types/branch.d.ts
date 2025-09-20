@@ -8,3 +8,8 @@ export interface Branch {
   managerName: string;
   suspended: boolean;
 }
+
+export interface ShortBranch {
+  branchId: number;
+  branchName: string;
+}
