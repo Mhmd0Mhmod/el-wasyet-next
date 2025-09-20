@@ -1,18 +1,18 @@
 import NewBranch from "@/components/Branches/NewBranch";
+import SearchInput from "@/components/general/SearchInput";
+import Table from "@/components/general/Table";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { branchesMock } from "@/lib/mock/branches.mock";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { getBranches } from "@/lib/data/branches";
 import { Edit2, Eye, Plus } from "lucide-react";
-import Link from "next/link";
 import { Suspense } from "react";
-function page() {
+import Link from "next/link";
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; page?: string }>;
+}) {
+  const { search, page } = await searchParams;
   return (
     <section className="container space-y-12 pt-6">
       <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
@@ -31,11 +31,10 @@ function page() {
           />
         </div>
       </div>
-      <div>
-        <Suspense fallback={<></>}>
-          <BranchesTableData />
-        </Suspense>
-      </div>
+
+      <Suspense fallback={<></>}>
+        <BranchesTableData searchParams={{ search, page }} />
+      </Suspense>
     </section>
   );
 }
@@ -47,20 +46,22 @@ const columns = [
   { id: "email", label: "الايميل" },
   { id: "actions", label: " العمليات" },
 ];
-function BranchesTableData() {
+
+async function BranchesTableData({
+  searchParams,
+}: {
+  searchParams: { search?: string; page?: string };
+}) {
+  const branches = await getBranches({
+    search: searchParams.search || "",
+    page: parseInt(searchParams.page || "1", 10),
+  });
   return (
-    <Table className="border">
-      <TableHeader>
-        <TableRow>
-          {columns.map((column) => (
-            <TableHead key={column.label} className="text-right">
-              {column.label}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {branchesMock.slice(0, 10).map((branch) => (
+    <>
+      <SearchInput title="ابحث عن فرع" />
+      <Table
+        columns={columns}
+        renderData={branches?.map((branch) => (
           <TableRow key={branch.id}>
             <TableCell>{branch.name}</TableCell>
             <TableCell>{branch.address}</TableCell>
@@ -83,8 +84,8 @@ function BranchesTableData() {
             </TableCell>
           </TableRow>
         ))}
-      </TableBody>
-    </Table>
+      />
+    </>
   );
 }
 export default page;

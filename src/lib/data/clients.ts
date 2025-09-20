@@ -7,19 +7,28 @@ export async function fetchClients({
 }: {
   search?: string;
   page?: number;
-} = {}) {
-  const { data, error, message } = await fetchClient.get<Client[]>(
-    "Client/all",
-    {
-      query: {
-        search,
-        pageIndex: page,
-        pageSize: defaults.pageSize,
-      },
+} = {}): Promise<PaginatedResponse<Client>> {
+  const { data, error, message } = await fetchClient.get<
+    PaginatedResponse<Client>
+  >("Client/all", {
+    query: {
+      search,
+      pageIndex: page,
+      pageSize: defaults.pageSize,
     },
-  );
+  });
 
   if (error) throw new Error(message || "Error fetching clients");
-  console.log(data);
-  return data || [];
+
+  return (
+    data || {
+      items: [],
+      totalRecords: 0,
+      pageNumber: 1,
+      pageSize: defaults.pageSize,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    }
+  );
 }

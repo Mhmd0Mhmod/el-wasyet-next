@@ -1,12 +1,26 @@
 import { Branch } from "../types/branch";
 import { fetchClient } from "../fetch";
+import { defaults } from "../utils";
 
-export async function getBranches(
-  params: Record<string, string | string[] | undefined>
-) {
-  const query = new URLSearchParams(params.toString());
-  const response = await fetchClient.get<{ data: Branch[]; total: number }>(
-    `branches?${query.toString()}`
+export async function getBranches({
+  search,
+  page,
+}: {
+  search?: string;
+  page?: number;
+}): Promise<Branch[]> {
+  const { data, error, message } = await fetchClient.get<Branch[]>(
+    "Branch/all",
+    {
+      query: {
+        search,
+        page,
+        pageSize: defaults.pageSize,
+      },
+    },
   );
-  return response;
+  if (error) {
+    throw new Error(message);
+  }
+  return data || [];
 }
