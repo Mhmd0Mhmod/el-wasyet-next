@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Branch } from "@/lib/types/branch";
+import { Branch } from "@/types/branch";
 import { BranchFormData, branchSchema } from "@/schema/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

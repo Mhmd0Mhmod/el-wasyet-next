@@ -1,4 +1,4 @@
-import { Service } from "@/lib/types/service";
+import { Service } from "@/types/service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Table from "../general/Table";
 import { TableCell, TableRow } from "../ui/table";

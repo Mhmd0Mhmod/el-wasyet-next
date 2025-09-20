@@ -1,6 +1,6 @@
 import Dialog from "../general/Dialog";
 import NewBranchFrom from "./NewBranchFrom";
-import { Branch } from "@/lib/types/branch";
+import { Branch } from "@/types/branch";
 
 function NewBranch({
   branch,

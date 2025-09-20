@@ -1,4 +1,4 @@
-import { Branch } from "../types/branch";
+import { Branch } from "../../types/branch";
 import { fetchClient } from "../fetch";
 import { defaults } from "../utils";
 
