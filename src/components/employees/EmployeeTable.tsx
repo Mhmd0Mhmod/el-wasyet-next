@@ -9,6 +9,8 @@ import { useState } from "react";
 import Input from "../general/Input";
 import Table from "../general/Table";
 import { TableCell, TableRow } from "../ui/table";
+import Dialog from "../general/Dialog";
+import EmployeeForm from "./EmployeeForm";
 
 const EMPLOYEE_TABLE_COLUMNS = [
   { id: "name", label: "الاسم" },
@@ -20,12 +22,14 @@ const EMPLOYEE_TABLE_COLUMNS = [
 
 function EmployeeTable({ data }: { data?: ShortEmployee[] }) {
   const [search, setSearch] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
   const { data: employees, error } = useQuery<ShortEmployee[]>({
+    queryKey: ["employees", search, pageNumber],
     initialData: [...Array.from(data || [])],
-    queryKey: ["employees", search],
-    queryFn: () => getEmployees({ search }),
+    queryFn: () => getEmployees({ search, pageNumber }),
     refetchOnMount: "always",
-    enabled: search.length > 0,
+    enabled: search.length > 2 || search.length === 0 || pageNumber > 1,
+    placeholderData: data,
   });
 
   function onChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
@@ -76,12 +80,30 @@ function EmployeeTable({ data }: { data?: ShortEmployee[] }) {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" aria-label="تعديل">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" aria-label="عرض">
-                    <Eye className="h-4 w-4" />
-                  </Button>
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant="ghost" size="sm" aria-label="عرض">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content title="تفاصيل موظف">
+                      <div className="max-h-[80vh] overflow-y-auto">
+                        <EmployeeForm initialData={employee} disabled />
+                      </div>
+                    </Dialog.Content>
+                  </Dialog>
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant="ghost" size="sm" aria-label="تعديل">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content title="تعديل موظف">
+                      <div className="max-h-[80vh] overflow-y-auto">
+                        <EmployeeForm initialData={employee} />
+                      </div>
+                    </Dialog.Content>
+                  </Dialog>
                 </div>
               </TableCell>
             </TableRow>

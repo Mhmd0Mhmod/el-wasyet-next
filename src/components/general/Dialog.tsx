@@ -41,6 +41,9 @@ function DialogContentBox({
     </DialogContent>
   );
 }
+function DialogCancelButton({ children }: { children: React.ReactNode }) {
+  return <DialogClose>{children}</DialogClose>;
+}
 function DialogFooter({ children }: { children: React.ReactNode }) {
   return <DialogFooter>{children}</DialogFooter>;
 }
@@ -48,5 +51,6 @@ function DialogFooter({ children }: { children: React.ReactNode }) {
 Dialog.Trigger = DialogTriggerButton;
 Dialog.Content = DialogContentBox;
 Dialog.Footer = DialogFooter;
+Dialog.Cancel = DialogCancelButton;
 
 export default Dialog;

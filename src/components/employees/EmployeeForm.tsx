@@ -1,9 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -14,74 +12,48 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  employeeFormSchema,
+  EmployeeFormValues,
+  PERMISSIONS_OPTIONS,
+} from "@/schema/employee";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Label } from "../ui/label";
-
-const employeeFormSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, { message: "الاسم الكامل يجب أن يحتوي على حرفين على الأقل" })
-    .max(100, { message: "الاسم الكامل يجب ألا يزيد عن 100 حرف" }),
-  email: z
-    .string()
-    .email({ message: "البريد الإلكتروني غير صحيح" })
-    .min(1, { message: "البريد الإلكتروني مطلوب" }),
-  phoneNumber: z
-    .string()
-    .min(10, { message: "رقم الهاتف يجب أن يحتوي على 10 أرقام على الأقل" })
-    .max(15, { message: "رقم الهاتف يجب ألا يزيد عن 15 رقم" })
-    .regex(/^[\d+\-\s()]+$/, { message: "رقم الهاتف غير صحيح" }),
-  jobTitle: z
-    .string()
-    .min(2, { message: "الوظيفة يجب أن تحتوي على حرفين على الأقل" })
-    .max(50, { message: "الوظيفة يجب ألا تزيد عن 50 حرف" }),
-  username: z
-    .string()
-    .min(3, { message: "اسم المستخدم يجب أن يحتوي على 3 أحرف على الأقل" })
-    .max(30, { message: "اسم المستخدم يجب ألا يزيد عن 30 حرف" })
-    .regex(/^[a-zA-Z0-9_]+$/, {
-      message: "اسم المستخدم يجب أن يحتوي على أحرف وأرقام فقط",
-    }),
-  manager: z
-    .string()
-    .min(2, { message: "المدير المباشر يجب أن يحتوي على حرفين على الأقل" })
-    .max(100, { message: "المدير المباشر يجب ألا يزيد عن 100 حرف" }),
-  isActive: z.boolean(),
-  permissions: z
-    .array(z.string())
-    .min(1, { message: "يجب اختيار صلاحية واحدة على الأقل" }),
-});
-
-type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
-
-const PERMISSIONS_OPTIONS = [
-  { id: "download", label: "التحميل" },
-  { id: "review", label: "المراجعة" },
-  { id: "manage_receipts", label: "إدارة الفواتير" },
-] as const;
-
+import Dialog from "../general/Dialog";
+import { DialogClose } from "../ui/dialog";
 interface EmployeeFormProps {
-  initialData?: Partial<EmployeeFormValues>;
-  isLoading?: boolean;
+  initialData?: Partial<Employee>;
+  disabled?: boolean;
+  onSubmit?: (data: EmployeeFormValues) => Promise<void>;
+  onCancel?: () => void;
 }
 
-function EmployeeForm({ initialData }: EmployeeFormProps) {
+function EmployeeForm({
+  initialData,
+  disabled = false,
+  onSubmit,
+  onCancel,
+}: EmployeeFormProps) {
   const form = useForm<EmployeeFormValues>({
+    mode: "onChange",
+    disabled,
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
-      fullName: initialData?.fullName || "",
+      name: initialData?.name || "",
       email: initialData?.email || "",
-      phoneNumber: initialData?.phoneNumber || "",
-      jobTitle: initialData?.jobTitle || "",
-      username: initialData?.username || "",
-      manager: initialData?.manager || "",
-      isActive: initialData?.isActive ?? true,
-      permissions: initialData?.permissions || [],
+      phone: initialData?.phone || "",
+      role: initialData?.role || "",
+      userName: initialData?.userName || "",
+      managerName: initialData?.managerName || "",
+      suspended: initialData?.suspended ?? false,
+      abilityDTOs: initialData?.abilityDTOs || [],
     },
   });
 
   const handleSubmit = async (data: EmployeeFormValues) => {
     try {
+      await onSubmit?.(data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -89,27 +61,39 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
 
   const handleCancel = () => {
     form.reset();
+    onCancel?.();
   };
+
+  const handleAbilityChange = (
+    permission: (typeof PERMISSIONS_OPTIONS)[number],
+    checked: boolean,
+    currentValue: Ability[],
+  ) => {
+    return checked
+      ? [
+          ...currentValue,
+          { id: permission.id, abilityName: permission.abilityName },
+        ]
+      : currentValue.filter((ability) => ability.id !== permission.id);
+  };
+
   const isLoading = form.formState.isLoading || form.formState.isSubmitting;
-  const submitButtonText = initialData ? "تحديث الموظف" : "إضافة موظف";
+  const submitButtonText = initialData?.id ? "تحديث الموظف" : "إضافة موظف";
+
   return (
-    <div dir="rtl">
+    <div dir="rtl" className="mx-auto max-w-4xl">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          {/* Personal Information Section */}
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          {/* Personal Information Grid */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="fullName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">الاسم الكامل</FormLabel>
+                  <FormLabel>الاسم الكامل</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل الاسم الكامل"
-                      className="text-right"
-                      {...field}
-                    />
+                    <Input placeholder="أدخل الاسم الكامل" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,14 +105,11 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">
-                    البريد الإلكتروني
-                  </FormLabel>
+                  <FormLabel>البريد الإلكتروني</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       placeholder="أدخل البريد الإلكتروني"
-                      className="text-right"
                       {...field}
                     />
                   </FormControl>
@@ -136,20 +117,17 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
                 </FormItem>
               )}
             />
-          </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="phoneNumber"
+              name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">رقم الهاتف</FormLabel>
+                  <FormLabel>رقم الهاتف</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
                       placeholder="أدخل رقم الهاتف"
-                      className="text-right"
                       {...field}
                     />
                   </FormControl>
@@ -160,36 +138,26 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
 
             <FormField
               control={form.control}
-              name="jobTitle"
+              name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">الوظيفة</FormLabel>
+                  <FormLabel>الوظيفة</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل الوظيفة"
-                      className="text-right"
-                      {...field}
-                    />
+                    <Input placeholder="أدخل الوظيفة" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="username"
+              name="userName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">اسم المستخدم</FormLabel>
+                  <FormLabel>اسم المستخدم</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل اسم المستخدم"
-                      className="text-right"
-                      {...field}
-                    />
+                    <Input placeholder="أدخل اسم المستخدم" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -198,15 +166,15 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
 
             <FormField
               control={form.control}
-              name="manager"
+              name="managerName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">المدير المباشر</FormLabel>
+                  <FormLabel>المدير المباشر</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="أدخل اسم المدير المباشر"
-                      className="text-right"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -218,25 +186,30 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
           {/* Status Section */}
           <FormField
             control={form.control}
-            name="isActive"
+            name="suspended"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>حالة الموظف</FormLabel>
                 <FormControl>
-                  <RadioGroup
-                    dir="rtl"
-                    value={field.value ? "active" : "inactive"}
-                    onValueChange={(value) =>
-                      field.onChange(value === "active")
-                    }
-                  >
+                  <RadioGroup dir="rtl">
                     <div className="flex items-center gap-4">
-                      <RadioGroupItem value="active" id="active" />
-                      <Label
-                        htmlFor="active"
-                        className="cursor-pointer text-sm"
-                      >
-                        الموظف نشط
-                      </Label>
+                      <RadioGroupItem
+                        value="active"
+                        disabled={disabled}
+                        checked={!field.value}
+                        onClick={() => field.onChange(false)}
+                        className="cursor-pointer"
+                      />
+                      <Label className="cursor-pointer text-sm">نشط</Label>
+
+                      <RadioGroupItem
+                        value="suspended"
+                        disabled={disabled}
+                        checked={field.value}
+                        onClick={() => field.onChange(true)}
+                        className="cursor-pointer"
+                      />
+                      <Label className="cursor-pointer text-sm">معلق</Label>
                     </div>
                   </RadioGroup>
                 </FormControl>
@@ -248,60 +221,60 @@ function EmployeeForm({ initialData }: EmployeeFormProps) {
           {/* Permissions Section */}
           <FormField
             control={form.control}
-            name="permissions"
-            render={() => (
-              <FormItem className="space-y-2">
-                <FormLabel className="block text-right text-sm text-gray-500">
-                  الصلاحيات
-                </FormLabel>
-                <div className="flex flex-wrap gap-6">
-                  {PERMISSIONS_OPTIONS.map((permission) => (
-                    <FormField
-                      key={permission.id}
-                      control={form.control}
-                      name="permissions"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-y-0 space-x-3 space-x-reverse">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(permission.id)}
-                              onCheckedChange={(checked) => {
-                                const updatedPermissions = checked
-                                  ? [...(field.value || []), permission.id]
-                                  : field.value?.filter(
-                                      (value) => value !== permission.id,
-                                    ) || [];
-                                field.onChange(updatedPermissions);
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="cursor-pointer text-sm font-normal">
-                            {permission.label}
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                </div>
+            name="abilityDTOs"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>الصلاحيات</FormLabel>
+                <FormControl>
+                  <div className="flex flex-wrap gap-6">
+                    {PERMISSIONS_OPTIONS.map((permission) => (
+                      <div
+                        key={permission.id}
+                        className="flex items-center gap-2"
+                      >
+                        <Checkbox
+                          disabled={disabled}
+                          checked={field.value?.some(
+                            (ability) => ability.id === permission.id,
+                          )}
+                          onCheckedChange={(checked) => {
+                            const updatedAbilities = handleAbilityChange(
+                              permission,
+                              !!checked,
+                              field.value || [],
+                            );
+                            field.onChange(updatedAbilities);
+                          }}
+                        />
+                        <Label className="cursor-pointer text-sm">
+                          {permission.abilityName}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-1 gap-4 pt-6 md:grid-cols-2">
-            <Button type="submit" disabled={isLoading} className="min-w-24">
-              {isLoading ? "جاري الحفظ..." : submitButtonText}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isLoading}
-            >
-              إلغاء
-            </Button>
-          </div>
+          {!disabled && (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "جاري الحفظ..." : submitButtonText}
+              </Button>
+              <DialogClose asChild>
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                  disabled={isLoading}
+                >
+                  إلغاء
+                </Button>
+              </DialogClose>
+            </div>
+          )}
         </form>
       </Form>
     </div>
