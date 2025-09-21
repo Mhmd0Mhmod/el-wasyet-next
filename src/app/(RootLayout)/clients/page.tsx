@@ -4,6 +4,7 @@ import Dialog from "@/components/general/Dialog";
 import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
+import TableSkeleton from "@/components/general/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { fetchClients } from "@/lib/data/clients";
@@ -41,7 +42,10 @@ async function page({
           </Dialog>
         </div>
       </div>
-      <Suspense>
+      <Suspense
+        fallback={<TableSkeleton rows={5} columns={6} />}
+        key={search + (page || "")}
+      >
         <ClientsTableData searchParams={{ search, page }} />
       </Suspense>
     </section>

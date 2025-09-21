@@ -7,6 +7,7 @@ import { getBranches } from "@/lib/data/branches";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
+import TableSkeleton from "@/components/general/TableSkeleton";
 async function page({
   searchParams,
 }: {
@@ -32,7 +33,10 @@ async function page({
         </div>
       </div>
 
-      <Suspense fallback={<></>}>
+      <Suspense
+        fallback={<TableSkeleton rows={5} columns={5} />}
+        key={search + (page || "")}
+      >
         <BranchesTableData searchParams={{ search, page }} />
       </Suspense>
     </section>

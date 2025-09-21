@@ -3,6 +3,7 @@ import Dialog from "@/components/general/Dialog";
 import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
+import TableSkeleton from "@/components/general/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -29,7 +30,10 @@ async function page({
         </div>
       </div>
       <>
-        <Suspense fallback={<></>}>
+        <Suspense
+          fallback={<TableSkeleton rows={5} columns={5} />}
+          key={search + (page || "")}
+        >
           <EmployeesTable searchParams={{ search, page }} />
         </Suspense>
       </>
