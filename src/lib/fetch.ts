@@ -1,4 +1,4 @@
-import { ApiResponse } from "./api-response";
+import { ApiResponse } from "../types/api-response";
 
 interface RequestOptions {
   query?: Record<
@@ -26,8 +26,6 @@ export class FetchClient {
       if (Array.isArray(value)) {
         value.forEach((item) => params.append(key, String(item)));
       }
-      console.log(key, value);
-
       if (value !== null && value !== undefined && !!value) {
         params.append(key, String(value));
       }
@@ -64,7 +62,6 @@ export class FetchClient {
 
     try {
       const response = await fetch(fullUrl, fetchOptions);
-      console.log(fullUrl);
 
       if (!response.ok) {
         return {

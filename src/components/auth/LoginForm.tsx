@@ -1,8 +1,8 @@
 "use client";
+import { Login } from "@/actions/auth/actions";
 import { LoginFormValues } from "@/schema/login";
-import { Branch, ShortBranch } from "@/types/branch";
+import { ShortBranch } from "@/types/branch";
 import { EyeClosed, User } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Input from "../general/Input";
 import { Button } from "../ui/button";
@@ -21,18 +21,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+
 function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
-  const router = useRouter();
   const form = useForm<LoginFormValues>();
-  const handleSubmit = (data: LoginFormValues) => {
-    router.push("/branches");
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  function onSubmit(data: LoginFormValues) {
+    setIsLoading(true);
+    Login(data)
+      .then((res) => {
+        if (!res.success) {
+          form.setError("root", { message: res.message });
+        } else {
+          toast.success("تم تسجيل الدخول بنجاح");
+          router.push("/");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="email"
+          name="usernameOrEmail"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -51,14 +66,14 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
         />
         <FormField
           control={form.control}
-          name="branch"
+          name="branchId"
           render={({ field }) => (
             <FormItem>
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  value={field.value}
+                  defaultValue={field.value?.toString()}
+                  value={field.value?.toString()}
                 >
                   <SelectTrigger dir="rtl" className="w-full">
                     <SelectValue placeholder="اختر الفرع" />
@@ -100,11 +115,17 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          تسجيل الدخول
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
         </Button>
+        {form.formState.errors.root && (
+          <p className="text-sm text-red-600">
+            {form.formState.errors.root.message}
+          </p>
+        )}
       </form>
     </Form>
   );
 }
+
 export default LoginForm;

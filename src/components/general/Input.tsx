@@ -13,11 +13,15 @@ function Input({
   container?: ClassNameValue;
   Icon?: LucideIcon;
   IconProps?: LucideProps;
-  props: React.InputHTMLAttributes<HTMLInputElement>;
+  props: React.ComponentProps<typeof InputComponent>;
 }) {
+  const inputProps = {
+    ...props,
+    value: props.value ?? "",
+  };
   return (
     <div className={cn("relative w-full", container)}>
-      <InputComponent className={cn(className)} {...props} />
+      <InputComponent className={cn(className)} {...inputProps} />
       {Icon && (
         <Icon
           className="absolute top-1/2 left-2 -translate-y-1/2 transform"

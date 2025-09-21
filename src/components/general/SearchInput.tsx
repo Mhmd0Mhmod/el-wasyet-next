@@ -13,8 +13,6 @@ function SearchInput({ title }: { title: string }) {
   const updateURL = useCallback(
     (value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      console.log(params);
-
       if (value.trim()) {
         params.set("search", value.trim());
       } else {
