@@ -1,14 +1,11 @@
 import { serverLogin } from "@/actions/auth/actions";
 import { loginFormSchema } from "@/schema/login";
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth, {
+  AuthError,
+  CredentialsSignin,
+  DefaultSession,
+} from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-
-interface Ability {
-  id: string;
-  name: string;
-  // Add other ability properties as needed
-}
-
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: User & DefaultSession["user"];
@@ -25,6 +22,13 @@ declare module "next-auth" {
     branchId: number;
     message: string | null;
     abilities: Ability[];
+  }
+}
+class CustomError extends CredentialsSignin {
+  constructor(message: string) {
+    super(message);
+    this.message = message;
+    this.name = "CustomError";
   }
 }
 
@@ -58,7 +62,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (!response || response.error || !response.data) {
-          throw new Error(response?.message || "Login failed");
+          console.log(response);
+
+          throw new CustomError(response?.message || "Login failed");
         }
         return response.data;
       },

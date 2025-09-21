@@ -7,12 +7,16 @@ interface RequestOptions {
   >;
   body?: Record<string, unknown>;
   headers?: HeadersInit;
+  timeout?: number;
 }
 
 export class FetchClient {
   private baseUrl: string;
-  constructor(baseUrl: string) {
+  private defaultTimeout: number;
+
+  constructor(baseUrl: string, defaultTimeout: number = 10000) {
     this.baseUrl = baseUrl;
+    this.defaultTimeout = defaultTimeout;
   }
 
   private buildQueryString(
@@ -54,6 +58,7 @@ export class FetchClient {
     const fetchOptions: RequestInit = {
       method,
       headers,
+      signal: AbortSignal.timeout(options?.timeout || this.defaultTimeout),
     };
 
     if (options?.body) {
@@ -68,7 +73,7 @@ export class FetchClient {
           data: null,
           error: `HTTP error! Status: ${response.status}`,
           statusCode: response.status,
-          message: response.statusText,
+          message: (await response.json())?.message || "Request failed",
           success: false,
         };
       }
@@ -85,6 +90,16 @@ export class FetchClient {
         success: true,
       };
     } catch (error) {
+      if (error instanceof Error && error.name === "TimeoutError") {
+        return {
+          data: null,
+          error: "Request timeout",
+          statusCode: 408,
+          message: "Request timed out",
+          success: false,
+        };
+      }
+
       return {
         data: null,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -129,5 +144,8 @@ export class FetchClient {
     return this.request<T>(endpoint, "DELETE", options);
   }
 }
-const fetchClient = new FetchClient(process.env.NEXT_PUBLIC_API_BASE_URL || "");
+const fetchClient = new FetchClient(
+  process.env.NEXT_PUBLIC_API_BASE_URL || "",
+  15000,
+); // 15 seconds timeout
 export { fetchClient };
