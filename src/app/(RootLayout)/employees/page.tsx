@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getEmployees } from "@/lib/data/employee";
 import { cn } from "@/lib/utils";
-import { Edit, Eye, Plus } from "lucide-react";
+import { CheckCircle, Edit, Eye, Plus, X, XCircle } from "lucide-react";
 import { Suspense } from "react";
 
 async function page({
@@ -94,12 +94,17 @@ async function EmployeesTable({
                 variant={employee.suspended ? "secondary" : "destructive"}
                 className={cn({
                   "bg-green-100 text-green-800 hover:bg-green-100":
-                    employee.suspended,
-                  "bg-red-100 text-red-800 hover:bg-red-100":
                     !employee.suspended,
+                  "bg-red-100 text-red-800 hover:bg-red-100":
+                    employee.suspended,
                 })}
               >
-                {employee.suspended ? "نشيط ✓" : "متوقف ✗"}
+                {employee.suspended ? (
+                  <XCircle className="h-4 w-4" />
+                ) : (
+                  <CheckCircle className="h-4 w-4" />
+                )}
+                {employee.suspended ? "متوقف" : "نشط"}
               </Badge>
             </TableCell>
             <TableCell>
