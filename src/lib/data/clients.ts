@@ -1,3 +1,4 @@
+import { Client, ShortClient } from "@/types/client";
 import { fetchClient } from "../fetch";
 import { defaults } from "../utils";
 
@@ -7,9 +8,9 @@ export async function fetchClients({
 }: {
   search?: string;
   page?: number;
-} = {}): Promise<PaginatedResponse<Client>> {
+} = {}): Promise<PaginatedResponse<ShortClient>> {
   const { data, error, message } = await fetchClient.get<
-    PaginatedResponse<Client>
+    PaginatedResponse<ShortClient>
   >("Client/all", {
     query: {
       search,
@@ -31,4 +32,12 @@ export async function fetchClients({
       hasPreviousPage: false,
     }
   );
+}
+export async function fetchClientById(id: number): Promise<Client> {
+  const { data, error, message } = await fetchClient.get<Client>(
+    `Client/${id}`,
+  );
+  if (error) throw new Error(message || "Error fetching client");
+  if (!data) throw new Error("Client not found");
+  return data;
 }

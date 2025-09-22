@@ -18,15 +18,17 @@ function DialogTriggerButton({ children }: { children: React.ReactNode }) {
 }
 function DialogContentBox({
   title,
+  className,
   description,
   children,
 }: {
   title: string;
+  className?: string;
   description?: string;
   children: React.ReactNode;
 }) {
   return (
-    <DialogContent showCloseButton={false} dir="rtl">
+    <DialogContent showCloseButton={false} dir="rtl" className={className}>
       <DialogHeader dir="rtl" className="flex flex-row justify-between">
         <div>
           <DialogTitle>{title}</DialogTitle>

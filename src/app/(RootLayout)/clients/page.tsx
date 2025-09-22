@@ -91,7 +91,10 @@ async function ClientsTableData({
                   <Dialog.Trigger>
                     <Eye size={16} />
                   </Dialog.Trigger>
-                  <Dialog.Content title="تفاصيل العميل">
+                  <Dialog.Content
+                    title="تفاصيل العميل"
+                    className="container overflow-auto sm:max-w-fit"
+                  >
                     <ClientDetails clientId={client.id} />
                   </Dialog.Content>
                 </Dialog>
