@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchClientById } from "@/lib/data/clients";
 import { Client } from "@/types/client";
 import { orderColumns } from "@/types/order";
@@ -21,17 +21,27 @@ import { notFound } from "next/navigation";
 import { useRef } from "react";
 import Table from "../general/Table";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../ui/pagination";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { TableCell, TableRow } from "../ui/table";
 import { Separator } from "../ui/separator";
+import { TableCell, TableRow } from "../ui/table";
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const id = useRef(clientId);
+  const page = useRef(1);
   const {
     data: client,
     isLoading,
@@ -39,8 +49,11 @@ function ClientDetails({ clientId }: { clientId: number }) {
     error,
     refetch,
   } = useQuery<Client>({
-    queryKey: ["client", id],
-    queryFn: () => fetchClientById(id.current),
+    queryKey: ["client", id.current, page.current],
+    queryFn: () =>
+      fetchClientById(id.current, {
+        params: { page: page.current },
+      }),
     enabled: !!id,
   });
   if (isLoading)
@@ -60,23 +73,43 @@ function ClientDetails({ clientId }: { clientId: number }) {
     id.current = newId;
     refetch();
   }
+  function movePrev() {
+    if (page.current > 1) {
+      page.current -= 1;
+      refetch();
+    }
+  }
+  function moveNext() {
+    if (client && page.current < client.orders.totalPages) {
+      page.current += 1;
+      refetch();
+    }
+  }
+  function goToPage(pageNumber: number) {
+    if (client && pageNumber >= 1 && pageNumber <= client.orders.totalPages) {
+      page.current = pageNumber;
+      refetch();
+    }
+  }
   const isMainClient = !client.parentClient;
   const isBranchClient = !!client.parentClient;
   return (
     <>
       <Card>
-        <CardHeader className="flex items-center justify-between">
+        <CardHeader className="flex flex-col justify-between sm:flex-row">
           <CardTitle className="text-2xl">
             <User className="mr-2 inline" /> {client.name}
           </CardTitle>
           <Badge
-            variant={isMainClient ? "default" : "secondary"}
-            className="text-lg"
+            variant={isMainClient ? "outline" : "secondary"}
+            className="mr-auto bg-green-100 text-lg text-green-700"
           >
-            {isMainClient ? "عميل رئيسي" : "عميل فرعي"}
+            {isMainClient
+              ? `عميل رئيسي ${!client.isFromApp ? "(App User)" : ""}`
+              : "عميل فرعي"}
           </Badge>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           <div className="space-y-4">
             <div className="text-right">
               <div className="text-muted-foreground text-sm">
@@ -121,36 +154,40 @@ function ClientDetails({ clientId }: { clientId: number }) {
           </div>
           {/* Parent Client Info */}
           {isBranchClient && client.parentClient && (
-            <div className="col-span-1 mt-4 md:col-span-2">
-              <Card className="bg-muted/50">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center text-lg">
-                    <Building2 className="mr-2 h-5 w-5" />
-                    العميل الرئيسي
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center space-x-3 space-x-reverse">
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback>
-                        {client.parentClient.name.substring(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="text-right">
-                      <div className="font-medium">
-                        {client.parentClient.name}
-                      </div>
-                      <div className="text-muted-foreground text-sm">
-                        {client.parentClient.email}
-                      </div>
-                      <div className="text-muted-foreground text-sm">
-                        {client.parentClient.phone1}
-                      </div>
-                    </div>
+            <Card className="bg-green-100 text-green-700">
+              <CardHeader className="flex justify-between">
+                <CardTitle>{client.parentClient.name}</CardTitle>
+                <Badge className="bg-green-200 text-xs text-green-700">
+                  <User />
+                  العميل الرئيسي
+                </Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <h4>العنوان :</h4>
+                  <div className="font-medium">
+                    {client.parentClient.address}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <h4>البريد الإلكتروني :</h4>
+                  <div className="font-medium">{client.parentClient.email}</div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <h4>تاريخ فتح الحساب :</h4>
+                  <div className="font-medium">
+                    {Intl.DateTimeFormat("ar-EG", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    }).format(new Date(client.parentClient.createdDate))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           )}
         </CardContent>
         <CardFooter className="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -174,7 +211,8 @@ function ClientDetails({ clientId }: { clientId: number }) {
             </Select>
           ) : (
             <Button
-              variant="outline"
+              variant="default"
+              className="w-full bg-green-100 text-green-700 hover:bg-green-200"
               onClick={() => setId(client.parentClient!.id)}
             >
               <Users className="ml-2" />
@@ -191,50 +229,84 @@ function ClientDetails({ clientId }: { clientId: number }) {
           </Button>
         </CardFooter>
       </Card>
-      <ScrollArea dir="rtl">
-        <Table
-          columns={orderColumns}
-          renderData={client.orders.map((order) => (
-            <TableRow key={order.orderId}>
-              <TableCell>{order.orderId}</TableCell>
-              <TableCell>{order.serviceName}</TableCell>
-              <TableCell className="whitespace-wrap">
-                {Intl.DateTimeFormat("ar-EG", {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                }).format(new Date(order.createdAt))}
-              </TableCell>
-              <TableCell>{order.orderStatue}</TableCell>
-              <TableCell>{order.requiredChange}</TableCell>
-              <TableCell>
-                {Intl.NumberFormat("ar-EG", {
-                  style: "currency",
-                  currency: "EGP",
-                }).format(order.amount)}
-              </TableCell>
-              <TableCell>{order.note}</TableCell>
-              <TableCell>
-                <div className="flex gap-1">
-                  <Button variant="outline" size="sm">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        />
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+
+      <Table
+        columns={orderColumns}
+        renderData={client.orders.items.map((order) => (
+          <TableRow key={order.orderId}>
+            <TableCell>{order.orderId}</TableCell>
+            <TableCell>{order.serviceName}</TableCell>
+            <TableCell className="whitespace-wrap">
+              {Intl.DateTimeFormat("ar-EG", {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }).format(new Date(order.createdAt))}
+            </TableCell>
+            <TableCell>{order.orderStatue}</TableCell>
+            <TableCell>{order.requiredChange}</TableCell>
+            <TableCell>
+              {Intl.NumberFormat("ar-EG", {
+                style: "currency",
+                currency: "EGP",
+              }).format(order.amount)}
+            </TableCell>
+            <TableCell>{order.note}</TableCell>
+            <TableCell>
+              <div className="flex gap-1">
+                <Button variant="outline" size="sm">
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      />
+      {client.orders.totalPages > 0 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={movePrev} />
+            </PaginationItem>
+            {client.orders.pageNumber > 5 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            {Array.from({ length: client.orders.totalPages }).map(
+              (_, index) => (
+                <PaginationItem
+                  key={index}
+                  onClick={() => {
+                    goToPage(index + 1);
+                  }}
+                >
+                  <PaginationLink isActive={page.current === index + 1}>
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ),
+            )}
+            {client.orders.pageNumber < client.orders.totalPages - 4 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              <PaginationNext onClick={moveNext} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   );
 }

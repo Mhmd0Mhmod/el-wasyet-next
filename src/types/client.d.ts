@@ -8,10 +8,11 @@ interface ShortClient {
   email: string;
   address: string;
   createdDate: string;
+  isFromApp: boolean;
 }
 
 interface Client extends ShortClient {
   parentClient: Client | null;
   childClients: Client[];
-  orders: ShortOrder[];
+  orders: PaginatedResponse<ShortOrder>;
 }
