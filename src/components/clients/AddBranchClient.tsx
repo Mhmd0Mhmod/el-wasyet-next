@@ -10,6 +10,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { DialogClose } from "../ui/dialog";
 
 function AddBranchClient({
   onSubmit,
@@ -27,9 +28,11 @@ function AddBranchClient({
     },
   });
 
-  const handleSubmit = form.handleSubmit((data) => {
-    onSubmit(data);
-  });
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    form.handleSubmit(onSubmit)();
+  };
 
   return (
     <div className="bg-white p-6" dir="rtl">
@@ -67,10 +70,10 @@ function AddBranchClient({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="phone2"
+              name="phone1"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">رقم الهاتف 2</FormLabel>
+                  <FormLabel className="text-right">رقم الهاتف 1</FormLabel>
                   <FormControl>
                     <Input {...field} type="tel" className="text-right" />
                   </FormControl>
@@ -79,10 +82,10 @@ function AddBranchClient({
             />
             <FormField
               control={form.control}
-              name="phone1"
+              name="phone2"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-right">رقم الهاتف 1</FormLabel>
+                  <FormLabel className="text-right">رقم الهاتف 2</FormLabel>
                   <FormControl>
                     <Input {...field} type="tel" className="text-right" />
                   </FormControl>
@@ -105,13 +108,15 @@ function AddBranchClient({
           />
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-            >
-              إلغاء
-            </Button>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => form.reset()}
+              >
+                إلغاء
+              </Button>
+            </DialogClose>
             <Button type="submit">حفظ</Button>
           </div>
         </form>

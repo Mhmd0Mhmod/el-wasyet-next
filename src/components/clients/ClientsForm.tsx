@@ -2,11 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Form,
   FormControl,
   FormField,
@@ -15,14 +10,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
-import { customerFormSchema, CustomerFormValues } from "@/schema/client";
+import {
+  BranchClientValues,
+  customerFormSchema,
+  CustomerFormValues,
+} from "@/schema/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
-import { useState } from "react";
+import { Plus, User } from "lucide-react";
 import { useForm } from "react-hook-form";
+import Dialog from "../general/Dialog";
+import AddBranchClient from "./AddBranchClient";
+import BranchClientCard from "./BranchClientCard";
 
 interface CustomerFormProps {
   initialData?: Partial<CustomerFormValues>;
@@ -30,8 +29,6 @@ interface CustomerFormProps {
 }
 
 function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
-  const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
-
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
     defaultValues: {
@@ -41,13 +38,7 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
       phone2: initialData?.phone2 || "",
       address: initialData?.address || "",
       type: initialData?.type || "main",
-      additionalCustomer: {
-        fullName: "",
-        email: "",
-        phone1: "",
-        phone2: "",
-        address: "",
-      },
+      branchClients: initialData?.branchClients || [],
     },
   });
 
@@ -62,7 +53,18 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
   const handleCancel = () => {
     form.reset();
   };
+  const onAddBranchClient = (formData: BranchClientValues) => {
+    const branchClients = form.getValues("branchClients") || [];
+    form.setValue("branchClients", [...branchClients, formData]);
+    console.log(form.getValues("branchClients"));
+  };
+  const onRemoveBranchClient = (index: number) => {
+    const branchClients = form.getValues("branchClients") || [];
+    const updatedClients = branchClients.filter((_, i) => i !== index);
+    form.setValue("branchClients", updatedClients);
+  };
 
+  const branchClients = form.watch("branchClients") || [];
   const isLoading = form.formState.isSubmitting;
 
   return (
@@ -161,154 +163,42 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Gender Selection */}
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>نوع العميل</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      dir="rtl"
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      className="flex justify-center gap-8"
-                    >
-                      <div className="flex items-center gap-2">
-                        <RadioGroupItem value="main" id="main" />
-                        <Label htmlFor="main" className="cursor-pointer">
-                          رئيسي
-                        </Label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <RadioGroupItem value="branch" id="branch" />
-                        <Label htmlFor="branch" className="cursor-pointer">
-                          فرعي
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
-
-          {/* Collapsible Additional Customer Section */}
-          <Collapsible
-            open={isAdditionalOpen}
-            onOpenChange={setIsAdditionalOpen}
-          >
-            <CollapsibleTrigger asChild>
-              <Button type="button" variant="default" className="mb-3 w-full">
-                <Plus className="h-4 w-4" />
-                <span>إضافة عميل مفترض</span>
-                {isAdditionalOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
+          <Dialog>
+            <Dialog.Trigger>
+              <Button variant="outline" className="w-full">
+                <Plus className="ml-2" />
+                إضافة عميل فرعي
               </Button>
-            </CollapsibleTrigger>
-
-            <CollapsibleContent className="space-y-4 rounded-lg border bg-gray-50 p-4">
-              <h3 className="text-right text-lg font-medium text-gray-800">
-                بيانات العميل الإضافي
-              </h3>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="additionalCustomer.fullName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>الاسم الكامل</FormLabel>
-                      <FormControl>
-                        <Input placeholder="أدخل الاسم الكامل" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="additionalCustomer.email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>البريد الإلكتروني</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="أدخل البريد الإلكتروني"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافة عميل فرعي">
+              <div className="max-h-[60vh] overflow-auto">
+                <AddBranchClient onSubmit={onAddBranchClient} />
               </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="additionalCustomer.phone1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>رقم الهاتف 1</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="tel"
-                          placeholder="أدخل رقم الهاتف الأول"
-                          className="text-right"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="additionalCustomer.phone2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>رقم الهاتف 2</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="tel"
-                          placeholder="أدخل رقم الهاتف الثاني"
-                          className="text-right"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            </Dialog.Content>
+          </Dialog>
+          {branchClients.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
+                  <User className="text-primary h-5 w-5" />
+                  العملاء الفرعيين ({branchClients.length})
+                </h3>
               </div>
+              <div className="grid gap-4">
+                {branchClients.map((client, index) => (
+                  <BranchClientCard
+                    key={index}
+                    client={client}
+                    index={index}
+                    onRemove={onRemoveBranchClient}
+                    isLoading={isLoading}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-              <FormField
-                control={form.control}
-                name="additionalCustomer.address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>العنوان</FormLabel>
-                    <FormControl>
-                      <Input placeholder="أدخل العنوان الكامل" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Action Buttons */}
           <div className="flex gap-4 pt-6">
             <Button
               type="submit"
