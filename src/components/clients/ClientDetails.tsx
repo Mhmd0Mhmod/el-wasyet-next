@@ -1,7 +1,6 @@
 "use client";
 import Error from "@/app/error";
 import Loading from "@/app/loading";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +15,7 @@ import { fetchClientById } from "@/lib/data/clients";
 import { Client } from "@/types/client";
 import { orderColumns } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
+import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useRef } from "react";
 import Table from "../general/Table";
@@ -38,6 +37,9 @@ import {
 } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { TableCell, TableRow } from "../ui/table";
+import AddBranchClient from "./AddBranchClient";
+import { BranchClientValues } from "@/schema/client";
+import Dialog from "../general/Dialog";
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const id = useRef(clientId);
@@ -91,6 +93,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
       refetch();
     }
   }
+  function onAddBranchClient(formData: BranchClientValues) {}
   const isMainClient = !client.parentClient;
   const isBranchClient = !!client.parentClient;
   return (
@@ -223,10 +226,19 @@ function ClientDetails({ clientId }: { clientId: number }) {
             orientation="vertical"
             className="hidden bg-transparent md:block"
           />
-          <Button>
-            <Plus className="ml-2" />
-            إضافة عميل متفرع
-          </Button>
+          <Dialog>
+            <Dialog.Trigger>
+              <Button className="w-full">
+                <Plus className="ml-2" />
+                إضافة عميل فرعي
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافة عميل فرعي">
+              <div className="max-h-[70vh] overflow-auto">
+                <AddBranchClient onSubmit={onAddBranchClient} />
+              </div>
+            </Dialog.Content>
+          </Dialog>
         </CardFooter>
       </Card>
 

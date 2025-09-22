@@ -1,6 +1,16 @@
 import z from "zod";
 
-// Validation Schema
+const branchClientSchema = z.object({
+  fullName: z.string().optional(),
+  email: z
+    .string()
+    .email({ message: "البريد الإلكتروني غير صحيح" })
+    .optional()
+    .or(z.literal("")),
+  phone1: z.string().optional(),
+  phone2: z.string().optional(),
+  address: z.string().optional(),
+});
 const customerFormSchema = z.object({
   fullName: z
     .string()
@@ -26,23 +36,10 @@ const customerFormSchema = z.object({
   type: z.enum(["main", "branch"], {
     message: "يجب اختيار النوع",
   }),
-  // Additional customer fields
-  additionalCustomer: z
-    .object({
-      fullName: z.string().optional(),
-      email: z
-        .string()
-        .email({ message: "البريد الإلكتروني غير صحيح" })
-        .optional()
-        .or(z.literal("")),
-      phone1: z.string().optional(),
-      phone2: z.string().optional(),
-      address: z.string().optional(),
-    })
-    .optional(),
+  branchClients: z.array(branchClientSchema).optional(),
 });
 
 type CustomerFormValues = z.infer<typeof customerFormSchema>;
-
-export { customerFormSchema };
-export type { CustomerFormValues };
+type BranchClientValues = z.infer<typeof branchClientSchema>;
+export { customerFormSchema, branchClientSchema };
+export type { CustomerFormValues, BranchClientValues };
