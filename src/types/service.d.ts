@@ -2,7 +2,7 @@ interface Service {
   id: number;
   name: string;
   defaultFees: number;
-  banktFees: number;
+  bankFees: number;
   validityPeriodDays: number;
   isCertificate: boolean;
   suspended: boolean;

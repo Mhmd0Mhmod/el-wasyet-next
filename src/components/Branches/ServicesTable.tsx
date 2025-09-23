@@ -31,7 +31,7 @@ function ServicesTable({ services }: { services: Service[] }) {
             {Intl.NumberFormat("ar-EG", {
               style: "currency",
               currency: "EGP",
-            }).format(service.banktFees)}
+            }).format(service.bankFees)}
           </TableCell>
           <TableCell>
             <div className="flex items-center gap-2">

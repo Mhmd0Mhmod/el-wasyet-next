@@ -88,7 +88,7 @@ async function ServicesTable({
               {Intl.NumberFormat("ar-EG", {
                 style: "currency",
                 currency: "EGP",
-              }).format(service.banktFees)}
+              }).format(service.bankFees)}
             </TableCell>
             <TableCell>{service.validityPeriodDays} ايام</TableCell>
             <TableCell>{service.expiryPeriodYears} سنوات</TableCell>
@@ -99,7 +99,7 @@ async function ServicesTable({
                     <Eye size={20} />
                   </Button>
                 </Dialog.Trigger>
-                <Dialog.Content title="تفاصيل الخدمة">
+                <Dialog.Content title="تفاصيل الخدمة" className="sm:max-w-2xl">
                   <ServiceDetails service={service} />
                 </Dialog.Content>
               </Dialog>

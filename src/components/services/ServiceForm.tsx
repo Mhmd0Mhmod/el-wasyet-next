@@ -106,7 +106,12 @@ function ServiceForm({
     },
     [form.control],
   );
-
+  const overheadType = (index: number) => {
+    if (form.getValues(`overheads.${index}.penalty`)) return "penalty";
+    if (form.getValues(`overheads.${index}.forms`)) return "forms";
+    if (form.getValues(`overheads.${index}.adminFees`)) return "adminFees";
+    return "اختر نوع التكلفة";
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -187,6 +192,7 @@ function ServiceForm({
                   <div key={field.id} className="flex gap-2">
                     <FormComponent
                       name={`documents.${index}.description`}
+                      className="flex-1"
                       render={({ field }) => (
                         <Input
                           type="text"
@@ -385,6 +391,7 @@ function ServiceForm({
                         onValueChange={(
                           value: "penalty" | "forms" | "adminFees",
                         ) => onSelectFormChange(value, index)}
+                        value={overheadType(index)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="نوع التكلفة" />
