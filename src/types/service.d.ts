@@ -33,4 +33,21 @@ interface ServiceOverhead {
   formTypeID: number | null;
 }
 
-export type { Service, ServiceDocument, ServiceWorkflow, ServiceOverhead };
+type ShortWorkFlow = {
+  id: number;
+  name: string;
+  defaultSequence: number;
+};
+type ServiceForm = {
+  id: number;
+  name: stirng;
+  value: number;
+};
+export type {
+  Service,
+  ServiceForm,
+  ServiceDocument,
+  ServiceWorkflow,
+  ServiceOverhead,
+  ShortWorkFlow,
+};

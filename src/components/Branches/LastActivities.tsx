@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { ACTIVITIES_DATA } from "@/lib/data/branch-last-activity";
+import { ACTIVITIES_DATA } from "@/data/branch-last-activity";
 
 function LastActivities() {
   return (
@@ -7,9 +7,9 @@ function LastActivities() {
       {ACTIVITIES_DATA.map((activity) => (
         <div
           key={activity.id}
-          className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+          className="flex items-center justify-between rounded-lg bg-gray-50 p-4"
         >
-          <div className="text-right space-y-1">
+          <div className="space-y-1 text-right">
             <h3 className="font-medium text-gray-900">{activity.title}</h3>
             <p className="text-sm text-gray-500">{activity.time}</p>
           </div>

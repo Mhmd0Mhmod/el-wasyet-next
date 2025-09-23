@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import { ServicesTableHeaders } from "@/lib/data/branch-services";
+import { ServicesTableHeaders } from "@/data/branch-services";
 import { Service } from "@/types/service";
 import { Edit2, Eye } from "lucide-react";
 import Table from "../general/Table";

@@ -3,7 +3,7 @@ import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getBranches } from "@/lib/data/branches";
+import { getBranches } from "@/data/branches";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";

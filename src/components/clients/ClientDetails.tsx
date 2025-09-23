@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fetchClientById } from "@/lib/data/clients";
+import { fetchClientById } from "@/data/clients";
 import { Client } from "@/types/client";
 import { orderColumns } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";

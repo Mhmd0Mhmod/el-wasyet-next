@@ -7,7 +7,7 @@ import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { fetchClients } from "@/lib/data/clients";
+import { fetchClients } from "@/data/clients";
 import { defaults } from "@/lib/utils";
 import { Eye, Plus } from "lucide-react";
 import { Suspense } from "react";

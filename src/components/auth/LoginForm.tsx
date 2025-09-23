@@ -30,6 +30,11 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   function onSubmit(data: LoginFormValues) {
+    const branchId = data.branchId;
+    if (!branchId) {
+      form.setError("branchId", { message: "يجب اختيار فرع" });
+      return;
+    }
     setIsLoading(true);
     Login(data)
       .then((res) => {

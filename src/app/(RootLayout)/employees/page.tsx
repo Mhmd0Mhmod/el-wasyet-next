@@ -7,7 +7,7 @@ import TableSkeleton from "@/components/general/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getEmployees } from "@/lib/data/employee";
+import { getEmployees } from "@/data/employee";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Edit, Eye, Plus, X, XCircle } from "lucide-react";
 import { Suspense } from "react";

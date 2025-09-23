@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { getBranchById } from "@/lib/data/branches";
+import { getBranchById } from "@/data/branches";
 import { CheckCircle, Clock, Edit2, MapPin, Phone, User } from "lucide-react";
 import { notFound } from "next/navigation";
 

@@ -1,6 +1,6 @@
-import { Branch } from "../../types/branch";
-import { fetchClient } from "../fetch";
-import { defaults } from "../utils";
+import { Branch } from "../types/branch";
+import { fetchClient } from "../lib/fetch";
+import { defaults } from "../lib/utils";
 
 export async function getBranches({
   search,
