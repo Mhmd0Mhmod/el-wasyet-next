@@ -31,3 +31,12 @@ export async function getEmployees({
     }
   );
 }
+
+
+export async function getManagers(): Promise<ShortManager[]> {
+  const { data, error, message, success } = await fetchClient.get<ShortManager[]>(
+    "Employee/managers",
+  );
+  if (!success || error) throw new Error(message);
+  return data || [];
+}

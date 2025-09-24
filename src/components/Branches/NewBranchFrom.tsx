@@ -22,21 +22,42 @@ import { BranchFormData, branchSchema } from "@/schema/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { DialogClose } from "../ui/dialog";
+import { createBranch, updateBranch } from "@/actions/branches/actions";
+import { toast } from "sonner";
+import { useManagers } from "@/hooks/useManagers";
 
 function NewBranchFrom({ branch }: { branch?: Branch }) {
+  const { data: managers, isLoading: isLoadingManagers } = useManagers();
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchSchema),
     defaultValues: {
-      branchName: branch ? branch.name : "",
-      managerName: branch ? branch.managerName : "",
+      name: branch ? branch.name : "",
+      managerId: branch ? branch.managerId.toString() : null,
       telephone: branch ? branch.telephone || "" : "",
       email: branch ? branch.email : "",
       address: branch ? branch.address : "",
     },
   });
-
   const onSubmit = (data: BranchFormData) => {
-    console.log(data);
+    if (branch) {
+      updateBranch(branch.id, data).then((res) => {
+        if (res.success) {
+          form.reset();
+          toast.success("تم تعديل الفرع بنجاح");
+        } else {
+          toast.error(res.message);
+        }
+      });
+    } else {
+      createBranch(data).then((res) => {
+        if (res.success) {
+          form.reset();
+          toast.success("تم إضافة الفرع بنجاح");
+        } else {
+          toast.error(res.message);
+        }
+      });
+    }
   };
 
   return (
@@ -46,7 +67,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="branchName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right">اسم الفرع</FormLabel>
@@ -64,19 +85,21 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
 
             <FormField
               control={form.control}
-              name="managerName"
+              name="managerId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right">مدير الفرع</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value?.toString()}>
                       <SelectTrigger className="w-full text-right" dir="rtl">
                         <SelectValue placeholder="اختر مدير الفرع" />
                       </SelectTrigger>
                       <SelectContent dir="rtl">
-                        <SelectItem value="manager1">مدير 1</SelectItem>
-                        <SelectItem value="manager2">مدير 2</SelectItem>
-                        <SelectItem value="manager3">مدير 3</SelectItem>
+                        {managers?.map((manager) => (
+                          <SelectItem key={manager.id} value={manager.id.toString()}>
+                            {manager.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>

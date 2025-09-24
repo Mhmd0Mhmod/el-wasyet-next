@@ -6,6 +6,7 @@ export interface Branch {
   telephone: string;
   email: string;
   managerName: string;
+  managerId: number;
   suspended: boolean;
 }
 

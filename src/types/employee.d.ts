@@ -11,3 +11,7 @@ interface ShortEmployee {
   managerName: string | null;
   suspended: boolean;
 }
+type ShortManager = {
+  id: number;
+  name: string;
+}
