@@ -3,7 +3,7 @@ import { Client, ShortClient } from "@/types/client";
 import { authFetch } from "../lib/axios";
 import { defaults } from "../lib/utils";
 
-export async function authFetchClients({
+export async function getClients({
   search = "",
   page = 1,
 }: {
@@ -44,7 +44,7 @@ export async function authFetchClients({
   }
 }
 
-export async function authFetchClientById(
+export async function getClientById(
   id: number,
   {
     params = { page: 1 },

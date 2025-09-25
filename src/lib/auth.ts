@@ -53,20 +53,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
       authorize: async (credentials) => {
-        const parseResult = await loginFormSchema.parseAsync(credentials);
-        const { usernameOrEmail, branchId, password } = parseResult;
-        const response = await serverLogin({
-          usernameOrEmail,
-          branchId,
-          password,
-        });
+        try {
+          const parseResult = await loginFormSchema.parseAsync(credentials);
+          const { usernameOrEmail, branchId, password } = parseResult;
+          const response = await serverLogin({
+            usernameOrEmail,
+            branchId,
+            password,
+          });
 
-        if (!response || response.error || !response.data) {
-          console.log(response);
-
-          throw new CustomError(response?.message || "Login failed");
+          return response;
+        } catch (error) {
+          if (error instanceof AuthError) {
+            throw new CustomError(error.message);
+          }
+          if (error instanceof Error) {
+            throw new CustomError(error.message);
+          }
+          throw new CustomError("An unknown error occurred");
         }
-        return response.data;
       },
     }),
   ],

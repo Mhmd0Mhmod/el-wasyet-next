@@ -24,7 +24,7 @@ export async function serverLogin({
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || error.message);
+      throw new Error(error.response?.data?.error || error.message);
     }
     if (error instanceof Error) {
       throw new Error(error.message);

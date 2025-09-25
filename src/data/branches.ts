@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { authFetch } from "../lib/axios";
+import { authFetch, fetch } from "../lib/axios";
 import { defaults } from "../lib/utils";
 import { Branch, ShortBranch } from "../types/branch";
 
@@ -50,7 +50,7 @@ export async function getBranchById(id: string): Promise<Branch> {
 
 export async function getBranchesAuth(): Promise<ShortBranch[]> {
   try {
-    const { data } = await authFetch.get<ShortBranch[]>("Auth/branches");
+    const { data } = await fetch.get<ShortBranch[]>("Auth/branches");
     return data || [];
   } catch (error) {
     if (error instanceof AxiosError) {

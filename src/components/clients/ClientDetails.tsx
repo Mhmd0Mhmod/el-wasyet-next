@@ -11,13 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fetchClientById } from "@/data/clients";
+import { BranchClientValues } from "@/schema/client";
 import { Client } from "@/types/client";
 import { orderColumns } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useRef } from "react";
+import Dialog from "../general/Dialog";
 import Table from "../general/Table";
 import {
   Pagination,
@@ -38,8 +39,7 @@ import {
 import { Separator } from "../ui/separator";
 import { TableCell, TableRow } from "../ui/table";
 import AddBranchClient from "./AddBranchClient";
-import { BranchClientValues } from "@/schema/client";
-import Dialog from "../general/Dialog";
+import { getClientById } from "@/data/clients";
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const id = useRef(clientId);
@@ -53,7 +53,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
   } = useQuery<Client>({
     queryKey: ["client", id.current, page.current],
     queryFn: () =>
-      fetchClientById(id.current, {
+      getClientById(id.current, {
         params: { page: page.current },
       }),
     enabled: !!id,
