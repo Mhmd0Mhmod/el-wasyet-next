@@ -23,14 +23,22 @@ export async function createEmployee(body: EmployeeFormValues) {
     throw new Error("An unexpected error occurred");
   }
 }
-export async function updateEmployee(id: number, body: EmployeeFormValues) {
+export async function updateEmployee(body: EmployeeFormValues) {
   try {
     const parsedBody = await employeeFormSchema.parseAsync(body);
-    const { data } = await authFetch.put(`/Employee/${id}`, parsedBody);
+    const { data } = await authFetch.put(`Auth/edit/employee`, parsedBody);
     revalidatePath("/employees");
     return data;
   } catch (error) {
-    console.error("Error updating employee:", error);
-    throw error;
+    if (error instanceof AxiosError) {
+      console.error("Error updating employee:", error.response?.data);
+      throw new Error(
+        Object.values(error.response?.data?.errors || {})
+          .flat()
+          .join(" ") || error.message,
+      );
+    }
+    if (error instanceof Error) throw new Error(error?.message);
+    throw new Error("An unexpected error occurred");
   }
 }

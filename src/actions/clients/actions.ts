@@ -13,23 +13,23 @@ export async function createClient(data: ClientFormValues) {
     return res.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.error(error.response?.data);
-      throw new Error(error.response?.data?.error || error.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
     if (error instanceof Error) throw new Error(error.message);
     throw new Error("Unexpected Error");
   }
 }
 
-export async function updateClient(id: number, data: ClientFormValues) {
+export async function updateClient(data: ClientFormValues) {
   try {
     const body = await clientFormSchema.parseAsync(data);
-    const res = await authFetch.put(`/Auth/register/client/${id}`, body);
+    const res = await authFetch.put(`/Auth/edit/client`, body);
     revalidatePath("/clients");
     return res.data;
   } catch (error) {
-    if (error instanceof AxiosError)
-      throw new Error(error.response?.data?.error || error.message);
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
     if (error instanceof Error) throw new Error(error.message);
     throw new Error("Unexpected Error");
   }

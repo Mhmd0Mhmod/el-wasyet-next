@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useClient } from "@/hooks/useClient";
 import { cn } from "@/lib/utils";
 import {
   BranchClientValues,
@@ -20,36 +21,41 @@ import {
 import { Client } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, User } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Dialog from "../general/Dialog";
 import { DialogClose } from "../ui/dialog";
 import AddBranchClient from "./AddBranchClient";
 import BranchClientCard from "./BranchClientCard";
+import Loading from "@/app/loading";
 
 interface ClientFormProps {
-  initialData?: Partial<ClientFormValues> & Client;
+  clientId?: number;
 }
 
-function ClientForm({ initialData }: ClientFormProps) {
+function ClientForm({ clientId }: ClientFormProps) {
+  const { client, isLoading: isLoadingClient } = useClient(clientId!);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(clientFormSchema),
-    defaultValues: {
-      name: initialData?.name || "",
-      email: initialData?.email || "",
-      phone1: initialData?.phone1 || "",
-      phone2: initialData?.phone2 || "",
-      address: initialData?.address || "",
-      type: initialData?.type || "main",
-      childClients: initialData?.childClients || [],
-    },
+    defaultValues: generateDefaultValues(),
   });
+  useEffect(() => {
+    if (client?.id) {
+      form.reset(generateDefaultValues(client));
+    }
+  }, [client, form]);
+
+  if (isLoadingClient) {
+    return <Loading />;
+  }
 
   const handleSubmit = async (data: ClientFormValues) => {
-    if (initialData?.id) {
-      updateClient(initialData.id, data)
+    if (client?.id) {
+      console.log(data);
+      console.log(client);
+      updateClient(data)
         .then(() => toast.success("تم تحديث بيانات العميل بنجاح"))
         .catch((err) => toast.error(err.message));
     } else {
@@ -243,3 +249,23 @@ function ClientForm({ initialData }: ClientFormProps) {
 }
 
 export default ClientForm;
+
+function generateDefaultValues(client?: Client): ClientFormValues {
+  return {
+    id: client?.id ?? null,
+    name: client?.name ?? "",
+    email: client?.email ?? "",
+    phone1: client?.phone1 ?? "",
+    phone2: client?.phone2 ?? "",
+    address: client?.address ?? "",
+    childClients:
+      client?.childClients.map((child) => ({
+        id: child.id ?? null,
+        name: child.name ?? "",
+        email: child.email ?? "",
+        phone1: child.phone1 ?? "",
+        phone2: child.phone2 ?? "",
+        address: child.address ?? "",
+      })) ?? [],
+  };
+}

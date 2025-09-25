@@ -1,5 +1,5 @@
 import ClientDetails from "@/components/clients/ClientDetails";
-import CustomerForm from "@/components/clients/ClientsForm";
+import ClientForm from "@/components/clients/ClientsForm";
 import Dialog from "@/components/general/Dialog";
 import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getClients } from "@/data/clients";
 import { defaults } from "@/lib/utils";
-import { Eye, Plus } from "lucide-react";
+import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 
 async function page({
@@ -37,7 +37,7 @@ async function page({
               </Button>
             </Dialog.Trigger>
             <Dialog.Content title="إضافة عميل">
-              <CustomerForm />
+              <ClientForm />
             </Dialog.Content>
           </Dialog>
         </div>
@@ -85,8 +85,8 @@ async function ClientsTableData({
             <TableCell>
               {new Date(client.createdDate).toLocaleDateString()}
             </TableCell>
-            <TableCell>
-              <div>
+            <TableCell className="flex items-center gap-4">
+              <>
                 <Dialog>
                   <Dialog.Trigger>
                     <Eye size={16} />
@@ -100,7 +100,15 @@ async function ClientsTableData({
                     </div>
                   </Dialog.Content>
                 </Dialog>
-              </div>
+                <Dialog>
+                  <Dialog.Trigger>
+                    <Edit2 size={16} />
+                  </Dialog.Trigger>
+                  <Dialog.Content title="تفاصيل العميل">
+                    <ClientForm clientId={client.id} />
+                  </Dialog.Content>
+                </Dialog>
+              </>
             </TableCell>
           </TableRow>
         ))}

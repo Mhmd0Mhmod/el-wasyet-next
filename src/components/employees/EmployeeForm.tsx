@@ -71,7 +71,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
   const handleSubmit = async (data: EmployeeFormValues) => {
     if (disabled) return;
     if (employee?.id) {
-      updateEmployee(employee.id, data)
+      updateEmployee(data)
         .then(() => {
           toast.success("تم تحديث الموظف بنجاح");
         })
@@ -324,6 +324,7 @@ function generateDefaultValues(
   employee?: Partial<Employee>,
 ): EmployeeFormValues {
   return {
+    id: employee?.id ?? null,
     name: employee?.name || "",
     email: employee?.email || "",
     phone: employee?.phone || "",

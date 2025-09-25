@@ -1,6 +1,7 @@
 import z from "zod";
 
 const branchClientSchema = z.object({
+  id: z.number().optional(),
   name: z.string().optional(),
   email: z
     .string()
@@ -12,6 +13,7 @@ const branchClientSchema = z.object({
   address: z.string().optional(),
 });
 const clientFormSchema = z.object({
+  id: z.number().nullable().optional(),
   name: z
     .string()
     .min(2, { message: "الاسم الكامل يجب أن يحتوي على حرفين على الأقل" })
@@ -33,9 +35,6 @@ const clientFormSchema = z.object({
     .string()
     .min(5, { message: "العنوان يجب أن يحتوي على 5 أحرف على الأقل" })
     .max(200, { message: "العنوان يجب ألا يزيد عن 200 حرف" }),
-  type: z.enum(["main", "branch"], {
-    message: "يجب اختيار النوع",
-  }),
   childClients: z.array(branchClientSchema).optional(),
 });
 

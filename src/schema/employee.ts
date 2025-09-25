@@ -42,6 +42,7 @@ const VALIDATION_MESSAGES = {
 };
 
 const employeeFormSchema = z.object({
+  id: z.number().nullable().optional(),
   name: z
     .string()
     .min(2, { message: VALIDATION_MESSAGES.name.min })
@@ -66,7 +67,7 @@ const employeeFormSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, {
       message: VALIDATION_MESSAGES.userName.invalid,
     }),
-  password: z.string().min(6, { message: VALIDATION_MESSAGES.password.min }),
+  password: z.string().optional(),
   managerId: z.string().nullable(),
   suspended: z.boolean(),
   abilityIds: z
