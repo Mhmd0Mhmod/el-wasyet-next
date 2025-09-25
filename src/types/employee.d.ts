@@ -1,10 +1,12 @@
 interface Employee extends ShortEmployee {
+  roleId: string;
   abilityDTOs: Ability[];
 }
 interface ShortEmployee {
   id: number;
   name: string;
   role: string;
+
   userName: string;
   phone: string;
   email: string;
@@ -14,4 +16,4 @@ interface ShortEmployee {
 type ShortManager = {
   id: number;
   name: string;
-}
+};

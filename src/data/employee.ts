@@ -77,3 +77,18 @@ export async function getAbilitiesByRole(role: Role): Promise<Ability[]> {
     throw new Error("An unexpected error occurred while fetching abilities");
   }
 }
+
+export async function getEmployeeById(employeeId: number): Promise<Employee> {
+  try {
+    const { data } = await authFetch.get<Employee>(`Employee/${employeeId}`);
+    return data || null;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching employee");
+  }
+}

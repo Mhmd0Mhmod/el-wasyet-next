@@ -2,7 +2,11 @@ import { getAbilitiesByRole } from "@/data/employee";
 import { useQuery } from "@tanstack/react-query";
 
 function useAbilities(role: Role) {
-  const { data: abilities } = useQuery({
+  const {
+    data: abilities,
+    isFetching,
+    error,
+  } = useQuery({
     queryKey: ["abilities", role?.id, role?.name],
     queryFn: () =>
       getAbilitiesByRole({
@@ -12,6 +16,6 @@ function useAbilities(role: Role) {
     initialData: [],
     enabled: !!role?.id,
   });
-  return { abilities };
+  return { abilities, isLoading: isFetching, error };
 }
 export default useAbilities;

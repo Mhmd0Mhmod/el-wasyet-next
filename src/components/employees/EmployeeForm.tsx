@@ -21,29 +21,57 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "../ui/switch";
+import { useEffect } from "react";
+import { useEmployee } from "@/hooks/useEmployee";
+import Loading from "@/app/loading";
+import Spinner from "../general/Spinner";
 interface EmployeeFormProps {
-  initialData?: Partial<Employee>;
+  employeeId?: number;
   disabled?: boolean;
 }
 
-function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
+function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
+  const {
+    employee,
+    isLoading: isLoadingEmployee,
+    error: employeeError,
+  } = useEmployee(employeeId!);
   const form = useForm<EmployeeFormValues>({
     disabled,
     resolver: zodResolver(employeeFormSchema),
-    defaultValues: generateDefaultValues(initialData),
+    defaultValues: generateDefaultValues(employee),
   });
   const { data: managers } = useManagers();
-  const { roles } = useRoles();
+  const { roles, isLoading: isLoadingRoles, error: rolesError } = useRoles();
   const currentRole = form.watch("roleId");
   const role = roles?.find((r) => r.id.toString() === currentRole);
-  const { abilities } = useAbilities(role!);
+  const { abilities, isLoading: isLoadingAbilities } = useAbilities(role!);
 
+  useEffect(() => {
+    if (employee?.id) {
+      form.reset(generateDefaultValues(employee));
+    }
+  }, [employee, form]);
+  useEffect(() => {
+    if (employee?.id && abilities.length) {
+      form.setValue(
+        "abilityIds",
+        employee.abilityDTOs.map((el) => el.id),
+      );
+    }
+  }, [employee, form, abilities]);
+  console.log(form.getValues(), abilities);
+
+  if (isLoadingEmployee || isLoadingRoles) {
+    return <Loading />;
+  }
+  if (employeeError || rolesError) {
+    throw new Error(employeeError?.message || rolesError?.message);
+  }
   const handleSubmit = async (data: EmployeeFormValues) => {
     if (disabled) return;
-    // console.log("Form submitted:", data);
-    // return;
-    if (initialData?.id) {
-      updateEmployee(initialData.id, data)
+    if (employee?.id) {
+      updateEmployee(employee.id, data)
         .then(() => {
           toast.success("تم تحديث الموظف بنجاح");
         })
@@ -59,8 +87,12 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
     }
   };
 
-  const isLoading = form.formState.isLoading || form.formState.isSubmitting;
-  const submitButtonText = initialData?.id ? "تحديث الموظف" : "إضافة موظف";
+  const isLoading =
+    form.formState.isLoading ||
+    form.formState.isSubmitting ||
+    isLoadingAbilities;
+
+  const submitButtonText = employee?.id ? "تحديث الموظف" : "إضافة موظف";
 
   const handleAbilityChange = (
     abilityId: number,
@@ -68,8 +100,6 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
     field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
   ) => {
     const currentAbilities = form.getValues("abilityIds") || [];
-    console.log(currentAbilities);
-
     if (checked) {
       const abilityToAdd = abilities?.find((a) => a.id === abilityId);
       if (abilityToAdd) {
@@ -88,7 +118,7 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
   const FormFieldWrapper = createFormField<EmployeeFormValues>(form);
   const disabledManagers =
     form.watch("roleId") === "" ||
-    form.watch("roleId") === roles[0]?.id.toString(); // Set to true as per requirements
+    form.watch("roleId") === roles[0]?.id.toString();
   return (
     <div dir="rtl" className="mx-auto max-w-4xl">
       <Form {...form}>
@@ -224,7 +254,7 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
             name="abilityIds"
             render={({ field }) => (
               <div className="flex flex-wrap gap-6">
-                {abilities.length > 0 ? (
+                {abilities.length > 0 &&
                   abilities.map((permission) => {
                     return (
                       <div
@@ -254,15 +284,21 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
                         </Label>
                       </div>
                     );
-                  })
-                ) : !role ? (
+                  })}
+                {!role && (
                   <p className="text-sm text-gray-500">
                     يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.
                   </p>
-                ) : (
+                )}
+                {abilities.length == 0 && role && !isLoadingAbilities && (
                   <p className="text-sm text-gray-500">
                     لا توجد صلاحيات متاحة لهذه الوظيفه.
                   </p>
+                )}
+                {isLoadingAbilities && (
+                  <div className="flex w-full items-center justify-center p-2">
+                    <Spinner />
+                  </div>
                 )}
               </div>
             )}
@@ -285,17 +321,17 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
 export default EmployeeForm;
 
 function generateDefaultValues(
-  initialData?: Partial<Employee>,
+  employee?: Partial<Employee>,
 ): EmployeeFormValues {
   return {
-    name: initialData?.name || "",
-    email: initialData?.email || "",
-    phone: initialData?.phone || "",
-    roleId: initialData?.role || "",
+    name: employee?.name || "",
+    email: employee?.email || "",
+    phone: employee?.phone || "",
+    roleId: employee?.roleId || "",
     password: "",
-    userName: initialData?.userName || "",
-    managerId: initialData?.managerName || null,
-    suspended: initialData?.suspended ?? false,
-    abilityIds: initialData?.abilityDTOs?.map((a) => a.id) || [],
+    userName: employee?.userName || "",
+    managerId: employee?.managerName || null,
+    suspended: employee?.suspended ?? false,
+    abilityIds: employee?.abilityDTOs?.map((a) => a.id) || [],
   };
 }

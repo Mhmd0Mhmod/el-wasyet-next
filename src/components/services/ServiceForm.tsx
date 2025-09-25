@@ -127,7 +127,7 @@ function ServiceForm({
               />
               <FormComponent
                 name="validityPeriodDays"
-                label="فترة الصلاحية (بالأيام)"
+                label="مده الخدمه (بالأيام)"
                 render={({ field }) => (
                   <Input
                     type="number"
@@ -138,7 +138,7 @@ function ServiceForm({
               />
               <FormComponent
                 name="expiryPeriodYears"
-                label="فترة الانتهاء (بالسنوات)"
+                label="فترة الصلاحية (بالسنوات)"
                 render={({ field }) => (
                   <Input
                     type="number"

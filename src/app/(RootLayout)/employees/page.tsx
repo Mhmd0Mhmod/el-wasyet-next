@@ -116,7 +116,7 @@ async function EmployeesTable({
                   </Dialog.Trigger>
                   <Dialog.Content title="تفاصيل موظف">
                     <div className="max-h-[80vh] overflow-y-auto">
-                      <EmployeeForm initialData={employee} disabled />
+                      <EmployeeForm employeeId={employee.id} disabled />
                     </div>
                   </Dialog.Content>
                 </Dialog>
@@ -128,7 +128,7 @@ async function EmployeesTable({
                   </Dialog.Trigger>
                   <Dialog.Content title="تعديل موظف">
                     <div className="max-h-[80vh] overflow-y-auto">
-                      <EmployeeForm initialData={employee} />
+                      <EmployeeForm employeeId={employee.id} />
                     </div>
                   </Dialog.Content>
                 </Dialog>
