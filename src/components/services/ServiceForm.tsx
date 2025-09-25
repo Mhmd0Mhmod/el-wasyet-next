@@ -2,11 +2,11 @@
 import { createService, updateService } from "@/actions/services/actions";
 import { useFormsServices } from "@/hooks/useFormsServices";
 import { generateServieSchema, ServiceValues } from "@/schema/service";
-import { Service, ServiceWorkflow, ShortWorkFlow } from "@/types/service";
+import { Service, ShortWorkFlow } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import { useCallback } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { ControllerRenderProps, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createFormField } from "../general/FormComponent";
 import { Button } from "../ui/button";
@@ -52,6 +52,16 @@ function ServiceForm({
     control: form.control,
     name: "overheads",
   });
+
+  function handleNumberInputChange(
+    field: ControllerRenderProps<ServiceValues>,
+  ) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      const numericValue = value === "" ? "" : Number(value);
+      field.onChange(numericValue);
+    };
+  }
 
   const onSubmit = (data: ServiceValues) => {
     console.log(data);
@@ -108,21 +118,33 @@ function ServiceForm({
                 name="defaultFees"
                 label="السعر الصافي للخدمة"
                 render={({ field }) => (
-                  <Input type="text" pattern="[0-9]*" {...field} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={handleNumberInputChange(field)}
+                  />
                 )}
               />
               <FormComponent
                 name="validityPeriodDays"
                 label="فترة الصلاحية (بالأيام)"
                 render={({ field }) => (
-                  <Input type="text" pattern="[0-9]*" {...field} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={handleNumberInputChange(field)}
+                  />
                 )}
               />
               <FormComponent
                 name="expiryPeriodYears"
                 label="فترة الانتهاء (بالسنوات)"
                 render={({ field }) => (
-                  <Input type="number" placeholder="0" {...field} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={handleNumberInputChange(field)}
+                  />
                 )}
               />
               <FormComponent

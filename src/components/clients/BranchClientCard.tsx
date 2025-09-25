@@ -18,7 +18,7 @@ function BranchClientCard({
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-2">
             <User className="text-primary h-4 w-4" />
-            <h4 className="font-semibold text-gray-900">{client.fullName}</h4>
+            <h4 className="font-semibold text-gray-900">{client.name}</h4>
           </div>
 
           <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
