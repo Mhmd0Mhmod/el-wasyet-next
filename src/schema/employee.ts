@@ -52,7 +52,7 @@ const employeeFormSchema = z.object({
     .min(10, { message: VALIDATION_MESSAGES.phone.min })
     .max(15, { message: VALIDATION_MESSAGES.phone.max })
     .regex(/^[\d+\-\s()]+$/, { message: VALIDATION_MESSAGES.phone.invalid }),
-  role: z
+  roleId: z
     .string()
     .min(2, { message: VALIDATION_MESSAGES.role.min })
     .max(50, { message: VALIDATION_MESSAGES.role.max }),
@@ -63,19 +63,15 @@ const employeeFormSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, {
       message: VALIDATION_MESSAGES.userName.invalid,
     }),
-  managerName: z
-    .string()
-    .min(2, { message: VALIDATION_MESSAGES.managerName.min })
-    .max(100, { message: VALIDATION_MESSAGES.managerName.max })
-    .nullable(),
+  managerId: z.string().nullable(),
   suspended: z.boolean(),
-  abilityDTOs: z
-    .array(z.object({ id: z.string(), abilityName: z.string() }))
+  abilityIds: z
+    .array(z.number())
     .min(1, { message: VALIDATION_MESSAGES.abilities.min }),
 });
 
 type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
 
-export { PERMISSIONS_OPTIONS, VALIDATION_MESSAGES, employeeFormSchema };
+export { employeeFormSchema, PERMISSIONS_OPTIONS, VALIDATION_MESSAGES };
 
 export type { EmployeeFormValues };

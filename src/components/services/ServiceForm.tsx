@@ -1,26 +1,18 @@
 "use client";
+import { createService, updateService } from "@/actions/services/actions";
 import { useFormsServices } from "@/hooks/useFormsServices";
 import { generateServieSchema, ServiceValues } from "@/schema/service";
 import { Service, ServiceWorkflow, ShortWorkFlow } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
-import {
-  FieldValues,
-  useFieldArray,
-  useForm,
-  FieldPath,
-} from "react-hook-form";
+import { useCallback } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { createFormField } from "../general/FormComponent";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -30,7 +22,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "../ui/switch";
-import { useCallback } from "react";
 function ServiceForm({
   service,
   workFlows,
@@ -64,54 +55,40 @@ function ServiceForm({
 
   const onSubmit = (data: ServiceValues) => {
     console.log(data);
-  };
-  const onSelectFormChange = (
-    value: "penalty" | "forms" | "adminFees",
-    idx: number,
-  ) => {
-    form.setValue(`overheads.${idx}.penalty`, false);
-    form.setValue(`overheads.${idx}.forms`, false);
-    form.setValue(`overheads.${idx}.adminFees`, false);
-    form.setValue(`overheads.${idx}.${value}`, true);
-    if (form.getValues(`overheads.${idx}.forms`) === false) {
-      form.setValue(`overheads.${idx}.formTypeID`, null);
+
+    if (service) {
+      updateService(data, service.id)
+        .then(() => toast.success("تم تعديل الخدمة بنجاح"))
+        .catch((err) => toast.error(err.message));
+    } else {
+      createService(data)
+        .then(() => {
+          toast.success("تم إضافة الخدمة بنجاح");
+          form.reset();
+        })
+        .catch((err) => toast.error(err.message));
     }
   };
-
-  const FormComponent = useCallback(
-    ({
-      className,
-      label,
-      name,
-      render,
-    }: {
-      className?: string;
-      label?: string;
-      name: FieldPath<ServiceValues>;
-      render: ({ field }: { field: FieldValues }) => React.ReactNode;
-    }) => {
-      return (
-        <FormField
-          name={name}
-          control={form.control}
-          render={({ field }) => (
-            <FormItem className={className}>
-              {label && <FormLabel>{label}</FormLabel>}
-              <FormControl>{render({ field })}</FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      );
+  const onSelectFormChange = useCallback(
+    (value: "penalty" | "forms" | "adminFees", idx: number) => {
+      form.setValue(`overheads.${idx}.penalty`, false);
+      form.setValue(`overheads.${idx}.forms`, false);
+      form.setValue(`overheads.${idx}.adminFees`, false);
+      form.setValue(`overheads.${idx}.${value}`, true);
+      if (form.getValues(`overheads.${idx}.forms`) === false) {
+        form.setValue(`overheads.${idx}.formTypeID`, null);
+      }
     },
-    [form.control],
+    [form],
   );
+
   const overheadType = (index: number) => {
     if (form.getValues(`overheads.${index}.penalty`)) return "penalty";
     if (form.getValues(`overheads.${index}.forms`)) return "forms";
     if (form.getValues(`overheads.${index}.adminFees`)) return "adminFees";
     return "اختر نوع التكلفة";
   };
+  const FormComponent = createFormField<ServiceValues>(form);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -138,24 +115,14 @@ function ServiceForm({
                 name="validityPeriodDays"
                 label="فترة الصلاحية (بالأيام)"
                 render={({ field }) => (
-                  <Input
-                    type="text"
-                    pattern="[0-9]*"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
+                  <Input type="text" pattern="[0-9]*" {...field} />
                 )}
               />
               <FormComponent
                 name="expiryPeriodYears"
                 label="فترة الانتهاء (بالسنوات)"
                 render={({ field }) => (
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
+                  <Input type="number" placeholder="0" {...field} />
                 )}
               />
               <FormComponent
@@ -227,11 +194,9 @@ function ServiceForm({
                     key={workflow.id}
                     name="workflows"
                     render={({ field }) => {
-                      const selectedWorkflow: ServiceWorkflow | undefined =
-                        field.value.find(
-                          (w: ServiceWorkflow) =>
-                            w.orderStatusId === workflow.id,
-                        );
+                      const selectedWorkflow = field.value.find(
+                        (w) => w.orderStatusId === workflow.id,
+                      );
                       const isSelected = !!selectedWorkflow;
                       return (
                         <div className="flex items-center space-x-3 rounded border p-3">

@@ -1,259 +1,235 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  employeeFormSchema,
-  EmployeeFormValues,
-  PERMISSIONS_OPTIONS,
-} from "@/schema/employee";
+import useAbilities from "@/hooks/useAbilities";
+import { useRoles } from "@/hooks/useRoles";
+import { employeeFormSchema, EmployeeFormValues } from "@/schema/employee";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { DialogClose } from "../ui/dialog";
+import { ControllerRenderProps, useForm } from "react-hook-form";
+import { createFormField } from "../general/FormComponent";
 import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Switch } from "../ui/switch";
+import { createEmployee, updateEmployee } from "@/actions/employee/actions";
+import { toast } from "sonner";
+import { useManagers } from "@/hooks/useManagers";
 interface EmployeeFormProps {
   initialData?: Partial<Employee>;
   disabled?: boolean;
-  onSubmit?: (data: EmployeeFormValues) => Promise<void>;
-  onCancel?: () => void;
 }
 
-function EmployeeForm({
-  initialData,
-  disabled = false,
-  onSubmit,
-  onCancel,
-}: EmployeeFormProps) {
+function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
   const form = useForm<EmployeeFormValues>({
-    mode: "onChange",
     disabled,
     resolver: zodResolver(employeeFormSchema),
-    defaultValues: {
-      name: initialData?.name || "",
-      email: initialData?.email || "",
-      phone: initialData?.phone || "",
-      role: initialData?.role || "",
-      userName: initialData?.userName || "",
-      managerName: initialData?.managerName || "",
-      suspended: initialData?.suspended ?? false,
-      abilityDTOs: initialData?.abilityDTOs || [],
-    },
+    defaultValues: generateDefaultValues(initialData),
   });
+  const { data: managers } = useManagers();
+  const { roles } = useRoles();
+  const currentRole = form.watch("roleId");
+  const role = roles?.find((r) => r.id.toString() === currentRole);
+  const { abilities } = useAbilities(role!);
 
   const handleSubmit = async (data: EmployeeFormValues) => {
-    try {
-      await onSubmit?.(data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    if (disabled) return;
+    console.log(data);
+    if (initialData?.id) {
+      updateEmployee(initialData.id, data)
+        .then(() => {
+          toast.success("تم تحديث الموظف بنجاح");
+        })
+        .catch((err) => {
+          toast.error(err.message || "حدث خطأ أثناء تحديث الموظف");
+        });
+    } else {
+      createEmployee(data)
+        .then(() => toast.success("تم إضافة الموظف بنجاح"))
+        .catch((err) => {
+          toast.error(err.message || "حدث خطأ أثناء إضافة الموظف");
+        });
     }
-  };
-
-  const handleCancel = () => {
-    form.reset();
-    onCancel?.();
-  };
-
-  const handleAbilityChange = (
-    permission: (typeof PERMISSIONS_OPTIONS)[number],
-    checked: boolean,
-    currentValue: Ability[],
-  ) => {
-    return checked
-      ? [
-          ...currentValue,
-          { id: permission.id, abilityName: permission.abilityName },
-        ]
-      : currentValue.filter((ability) => ability.id !== permission.id);
   };
 
   const isLoading = form.formState.isLoading || form.formState.isSubmitting;
   const submitButtonText = initialData?.id ? "تحديث الموظف" : "إضافة موظف";
 
+  const handleAbilityChange = (
+    abilityId: number,
+    checked: boolean,
+    field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
+  ) => {
+    const currentAbilities = form.getValues("abilityIds") || [];
+    console.log(currentAbilities);
+
+    if (checked) {
+      const abilityToAdd = abilities?.find((a) => a.id === abilityId);
+      if (abilityToAdd) {
+        field.onChange([...currentAbilities, abilityToAdd.id]);
+      }
+    } else {
+      field.onChange(currentAbilities.filter((a) => a !== abilityId));
+    }
+  };
+  const FormFieldWrapper = createFormField<EmployeeFormValues>(form);
   return (
     <div dir="rtl" className="mx-auto max-w-4xl">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* Personal Information Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
+            <FormFieldWrapper
+              label="الاسم بالكامل"
               name="name"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>الاسم الكامل</FormLabel>
-                  <FormControl>
-                    <Input placeholder="أدخل الاسم الكامل" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Input placeholder="أدخل الاسم الكامل" {...field} />
               )}
             />
-
-            <FormField
-              control={form.control}
+            <FormFieldWrapper
               name="email"
+              label="البريد الالكتروني"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>البريد الإلكتروني</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="أدخل البريد الإلكتروني"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Input
+                  type="email"
+                  placeholder="أدخل البريد الإلكتروني"
+                  {...field}
+                />
               )}
             />
-
-            <FormField
-              control={form.control}
+            <FormFieldWrapper
               name="phone"
+              label="رقم الهاتف"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>رقم الهاتف</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="أدخل رقم الهاتف"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Input type="tel" placeholder="أدخل رقم الهاتف" {...field} />
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="role"
+            <FormFieldWrapper
+              label="الوظيفه"
+              name="roleId"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>الوظيفة</FormLabel>
-                  <FormControl>
-                    <Input placeholder="أدخل الوظيفة" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Select
+                  disabled={roles.length === 0}
+                  onValueChange={field.onChange}
+                  {...field}
+                  value={field.value}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={"اختار الوظيفه"} />
+                  </SelectTrigger>
+                  <SelectContent dir="rtl">
+                    {roles?.map((role) => (
+                      <SelectItem value={role.id?.toString()} key={role.id}>
+                        {role.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
-
-            <FormField
-              control={form.control}
+            <FormFieldWrapper
               name="userName"
+              label="اسم المستخدم"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>اسم المستخدم</FormLabel>
-                  <FormControl>
-                    <Input placeholder="أدخل اسم المستخدم" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Input placeholder="أدخل اسم المستخدم" {...field} />
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="managerName"
+            <FormFieldWrapper
+              name="managerId"
+              label="المدير المباشر"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>المدير المباشر</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="أدخل اسم المدير المباشر"
-                      {...field}
-                      value={field.value || ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Select
+                  onValueChange={field.onChange}
+                  {...field}
+                  value={field.value ?? undefined}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="اختار المدير المباشر" />
+                  </SelectTrigger>
+                  <SelectContent dir="rtl">
+                    {managers?.map((manager) => (
+                      <SelectItem
+                        value={manager.id?.toString()}
+                        key={manager.id}
+                      >
+                        {manager.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
           </div>
 
           {/* Status Section */}
-          <FormField
-            control={form.control}
+          <FormFieldWrapper
+            className="flex justify-between"
             name="suspended"
+            label={`حالة الموظف: ${form.watch("suspended") ? "متوقف" : "نشط"}`}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>حالة الموظف</FormLabel>
-                <FormControl>
-                  <RadioGroup dir="rtl">
-                    <div className="flex items-center gap-4">
-                      <RadioGroupItem
-                        value="active"
-                        disabled={disabled}
-                        checked={!field.value}
-                        onClick={() => field.onChange(false)}
-                        className="cursor-pointer"
-                      />
-                      <Label className="cursor-pointer text-sm">نشط</Label>
-
-                      <RadioGroupItem
-                        value="suspended"
-                        disabled={disabled}
-                        checked={field.value}
-                        onClick={() => field.onChange(true)}
-                        className="cursor-pointer"
-                      />
-                      <Label className="cursor-pointer text-sm">معلق</Label>
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+              <Switch
+                className="flex-row-reverse"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={field.disabled}
+              />
             )}
           />
 
           {/* Permissions Section */}
-          <FormField
-            control={form.control}
-            name="abilityDTOs"
+          <FormFieldWrapper
+            label="الصلاحيات"
+            name="abilityIds"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>الصلاحيات</FormLabel>
-                <FormControl>
-                  <div className="flex flex-wrap gap-6">
-                    {PERMISSIONS_OPTIONS.map((permission) => (
+              <div className="flex flex-wrap gap-6">
+                {abilities.length > 0 ? (
+                  abilities.map((permission) => {
+                    return (
                       <div
                         key={permission.id}
-                        className="flex items-center gap-2"
+                        className="flex flex-wrap items-center"
                       >
                         <Checkbox
-                          disabled={disabled}
-                          checked={field.value?.some(
-                            (ability) => ability.id === permission.id,
+                          checked={field.value.some(
+                            (ability) => ability === permission.id,
                           )}
-                          onCheckedChange={(checked) => {
-                            const updatedAbilities = handleAbilityChange(
-                              permission,
-                              !!checked,
-                              field.value || [],
-                            );
-                            field.onChange(updatedAbilities);
-                          }}
+                          id={permission.id.toString()}
+                          disabled={field.disabled}
+                          value={permission.id.toString()}
+                          onCheckedChange={(checked) =>
+                            handleAbilityChange(
+                              permission.id,
+                              checked as boolean,
+                              field,
+                            )
+                          }
                         />
-                        <Label className="cursor-pointer text-sm">
+                        <Label
+                          htmlFor={permission.id.toString()}
+                          className="mr-2"
+                        >
                           {permission.abilityName}
                         </Label>
                       </div>
-                    ))}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+                    );
+                  })
+                ) : !role ? (
+                  <p className="text-sm text-gray-500">
+                    يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    لا توجد صلاحيات متاحة لهذه الوظيفه.
+                  </p>
+                )}
+              </div>
             )}
           />
 
@@ -263,15 +239,6 @@ function EmployeeForm({
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? "جاري الحفظ..." : submitButtonText}
               </Button>
-              <DialogClose asChild>
-                <Button
-                  variant="outline"
-                  onClick={handleCancel}
-                  disabled={isLoading}
-                >
-                  إلغاء
-                </Button>
-              </DialogClose>
             </div>
           )}
         </form>
@@ -281,3 +248,18 @@ function EmployeeForm({
 }
 
 export default EmployeeForm;
+
+function generateDefaultValues(
+  initialData?: Partial<Employee>,
+): EmployeeFormValues {
+  return {
+    name: initialData?.name || "",
+    email: initialData?.email || "",
+    phone: initialData?.phone || "",
+    roleId: initialData?.role || "",
+    userName: initialData?.userName || "",
+    managerId: initialData?.managerName || null,
+    suspended: initialData?.suspended ?? false,
+    abilityIds: initialData?.abilityDTOs?.map((a) => a.id) || [],
+  };
+}

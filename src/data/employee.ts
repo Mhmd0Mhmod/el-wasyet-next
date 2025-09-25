@@ -1,4 +1,5 @@
-import { fetchClient } from "../lib/fetch";
+import { AxiosError } from "axios";
+import { authFetch } from "../lib/axios";
 import { defaults } from "../lib/utils";
 
 export async function getEmployees({
@@ -8,35 +9,71 @@ export async function getEmployees({
   search?: string | null;
   page?: number;
 } = {}): Promise<PaginatedResponse<ShortEmployee>> {
-  const { data, error, message, success } = await fetchClient.get<
-    PaginatedResponse<ShortEmployee>
-  >(`Employee/all`, {
-    query: {
-      search: search,
-      pageSize: defaults.pageSize,
-      pageIndex: page,
-    },
-  });
-  if (!success || error) throw new Error(message);
+  try {
+    const { data } = await authFetch.get<PaginatedResponse<ShortEmployee>>(
+      `Employee/all`,
+      {
+        params: {
+          search: search,
+          pageSize: defaults.pageSize,
+          pageIndex: page,
+        },
+      },
+    );
 
-  return (
-    data || {
-      items: [],
-      totalPages: 0,
-      pageSize: defaults.pageSize,
-      pageNumber: page,
-      hasNextPage: false,
-      hasPreviousPage: false,
-      totalRecords: 0,
+    return (
+      data || {
+        items: [],
+        totalPages: 0,
+        pageSize: defaults.pageSize,
+        pageNumber: page,
+        hasNextPage: false,
+        hasPreviousPage: false,
+        totalRecords: 0,
+      }
+    );
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
     }
-  );
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching employees");
+  }
 }
 
+export async function getRoles(): Promise<Role[]> {
+  try {
+    const { data } = await authFetch.get<Role[]>(`Auth/roles`);
+    return data || [];
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching roles");
+  }
+}
 
-export async function getManagers(): Promise<ShortManager[]> {
-  const { data, error, message, success } = await fetchClient.get<ShortManager[]>(
-    "Employee/managers",
-  );
-  if (!success || error) throw new Error(message);
-  return data || [];
+export async function getAbilitiesByRole(role: Role): Promise<Ability[]> {
+  try {
+    const { data } = await authFetch.get<Ability[]>(
+      `/Auth/abilities/for-role/${role.id}`,
+      {
+        params: { roleName: role.name },
+      },
+    );
+    return data || [];
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching abilities");
+  }
 }

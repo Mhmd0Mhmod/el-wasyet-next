@@ -60,6 +60,7 @@ async function BranchesTableData({
     search: searchParams.search || "",
     page: parseInt(searchParams.page || "1", 10),
   });
+
   return (
     <>
       <SearchInput title="ابحث عن فرع" />
@@ -72,7 +73,7 @@ async function BranchesTableData({
             <TableCell>{branch.managerName}</TableCell>
             <TableCell>{branch.email}</TableCell>
             <TableCell className="flex gap-2">
-              <Button asChild variant="outline">
+              <Button asChild variant="ghost">
                 <Link href={`/branches/${branch.id}`}>
                   <Eye />
                 </Link>
@@ -80,7 +81,7 @@ async function BranchesTableData({
               <NewBranch
                 branch={branch}
                 Trigger={() => (
-                  <Button variant="outline">
+                  <Button variant="ghost">
                     <Edit2 />
                   </Button>
                 )}

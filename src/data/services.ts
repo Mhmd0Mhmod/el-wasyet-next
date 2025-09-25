@@ -1,35 +1,67 @@
+import { AxiosError } from "axios";
 import { Service, ServiceForm, ShortWorkFlow } from "@/types/service";
-import { fetchClient } from "../lib/fetch";
+import { authFetch } from "../lib/axios";
 
 export async function getServices(params: { search?: string; page?: string }) {
-  const query = new URLSearchParams();
-  if (params.search) {
-    query.append("search", params.search);
-  }
-  if (params.page) {
-    query.append("page", params.page);
-  }
-  const response = await fetchClient.get<PaginatedResponse<Service>>(
-    "Service/all-services",
-  );
-  if (response.error || !response.data) {
-    throw new Error(response.message || "Failed to fetch services");
-  }
+  try {
+    const { data } = await authFetch.get<PaginatedResponse<Service>>(
+      "Service/all-services",
+      {
+        params: {
+          search: params.search,
+          page: params.page,
+        },
+      },
+    );
 
-  return response;
+    if (!data) {
+      throw new Error("Failed to fetch services");
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching services");
+  }
 }
 
 export async function getWorkFlows() {
-  const { data, error, message } = await fetchClient.get<ShortWorkFlow[]>(
-    "Service/GetDefaultStatus",
-  );
-  if (error || !data) throw new Error(message || "Failed to fetch workflows");
-  return data;
+  try {
+    const { data } = await authFetch.get<ShortWorkFlow[]>(
+      "Service/GetDefaultStatus",
+    );
+
+    if (!data) throw new Error("Failed to fetch workflows");
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching workflows");
+  }
 }
 
 export async function getForms() {
-  const { data, error, message } =
-    await fetchClient.get<ServiceForm[]>("Service/All-Forms");
-  if (error || !data) throw new Error(message || "Failed to fetch workflows");
-  return data;
+  try {
+    const { data } = await authFetch.get<ServiceForm[]>("Service/All-Forms");
+
+    if (!data) throw new Error("Failed to fetch forms");
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching forms");
+  }
 }

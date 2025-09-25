@@ -7,11 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { fetchClient } from "@/lib/fetch";
-import { ShortBranch } from "@/types/branch";
+import { getBranchesAuth } from "@/data/branches";
 async function Page() {
-  const { data: branches } =
-    await fetchClient.get<ShortBranch[]>("Auth/branches");
+  const branches = await getBranchesAuth();
 
   return (
     <div className="container flex min-h-screen flex-col items-center justify-center px-4">

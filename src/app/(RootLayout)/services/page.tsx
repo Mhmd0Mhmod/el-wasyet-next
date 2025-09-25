@@ -66,7 +66,7 @@ async function ServicesTable({
 }: {
   searchParams: { search?: string; page?: string };
 }) {
-  const { data } = await getServices(searchParams);
+  const data = await getServices(searchParams);
   const workFlows = await getWorkFlows();
 
   return (

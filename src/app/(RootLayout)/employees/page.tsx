@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getEmployees } from "@/data/employee";
 import { cn } from "@/lib/utils";
-import { CheckCircle, Edit, Eye, Plus, X, XCircle } from "lucide-react";
+import { CheckCircle, Edit, Eye, Plus, XCircle } from "lucide-react";
 import { Suspense } from "react";
 
 async function page({
@@ -71,7 +71,6 @@ async function EmployeesTable({
 }) {
   const {
     items: employees,
-    totalPages,
     pageSize,
     pageNumber,
     totalRecords,

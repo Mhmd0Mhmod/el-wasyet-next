@@ -1,5 +1,6 @@
 "use client";
 
+import { createBranch, updateBranch } from "@/actions/branches/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,22 +18,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Branch } from "@/types/branch";
+import { useManagers } from "@/hooks/useManagers";
 import { BranchFormData, branchSchema } from "@/schema/branch";
+import { Branch } from "@/types/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { DialogClose } from "../ui/dialog";
-import { createBranch, updateBranch } from "@/actions/branches/actions";
 import { toast } from "sonner";
-import { useManagers } from "@/hooks/useManagers";
+import { DialogClose } from "../ui/dialog";
 
 function NewBranchFrom({ branch }: { branch?: Branch }) {
-  const { data: managers, isLoading: isLoadingManagers } = useManagers();
+  const { data: managers } = useManagers();
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchSchema),
     defaultValues: {
       name: branch ? branch.name : "",
-      managerId: branch ? branch.managerId.toString() : null,
+      managerId: branch ? branch.managerId?.toString() : null,
       telephone: branch ? branch.telephone || "" : "",
       email: branch ? branch.email : "",
       address: branch ? branch.address : "",
@@ -40,23 +40,18 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
   });
   const onSubmit = (data: BranchFormData) => {
     if (branch) {
-      updateBranch(branch.id, data).then((res) => {
-        if (res.success) {
-          form.reset();
+      updateBranch(branch.id, data)
+        .then(() => {
           toast.success("تم تعديل الفرع بنجاح");
-        } else {
-          toast.error(res.message);
-        }
-      });
+        })
+        .catch((err) => toast.error(err.message));
     } else {
-      createBranch(data).then((res) => {
-        if (res.success) {
+      createBranch(data)
+        .then(() => {
           form.reset();
           toast.success("تم إضافة الفرع بنجاح");
-        } else {
-          toast.error(res.message);
-        }
-      });
+        })
+        .catch((err) => toast.error(err.message));
     }
   };
 
@@ -90,13 +85,19 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
                 <FormItem>
                   <FormLabel className="text-right">مدير الفرع</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value?.toString()}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value?.toString()}
+                    >
                       <SelectTrigger className="w-full text-right" dir="rtl">
                         <SelectValue placeholder="اختر مدير الفرع" />
                       </SelectTrigger>
                       <SelectContent dir="rtl">
                         {managers?.map((manager) => (
-                          <SelectItem key={manager.id} value={manager.id.toString()}>
+                          <SelectItem
+                            key={manager.id}
+                            value={manager.id.toString()}
+                          >
                             {manager.name}
                           </SelectItem>
                         ))}

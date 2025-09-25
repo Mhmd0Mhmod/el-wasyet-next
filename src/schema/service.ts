@@ -8,7 +8,6 @@ export const generateServieSchema = (workFlows: ShortWorkFlow[]) =>
     validityPeriodDays: z.number().min(0, "فترة الصلاحية يجب أن تكون موجبة"),
     expiryPeriodYears: z.number().min(0, "فترة الانتهاء يجب أن تكون موجبة"),
     isCertificate: z.boolean(),
-
     documents: z.array(
       z.object({
         description: z.string().min(1, "وصف الوثيقة مطلوب"),

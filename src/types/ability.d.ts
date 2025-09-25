@@ -1,4 +1,4 @@
 interface Ability {
-  id: string;
+  id: number;
   abilityName: string;
 }

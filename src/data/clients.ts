@@ -1,51 +1,69 @@
+import { AxiosError } from "axios";
 import { Client, ShortClient } from "@/types/client";
-import { fetchClient } from "../lib/fetch";
+import { authFetch } from "../lib/axios";
 import { defaults } from "../lib/utils";
 
-export async function fetchClients({
+export async function authFetchClients({
   search = "",
   page = 1,
 }: {
   search?: string;
   page?: number;
 } = {}): Promise<PaginatedResponse<ShortClient>> {
-  const { data, error, message } = await fetchClient.get<
-    PaginatedResponse<ShortClient>
-  >("Client/all", {
-    query: {
-      search,
-      pageIndex: page,
-      pageSize: defaults.pageSize,
-    },
-  });
+  try {
+    const { data } = await authFetch.get<PaginatedResponse<ShortClient>>(
+      "Client/all",
+      {
+        params: {
+          search,
+          pageIndex: page,
+          pageSize: defaults.pageSize,
+        },
+      },
+    );
 
-  if (error) throw new Error(message || "Error fetching clients");
-
-  return (
-    data || {
-      items: [],
-      totalRecords: 0,
-      pageNumber: 1,
-      pageSize: defaults.pageSize,
-      totalPages: 1,
-      hasNextPage: false,
-      hasPreviousPage: false,
+    return (
+      data || {
+        items: [],
+        totalPages: 0,
+        pageSize: defaults.pageSize,
+        pageNumber: page,
+        hasNextPage: false,
+        hasPreviousPage: false,
+        totalRecords: 0,
+      }
+    );
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
     }
-  );
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching clients");
+  }
 }
-export async function fetchClientById(
+
+export async function authFetchClientById(
   id: number,
   {
     params = { page: 1 },
   }: {
     params?: { page?: number };
-  },
+  } = {},
 ): Promise<Client> {
-  const { data, error, message } = await fetchClient.get<Client>(
-    `Client/${id}`,
-    { query: params },
-  );
-  if (error) throw new Error(message || "Error fetching client");
-  if (!data) throw new Error("Client not found");
-  return data;
+  try {
+    const { data } = await authFetch.get<Client>(`Client/${id}`, { params });
+
+    if (!data) throw new Error("Client not found");
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred while fetching client");
+  }
 }

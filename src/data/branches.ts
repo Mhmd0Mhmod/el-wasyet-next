@@ -1,6 +1,7 @@
-import { Branch } from "../types/branch";
-import { fetchClient } from "../lib/fetch";
+import { AxiosError } from "axios";
+import { authFetch } from "../lib/axios";
 import { defaults } from "../lib/utils";
+import { Branch, ShortBranch } from "../types/branch";
 
 export async function getBranches({
   search,
@@ -9,28 +10,71 @@ export async function getBranches({
   search?: string;
   page?: number;
 }): Promise<Branch[]> {
-  const { data, error, message } = await fetchClient.get<Branch[]>(
-    "Branch/all",
-    {
-      query: {
+  try {
+    console.log(authFetch.defaults.baseURL);
+    const { data } = await authFetch.get<Branch[]>("Branch/all", {
+      params: {
         search,
         page,
         pageSize: defaults.pageSize,
       },
-    },
-  );
-  if (error) {
-    throw new Error(message);
+    });
+    console.log(data);
+
+    return data || [];
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred");
   }
-  return data || [];
 }
 
-export async function getBranchById(id: string): Promise<Branch | null> {
-  const { data, error, message } = await fetchClient.get<Branch | null>(
-    `Branch/${id}`,
-  );
-  if (error) {
-    throw new Error(message);
+export async function getBranchById(id: string): Promise<Branch> {
+  try {
+    const { data } = await authFetch.get<Branch>(`Branch/${id}`);
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred");
   }
-  return data;
+}
+
+export async function getBranchesAuth(): Promise<ShortBranch[]> {
+  try {
+    const { data } = await authFetch.get<ShortBranch[]>("Auth/branches");
+    return data || [];
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+
+    throw new Error("An unexpected error occurred");
+  }
+}
+
+export async function getManagersBranches() {
+  try {
+    const { data } = await authFetch.get<ShortManager[]>("Employee/managers");
+    return data || [];
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
 }
