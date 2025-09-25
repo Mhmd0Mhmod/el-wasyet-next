@@ -1,7 +1,7 @@
 import z from "zod";
 
 const branchClientSchema = z.object({
-  fullName: z.string().optional(),
+  name: z.string().optional(),
   email: z
     .string()
     .email({ message: "البريد الإلكتروني غير صحيح" })
@@ -11,8 +11,8 @@ const branchClientSchema = z.object({
   phone2: z.string().optional(),
   address: z.string().optional(),
 });
-const customerFormSchema = z.object({
-  fullName: z
+const clientFormSchema = z.object({
+  name: z
     .string()
     .min(2, { message: "الاسم الكامل يجب أن يحتوي على حرفين على الأقل" })
     .max(100, { message: "الاسم الكامل يجب ألا يزيد عن 100 حرف" }),
@@ -36,10 +36,10 @@ const customerFormSchema = z.object({
   type: z.enum(["main", "branch"], {
     message: "يجب اختيار النوع",
   }),
-  branchClients: z.array(branchClientSchema).optional(),
+  childClients: z.array(branchClientSchema).optional(),
 });
 
-type CustomerFormValues = z.infer<typeof customerFormSchema>;
+type ClientFormValues = z.infer<typeof clientFormSchema>;
 type BranchClientValues = z.infer<typeof branchClientSchema>;
-export { customerFormSchema, branchClientSchema };
-export type { CustomerFormValues, BranchClientValues };
+export { clientFormSchema, branchClientSchema };
+export type { ClientFormValues, BranchClientValues };

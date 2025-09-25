@@ -1,5 +1,6 @@
 "use client";
 
+import { createClient, updateClient } from "@/actions/clients/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,58 +14,69 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   BranchClientValues,
-  customerFormSchema,
-  CustomerFormValues,
+  clientFormSchema,
+  ClientFormValues,
 } from "@/schema/client";
+import { Client } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, User } from "lucide-react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import Dialog from "../general/Dialog";
+import { DialogClose } from "../ui/dialog";
 import AddBranchClient from "./AddBranchClient";
 import BranchClientCard from "./BranchClientCard";
 
-interface CustomerFormProps {
-  initialData?: Partial<CustomerFormValues>;
-  onSubmit?: (data: CustomerFormValues) => Promise<void>;
+interface ClientFormProps {
+  initialData?: Partial<ClientFormValues> & Client;
 }
 
-function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
-  const form = useForm<CustomerFormValues>({
-    resolver: zodResolver(customerFormSchema),
+function ClientForm({ initialData }: ClientFormProps) {
+  const dialogCloseRef = useRef<HTMLButtonElement>(null);
+  const form = useForm<ClientFormValues>({
+    resolver: zodResolver(clientFormSchema),
     defaultValues: {
-      fullName: initialData?.fullName || "",
+      name: initialData?.name || "",
       email: initialData?.email || "",
       phone1: initialData?.phone1 || "",
       phone2: initialData?.phone2 || "",
       address: initialData?.address || "",
       type: initialData?.type || "main",
-      branchClients: initialData?.branchClients || [],
+      childClients: initialData?.childClients || [],
     },
   });
 
-  const handleSubmit = async (data: CustomerFormValues) => {
-    try {
-      await onSubmit?.(data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+  const handleSubmit = async (data: ClientFormValues) => {
+    if (initialData?.id) {
+      updateClient(initialData.id, data)
+        .then(() => toast.success("تم تحديث بيانات العميل بنجاح"))
+        .catch((err) => toast.error(err.message));
+    } else {
+      createClient(data)
+        .then(() => {
+          toast.success("تم إضافة العميل بنجاح");
+          form.reset();
+        })
+        .catch((err) => toast.error(err.message));
     }
   };
 
   const handleCancel = () => {
     form.reset();
   };
-  const onAddBranchClient = (formData: BranchClientValues) => {
-    const branchClients = form.getValues("branchClients") || [];
-    form.setValue("branchClients", [...branchClients, formData]);
-    console.log(form.getValues("branchClients"));
+  const onAddChildClient = (formData: BranchClientValues) => {
+    const childClients = form.getValues("childClients") || [];
+    form.setValue("childClients", [...childClients, formData]);
+    dialogCloseRef.current?.click();
   };
-  const onRemoveBranchClient = (index: number) => {
-    const branchClients = form.getValues("branchClients") || [];
-    const updatedClients = branchClients.filter((_, i) => i !== index);
-    form.setValue("branchClients", updatedClients);
+  const onRemoveChildClient = (index: number) => {
+    const childClients = form.getValues("childClients") || [];
+    const updatedClients = childClients.filter((_, i) => i !== index);
+    form.setValue("childClients", updatedClients);
   };
 
-  const branchClients = form.watch("branchClients") || [];
+  const childClients = form.watch("childClients") || [];
   const isLoading = form.formState.isSubmitting;
 
   return (
@@ -79,7 +91,7 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="fullName"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>الاسم الكامل</FormLabel>
@@ -173,25 +185,26 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
             </Dialog.Trigger>
             <Dialog.Content title="إضافة عميل فرعي">
               <div className="max-h-[60vh] overflow-auto">
-                <AddBranchClient onSubmit={onAddBranchClient} />
+                <AddBranchClient onSubmit={onAddChildClient} />
               </div>
+              <DialogClose className="hidden" ref={dialogCloseRef} />
             </Dialog.Content>
           </Dialog>
-          {branchClients.length > 0 && (
+          {childClients.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
                   <User className="text-primary h-5 w-5" />
-                  العملاء الفرعيين ({branchClients.length})
+                  العملاء الفرعيين ({childClients.length})
                 </h3>
               </div>
               <div className="grid gap-4">
-                {branchClients.map((client, index) => (
+                {childClients.map((client, index) => (
                   <BranchClientCard
                     key={index}
                     client={client}
                     index={index}
-                    onRemove={onRemoveBranchClient}
+                    onRemove={onRemoveChildClient}
                     isLoading={isLoading}
                   />
                 ))}
@@ -229,4 +242,4 @@ function CustomerForm({ initialData, onSubmit }: CustomerFormProps) {
   );
 }
 
-export default CustomerForm;
+export default ClientForm;

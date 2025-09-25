@@ -1,6 +1,3 @@
-import { BranchClientValues, branchClientSchema } from "@/schema/client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,7 +7,9 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DialogClose } from "../ui/dialog";
+import { BranchClientValues, branchClientSchema } from "@/schema/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 function AddBranchClient({
   onSubmit,
@@ -20,7 +19,7 @@ function AddBranchClient({
   const form = useForm<BranchClientValues>({
     resolver: zodResolver(branchClientSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
       phone1: "",
       phone2: "",
@@ -41,7 +40,7 @@ function AddBranchClient({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="fullName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right">الاسم الداخلي</FormLabel>
@@ -107,18 +106,9 @@ function AddBranchClient({
             )}
           />
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => form.reset()}
-              >
-                إلغاء
-              </Button>
-            </DialogClose>
-            <Button type="submit">حفظ</Button>
-          </div>
+          <Button type="submit" className="w-full">
+            حفظ
+          </Button>
         </form>
       </Form>
     </div>

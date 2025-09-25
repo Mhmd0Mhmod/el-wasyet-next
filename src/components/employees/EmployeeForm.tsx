@@ -1,13 +1,16 @@
 "use client";
+import { createEmployee, updateEmployee } from "@/actions/employee/actions";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useAbilities from "@/hooks/useAbilities";
+import { useManagers } from "@/hooks/useManagers";
 import { useRoles } from "@/hooks/useRoles";
 import { employeeFormSchema, EmployeeFormValues } from "@/schema/employee";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ControllerRenderProps, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { createFormField } from "../general/FormComponent";
 import { Label } from "../ui/label";
 import {
@@ -18,9 +21,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "../ui/switch";
-import { createEmployee, updateEmployee } from "@/actions/employee/actions";
-import { toast } from "sonner";
-import { useManagers } from "@/hooks/useManagers";
 interface EmployeeFormProps {
   initialData?: Partial<Employee>;
   disabled?: boolean;
@@ -40,7 +40,8 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
 
   const handleSubmit = async (data: EmployeeFormValues) => {
     if (disabled) return;
-    console.log(data);
+    // console.log("Form submitted:", data);
+    // return;
     if (initialData?.id) {
       updateEmployee(initialData.id, data)
         .then(() => {
@@ -78,7 +79,16 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
       field.onChange(currentAbilities.filter((a) => a !== abilityId));
     }
   };
+  function onSelectRole(value: string) {
+    form.setValue("roleId", value);
+    form.setValue("abilityIds", []);
+    form.setValue("managerId", null);
+  }
+
   const FormFieldWrapper = createFormField<EmployeeFormValues>(form);
+  const disabledManagers =
+    form.watch("roleId") === "" ||
+    form.watch("roleId") === roles[0]?.id.toString(); // Set to true as per requirements
   return (
     <div dir="rtl" className="mx-auto max-w-4xl">
       <Form {...form}>
@@ -116,7 +126,7 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
               render={({ field }) => (
                 <Select
                   disabled={roles.length === 0}
-                  onValueChange={field.onChange}
+                  onValueChange={onSelectRole}
                   {...field}
                   value={field.value}
                 >
@@ -134,20 +144,14 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
               )}
             />
             <FormFieldWrapper
-              name="userName"
-              label="اسم المستخدم"
-              render={({ field }) => (
-                <Input placeholder="أدخل اسم المستخدم" {...field} />
-              )}
-            />
-
-            <FormFieldWrapper
               name="managerId"
+              className="col-span-2"
               label="المدير المباشر"
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
                   {...field}
+                  disabled={disabledManagers}
                   value={field.value ?? undefined}
                 >
                   <SelectTrigger className="w-full">
@@ -166,13 +170,44 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
                 </Select>
               )}
             />
+            <FormFieldWrapper
+              name="userName"
+              label="اسم المستخدم"
+              render={({ field }) => (
+                <Input placeholder="أدخل اسم المستخدم" {...field} />
+              )}
+            />
+            <FormFieldWrapper
+              name="password"
+              label="كلمة المرور"
+              render={({ field }) => (
+                <Input
+                  placeholder="أدخل كلمة المرور"
+                  type="password"
+                  {...field}
+                />
+              )}
+            />
           </div>
 
           {/* Status Section */}
           <FormFieldWrapper
             className="flex justify-between"
             name="suspended"
-            label={`حالة الموظف: ${form.watch("suspended") ? "متوقف" : "نشط"}`}
+            label={`حالة الوقوف: ${form.watch("suspended") ? "متوقف" : "نشط"}`}
+            render={({ field }) => (
+              <Switch
+                className="flex-row-reverse"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={field.disabled}
+              />
+            )}
+          />
+          <FormFieldWrapper
+            className="flex justify-between"
+            name="hasViewCashBoxAbility"
+            label={`حالة عرض صندوق النقد: ${form.watch("hasViewCashBoxAbility") ? "مفعل" : "معطل"}`}
             render={({ field }) => (
               <Switch
                 className="flex-row-reverse"
@@ -235,11 +270,11 @@ function EmployeeForm({ initialData, disabled = false }: EmployeeFormProps) {
 
           {/* Action Buttons */}
           {!disabled && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Button type="submit" disabled={isLoading}>
+            <>
+              <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? "جاري الحفظ..." : submitButtonText}
               </Button>
-            </div>
+            </>
           )}
         </form>
       </Form>
@@ -257,6 +292,7 @@ function generateDefaultValues(
     email: initialData?.email || "",
     phone: initialData?.phone || "",
     roleId: initialData?.role || "",
+    password: "",
     userName: initialData?.userName || "",
     managerId: initialData?.managerName || null,
     suspended: initialData?.suspended ?? false,

@@ -29,6 +29,9 @@ const VALIDATION_MESSAGES = {
     max: "اسم المستخدم يجب ألا يزيد عن 30 حرف",
     invalid: "اسم المستخدم يجب أن يحتوي على أحرف وأرقام فقط",
   },
+  password: {
+    min: "كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل",
+  },
   managerName: {
     min: "المدير المباشر يجب أن يحتوي على حرفين على الأقل",
     max: "المدير المباشر يجب ألا يزيد عن 100 حرف",
@@ -63,11 +66,13 @@ const employeeFormSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, {
       message: VALIDATION_MESSAGES.userName.invalid,
     }),
+  password: z.string().min(6, { message: VALIDATION_MESSAGES.password.min }),
   managerId: z.string().nullable(),
   suspended: z.boolean(),
   abilityIds: z
     .array(z.number())
     .min(1, { message: VALIDATION_MESSAGES.abilities.min }),
+  hasViewCashBoxAbility: z.boolean().optional(),
 });
 
 type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
