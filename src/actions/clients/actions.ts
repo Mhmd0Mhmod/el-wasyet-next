@@ -28,7 +28,10 @@ export async function updateClient(data: ClientFormValues) {
     return res.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || error.message);
+      throw new Error(
+        Object.values(error.response?.data.errors || {}).join(", ") ||
+          error.message,
+      );
     }
     if (error instanceof Error) throw new Error(error.message);
     throw new Error("Unexpected Error");

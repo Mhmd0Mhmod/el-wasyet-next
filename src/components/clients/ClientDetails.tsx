@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getClientById } from "@/data/clients";
 import { BranchClientValues } from "@/schema/client";
 import { Client } from "@/types/client";
 import { orderColumns } from "@/types/order";
@@ -38,8 +39,8 @@ import {
 } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { TableCell, TableRow } from "../ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddBranchClient from "./AddBranchClient";
-import { getClientById } from "@/data/clients";
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const id = useRef(clientId);
@@ -266,7 +267,18 @@ function ClientDetails({ clientId }: { clientId: number }) {
                 currency: "EGP",
               }).format(order.amount)}
             </TableCell>
-            <TableCell>{order.note}</TableCell>
+            <TableCell>
+              {order.note.length > 0 ? (
+                <Tooltip>
+                  <TooltipTrigger className="text-primary underline">
+                    عرض الملاحظات
+                  </TooltipTrigger>
+                  <TooltipContent>{order.note}</TooltipContent>
+                </Tooltip>
+              ) : (
+                "لا توجد ملاحظات"
+              )}
+            </TableCell>
             <TableCell>
               <div className="flex gap-1">
                 <Button variant="outline" size="sm">
