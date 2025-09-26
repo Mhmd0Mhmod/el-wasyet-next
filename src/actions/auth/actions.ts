@@ -1,6 +1,7 @@
 "use server";
 import { auth, signIn, signOut } from "@/lib/auth";
 import { authFetch } from "@/lib/axios";
+import { handleErrorResponse } from "@/lib/helper";
 import { LoginFormValues } from "@/schema/login";
 import { AxiosError } from "axios";
 import { User } from "next-auth";
@@ -13,7 +14,7 @@ export async function serverLogin({
   usernameOrEmail: string;
   password: string;
   branchId: string;
-}): Promise<User> {
+}): Promise<APIResponse<User | null>> {
   try {
     const { data } = await authFetch.post<User>("Auth/login", {
       usernameOrEmail,
@@ -21,15 +22,12 @@ export async function serverLogin({
       branchId,
     });
 
-    return data;
+    return {
+      success: true,
+      data: data,
+    };
   } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.error || error.message);
-    }
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    throw new Error("An unexpected error occurred during login");
+    return handleErrorResponse(error);
   }
 }
 export async function Login(formData: LoginFormValues) {

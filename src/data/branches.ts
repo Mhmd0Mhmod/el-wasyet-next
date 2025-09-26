@@ -11,7 +11,6 @@ export async function getBranches({
   page?: number;
 }): Promise<Branch[]> {
   try {
-    console.log(authFetch.defaults.baseURL);
     const { data } = await authFetch.get<Branch[]>("Branch/all", {
       params: {
         search,
@@ -19,7 +18,6 @@ export async function getBranches({
         pageSize: defaults.pageSize,
       },
     });
-    console.log(data);
 
     return data || [];
   } catch (error) {

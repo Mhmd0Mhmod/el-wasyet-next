@@ -1,12 +1,13 @@
 "use server";
-import { AxiosError } from "axios";
 import { authFetch } from "@/lib/axios";
-import { branchSchema } from "@/schema/branch";
-import { BranchFormData } from "@/schema/branch";
+import { handleErrorResponse } from "@/lib/helper";
+import { BranchFormData, branchSchema } from "@/schema/branch";
 import { Branch } from "@/types/branch";
 import { revalidatePath } from "next/cache";
 
-export async function createBranch(formData: BranchFormData): Promise<Branch> {
+export async function createBranch(
+  formData: BranchFormData,
+): Promise<APIResponse<Branch | null>> {
   try {
     const parseResult = await branchSchema.parseAsync(formData);
     const { data } = await authFetch.post<Branch>("Branch/create", parseResult);
@@ -15,22 +16,19 @@ export async function createBranch(formData: BranchFormData): Promise<Branch> {
       revalidatePath("/branches");
     }
 
-    return data;
+    return {
+      success: true,
+      data,
+    };
   } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || error.message);
-    }
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    throw new Error("An unexpected error occurred while creating branch");
+    return handleErrorResponse(error);
   }
 }
 
 export async function updateBranch(
   id: number,
   formData: BranchFormData,
-): Promise<Branch> {
+): Promise<APIResponse<Branch | null>> {
   try {
     const parseResult = await branchSchema.parseAsync(formData);
     const { data } = await authFetch.put<Branch>(`Branch/update/${id}`, {
@@ -43,14 +41,11 @@ export async function updateBranch(
       revalidatePath(`/branches/${id}`);
     }
 
-    return data;
+    return {
+      success: true,
+      data,
+    };
   } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || error.message);
-    }
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    throw new Error("An unexpected error occurred while updating branch");
+    return handleErrorResponse(error);
   }
 }

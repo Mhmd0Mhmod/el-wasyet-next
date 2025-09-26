@@ -61,13 +61,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             branchId,
             password,
           });
-
-          return response;
+          if (!response.success) {
+            throw new CustomError(response?.message);
+          }
+          return response.data;
         } catch (error) {
           if (error instanceof AuthError) {
             throw new CustomError(error.message);
           }
           if (error instanceof Error) {
+            throw new CustomError(error.message);
+          }
+          if (error instanceof CustomError) {
             throw new CustomError(error.message);
           }
           throw new CustomError("An unknown error occurred");
@@ -102,4 +107,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 });

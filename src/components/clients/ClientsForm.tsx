@@ -53,18 +53,22 @@ function ClientForm({ clientId }: ClientFormProps) {
 
   const handleSubmit = async (data: ClientFormValues) => {
     if (client?.id) {
-      console.log(data);
-      console.log(client);
-      updateClient(data)
-        .then(() => toast.success("تم تحديث بيانات العميل بنجاح"))
-        .catch((err) => toast.error(err.message));
+      updateClient(data).then((res) => {
+        if (res.success) {
+          toast.success("تم تحديث بيانات العميل بنجاح");
+        } else {
+          toast.error(res.message);
+        }
+      });
     } else {
-      createClient(data)
-        .then(() => {
+      createClient(data).then((res) => {
+        if (res.success) {
           toast.success("تم إضافة العميل بنجاح");
           form.reset();
-        })
-        .catch((err) => toast.error(err.message));
+        } else {
+          toast.error(res.message);
+        }
+      });
     }
   };
 

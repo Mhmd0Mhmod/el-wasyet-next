@@ -40,18 +40,22 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
   });
   const onSubmit = (data: BranchFormData) => {
     if (branch) {
-      updateBranch(branch.id, data)
-        .then(() => {
+      updateBranch(branch.id, data).then((res) => {
+        if (res.success) {
           toast.success("تم تعديل الفرع بنجاح");
-        })
-        .catch((err) => toast.error(err.message));
+        } else {
+          toast.error(res.message);
+        }
+      });
     } else {
-      createBranch(data)
-        .then(() => {
+      createBranch(data).then((res) => {
+        if (res.success) {
           form.reset();
           toast.success("تم إضافة الفرع بنجاح");
-        })
-        .catch((err) => toast.error(err.message));
+        } else {
+          toast.error(res.message);
+        }
+      });
     }
   };
 

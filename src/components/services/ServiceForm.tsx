@@ -64,19 +64,23 @@ function ServiceForm({
   }
 
   const onSubmit = (data: ServiceValues) => {
-    console.log(data);
-
     if (service) {
-      updateService(data, service.id)
-        .then(() => toast.success("تم تعديل الخدمة بنجاح"))
-        .catch((err) => toast.error(err.message));
+      updateService(data, service.id).then((res) => {
+        if (res.success) {
+          toast.success("تم تعديل الخدمة بنجاح");
+        } else {
+          toast.error(res.message);
+        }
+      });
     } else {
-      createService(data)
-        .then(() => {
+      createService(data).then((res) => {
+        if (res.success) {
           toast.success("تم إضافة الخدمة بنجاح");
           form.reset();
-        })
-        .catch((err) => toast.error(err.message));
+        } else {
+          toast.error(res.message);
+        }
+      });
     }
   };
   const onSelectFormChange = useCallback(
@@ -99,6 +103,7 @@ function ServiceForm({
     return "اختر نوع التكلفة";
   };
   const FormComponent = createFormField<ServiceValues>(form);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -332,35 +337,38 @@ function ServiceForm({
                       />
 
                       {form.watch(`overheads.${index}.forms`) ? (
-                        <FormComponent
-                          name={`overheads.${index}.formTypeID`}
-                          render={({ field }) => (
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value?.toString()}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="اختر نوع الاستمارة" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {forms.length > 0 ? (
-                                  forms.map((el) => (
+                        forms.length > 0 ? (
+                          <FormComponent
+                            name={`overheads.${index}.formTypeID`}
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                onValueChange={field.onChange}
+                                value={field.value?.toString()}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="اختر نوع الاستمارة" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {forms.map((el) => (
                                     <SelectItem
-                                      key={el.id}
-                                      value={el.id.toString()}
+                                      key={el?.id}
+                                      value={el?.id?.toString()}
                                     >
                                       {el.name}
                                     </SelectItem>
-                                  ))
-                                ) : (
-                                  <SelectItem value="" disabled>
-                                    لا توجد استمارات متاحة
-                                  </SelectItem>
-                                )}
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                        ) : (
+                          <Input
+                            type="text"
+                            disabled
+                            value={"لا توجد استمارات"}
+                          />
+                        )
                       ) : (
                         <FormComponent
                           name={`overheads.${index}.description`}
