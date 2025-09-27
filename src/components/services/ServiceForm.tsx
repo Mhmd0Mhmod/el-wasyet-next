@@ -1,7 +1,7 @@
 "use client";
 import { createService, updateService } from "@/actions/services/actions";
 import { useFormsServices } from "@/hooks/useFormsServices";
-import { generateServieSchema, ServiceValues } from "@/schema/service";
+import { generateServiceSchema, ServiceValues } from "@/schema/service";
 import { Service, ShortWorkFlow } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
 function ServiceForm({
   service,
   workFlows,
@@ -29,7 +30,7 @@ function ServiceForm({
   service?: Service;
   workFlows: ShortWorkFlow[];
 }) {
-  const ServiceSchema = generateServieSchema(workFlows);
+  const ServiceSchema = generateServiceSchema(workFlows);
   const form = useForm<ServiceValues>({
     resolver: zodResolver(ServiceSchema),
     defaultValues: generateDefalutValues(service),
@@ -85,6 +86,7 @@ function ServiceForm({
   };
   const onSelectFormChange = useCallback(
     (value: "penalty" | "forms" | "adminFees", idx: number) => {
+      form.setValue(`overheads.${idx}.value`, 0);
       form.setValue(`overheads.${idx}.penalty`, false);
       form.setValue(`overheads.${idx}.forms`, false);
       form.setValue(`overheads.${idx}.adminFees`, false);
@@ -100,8 +102,9 @@ function ServiceForm({
     if (form.getValues(`overheads.${index}.penalty`)) return "penalty";
     if (form.getValues(`overheads.${index}.forms`)) return "forms";
     if (form.getValues(`overheads.${index}.adminFees`)) return "adminFees";
-    return "اختر نوع التكلفة";
+    return "penalty";
   };
+
   const FormComponent = createFormField<ServiceValues>(form);
 
   return (
@@ -287,9 +290,12 @@ function ServiceForm({
                   appendOverhead({
                     value: 0,
                     description: "",
-                    penalty: false,
+                    penalty: true,
                     forms: false,
                     adminFees: false,
+                    penaltyBankFeePrecentage: 0,
+                    penaltyExtraFee: 0,
+                    relatedAgent: false,
                     formTypeID: null,
                   })
                 }
@@ -303,85 +309,74 @@ function ServiceForm({
                 {overheadFields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="gap-4 space-y-4 rounded-lg border p-4 md:flex md:space-y-0"
+                    className="gap-2 space-y-4 rounded-lg border p-4 md:grid md:grid-cols-[repeat(3,1fr)_auto] md:space-y-0"
                   >
-                    <>
-                      <FormComponent
-                        name={`overheads.${index}.value`}
-                        render={({ field }) => (
-                          <Input
-                            type="text"
-                            pattern="[0-9]*"
-                            placeholder="رسوم التكلفه"
-                            {...field}
-                            disabled={form.getValues(
-                              `overheads.${index}.forms`,
-                            )}
-                            value={
-                              form.getValues(`overheads.${index}.forms`) &&
-                              form.getValues(`overheads.${index}.formTypeID`)
-                                ? forms.find(
-                                    (f) =>
-                                      f.id ==
-                                      form.getValues(
-                                        `overheads.${index}.formTypeID`,
-                                      ),
-                                  )?.value || 0
-                                : field.value || 0
-                            }
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
-                          />
-                        )}
-                      />
-
-                      {form.watch(`overheads.${index}.forms`) ? (
-                        forms.length > 0 ? (
-                          <FormComponent
-                            name={`overheads.${index}.formTypeID`}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                onValueChange={field.onChange}
-                                value={field.value?.toString()}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="اختر نوع الاستمارة" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {forms.map((el) => (
-                                    <SelectItem
-                                      key={el?.id}
-                                      value={el?.id?.toString()}
-                                    >
-                                      {el.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            )}
-                          />
-                        ) : (
-                          <Input
-                            type="text"
-                            disabled
-                            value={"لا توجد استمارات"}
-                          />
-                        )
-                      ) : (
-                        <FormComponent
-                          name={`overheads.${index}.description`}
-                          render={({ field }) => (
-                            <Input
-                              type="text"
-                              placeholder="اسم التكلفه"
-                              {...field}
-                            />
-                          )}
+                    <FormComponent
+                      label="رسوم التكلفه"
+                      name={`overheads.${index}.value`}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          pattern="[0-9]*"
+                          {...field}
+                          disabled={form.getValues(`overheads.${index}.forms`)}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       )}
+                    />
 
+                    {form.watch(`overheads.${index}.forms`) ? (
+                      forms.length > 0 ? (
+                        <FormComponent
+                          label="اختر نوع الاستمارة"
+                          name={`overheads.${index}.formTypeID`}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              onValueChange={(value: string) => {
+                                field.onChange(Number(value));
+                                form.setValue(
+                                  `overheads.${index}.value`,
+                                  forms.find((f) => f.id === Number(value))
+                                    ?.value || 0,
+                                );
+                              }}
+                              value={field.value?.toString()}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="اختر نوع الاستمارة" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {forms.map((el) => (
+                                  <SelectItem
+                                    key={el?.id}
+                                    value={el?.id?.toString()}
+                                  >
+                                    {el.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      ) : (
+                        <Input
+                          type="text"
+                          disabled
+                          value={"لا توجد استمارات"}
+                        />
+                      )
+                    ) : (
+                      <FormComponent
+                        label="اسم التكلفه"
+                        name={`overheads.${index}.description`}
+                        render={({ field }) => <Input type="text" {...field} />}
+                      />
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <Label>نوع التكلفة</Label>
                       <Select
                         onValueChange={(
                           value: "penalty" | "forms" | "adminFees",
@@ -389,7 +384,7 @@ function ServiceForm({
                         value={overheadType(index)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="نوع التكلفة" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="penalty">غرامة</SelectItem>
@@ -397,15 +392,68 @@ function ServiceForm({
                           <SelectItem value="adminFees">رسوم ادارية</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeOverhead(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="self-center"
+                      onClick={() => removeOverhead(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    {form.watch(`overheads.${index}.penalty`) && (
+                      <>
+                        <FormComponent
+                          name={`overheads.${index}.penaltyBankFeePrecentage`}
+                          label="نسبة رسوم البنك للغرامة (%)"
+                          render={({ field }) => (
+                            <Input
+                              type="number"
+                              placeholder="نسبة رسوم البنك"
+                              step="0.01"
+                              min="0"
+                              {...field}
+                              value={field.value || 0}
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value))
+                              }
+                            />
+                          )}
+                        />
+
+                        <FormComponent
+                          name={`overheads.${index}.penaltyExtraFee`}
+                          label="الرسوم الإضافية للغرامة"
+                          render={({ field }) => (
+                            <Input
+                              type="number"
+                              placeholder="الرسوم الإضافية"
+                              step="0.01"
+                              min="0"
+                              {...field}
+                              value={field.value || 0}
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value))
+                              }
+                            />
+                          )}
+                        />
+
+                        <FormComponent
+                          name={`overheads.${index}.relatedAgent`}
+                          label="وكيل مرتبط"
+                          className="col-span-2 flex items-center justify-between"
+                          render={({ field }) => (
+                            <Switch
+                              className="flex-row-reverse"
+                              checked={field.value || false}
+                              onCheckedChange={field.onChange}
+                            />
+                          )}
+                        />
+                      </>
+                    )}
                   </div>
                 ))}
               </div>

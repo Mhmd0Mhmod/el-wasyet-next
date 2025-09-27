@@ -39,8 +39,8 @@ import {
 } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { TableCell, TableRow } from "../ui/table";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AddBranchClient from "./AddBranchClient";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const id = useRef(clientId);
@@ -109,7 +109,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
             className="mr-auto bg-green-100 text-lg text-green-700"
           >
             {isMainClient
-              ? `عميل رئيسي ${!client.isFromApp ? "(App User)" : ""}`
+              ? `عميل رئيسي ${!client.isFromApp ? "(App User)" : ""}    `
               : "عميل فرعي"}
           </Badge>
         </CardHeader>
@@ -269,12 +269,12 @@ function ClientDetails({ clientId }: { clientId: number }) {
             </TableCell>
             <TableCell>
               {order.note.length > 0 ? (
-                <Tooltip>
-                  <TooltipTrigger className="text-primary underline">
+                <Popover>
+                  <PopoverTrigger className="text-primary underline">
                     عرض الملاحظات
-                  </TooltipTrigger>
-                  <TooltipContent>{order.note}</TooltipContent>
-                </Tooltip>
+                  </PopoverTrigger>
+                  <PopoverContent>{order.note}</PopoverContent>
+                </Popover>
               ) : (
                 "لا توجد ملاحظات"
               )}

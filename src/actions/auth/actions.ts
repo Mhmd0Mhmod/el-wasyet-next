@@ -3,7 +3,6 @@ import { auth, signIn, signOut } from "@/lib/auth";
 import { authFetch } from "@/lib/axios";
 import { handleErrorResponse } from "@/lib/helper";
 import { LoginFormValues } from "@/schema/login";
-import { AxiosError } from "axios";
 import { User } from "next-auth";
 
 export async function serverLogin({

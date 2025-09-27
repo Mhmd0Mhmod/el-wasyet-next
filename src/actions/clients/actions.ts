@@ -4,7 +4,6 @@ import { authFetch } from "@/lib/axios";
 import { handleErrorResponse } from "@/lib/helper";
 import { clientFormSchema, ClientFormValues } from "@/schema/client";
 import { Client } from "@/types/client";
-import { AxiosError } from "axios";
 import { revalidatePath } from "next/cache";
 
 export async function createClient(
