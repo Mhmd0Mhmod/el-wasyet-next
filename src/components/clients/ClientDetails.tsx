@@ -11,11 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getClientById } from "@/data/clients";
+import { useClient } from "@/hooks/useClient";
 import { BranchClientValues } from "@/schema/client";
-import { Client } from "@/types/client";
-import { orderColumns } from "@/types/order";
-import { useQuery } from "@tanstack/react-query";
 import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useRef } from "react";
@@ -30,6 +27,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Select,
   SelectContent,
@@ -40,32 +38,28 @@ import {
 import { Separator } from "../ui/separator";
 import { TableCell, TableRow } from "../ui/table";
 import AddBranchClient from "./AddBranchClient";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+const orderColumns = [
+  { id: "orderId", label: "رقم الأمر" },
+  { id: "serviceName", label: "الخدمة" },
+  { id: "createdAt", label: "تاريخ الأمر" },
+  { id: "orderStatue", label: "حالة الأمر" },
+  { id: "requiredChange", label: "المطلوب" },
+  { id: "amount", label: "قيمة الأمر" },
+  { id: "note", label: "ملحوظات" },
+  { id: "actions", label: "العمليات" },
+];
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const id = useRef(clientId);
   const page = useRef(1);
-  const {
-    data: client,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useQuery<Client>({
-    queryKey: ["client", id.current, page.current],
-    queryFn: () =>
-      getClientById(id.current, {
-        params: { page: page.current },
-      }),
-    enabled: !!id,
-  });
+  const { client, isLoading, error, refetch } = useClient(id.current);
   if (isLoading)
     return (
       <ScrollArea dir="rtl" className="max-h-[70vh]">
         <Loading />
       </ScrollArea>
     );
-  if (isError)
+  if (error)
     return (
       <div className="relative max-h-[60vh] overflow-auto">
         <Error error={error} reset={refetch} />

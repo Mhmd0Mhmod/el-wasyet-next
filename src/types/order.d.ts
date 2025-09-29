@@ -67,14 +67,3 @@ interface OrderService extends Omit<Service, "documents" | "overheads"> {
   documentForCreateDTOs: ServiceDocument[];
   overheadForCreates: Omit<ServiceOverhead, "description" | "formTypeID">[];
 }
-
-export const orderColumns = [
-  { id: "orderId", label: "رقم الأمر" },
-  { id: "serviceName", label: "الخدمة" },
-  { id: "createdAt", label: "تاريخ الأمر" },
-  { id: "orderStatue", label: "حالة الأمر" },
-  { id: "requiredChange", label: "المطلوب" },
-  { id: "amount", label: "قيمة الأمر" },
-  { id: "note", label: "ملحوظات" },
-  { id: "actions", label: "العمليات" },
-];

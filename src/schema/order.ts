@@ -83,28 +83,14 @@ export const orderFormSchema = z.object({
 
 export type OrderFormValues = z.infer<typeof orderFormSchema>;
 
-export function generateOrderDefaultValues(
-  order?: Partial<OrderDetails>,
-): OrderFormValues {
+export function generateOrderDefaultValues(order?: Partial<OrderDetails>) {
   return {
-    ClientId: order?.clientId || 0,
     RequiredChange: order?.requiredChange || "",
     Notes: order?.notes || "",
     DeliveryAddress: order?.deliveryAddress || "",
-    BirthDate: order?.birthDate || "",
-    Quantity: order?.quantity || 0,
-    ServiceId: order?.serviceId || 0,
     Cash: order?.cash || 0,
     Credit: order?.credit || 0,
     Amount: order?.amount || 0,
-    ServiceFees: order?.serviceFees || 0,
-    Documents: order?.documents || [],
-    CustomDocuments: order?.customDocuments || [],
-    OverheadIds: order?.overheads || [],
-    CustomOverheads: order?.customOverheads || [],
-    CreateFiles: order?.createdFiles || [],
-    IsPending: order?.isPending ?? true,
-    OfferId: order?.offerId || undefined,
     AgentId: order?.agentId || undefined,
   };
 }
