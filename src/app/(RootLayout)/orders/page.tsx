@@ -1,21 +1,21 @@
+import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Select from "@/components/general/Select";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
-import { getOrders } from "@/data/orders";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { Suspense } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import Dialog from "@/components/general/Dialog";
-import { ClipboardIcon, Edit2Icon, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import Pagination from "@/components/general/Pagination";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
 import { Order } from "@/types/order";
+import { ClipboardIcon, Edit3Icon, Plus } from "lucide-react";
+import Link from "next/link";
+import { Suspense } from "react";
 
 async function page({
   searchParams,
@@ -28,6 +28,8 @@ async function page({
   }>;
 }) {
   const searchParamsValues = await searchParams;
+  const services = await getServices();
+  const orderStatus = await getOrderStatuses();
   return (
     <section className="container space-y-12 pt-6">
       <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
@@ -37,27 +39,30 @@ async function page({
             إدارة أوامر العملاء ومتابعة حالة الخدمات
           </p>
         </div>
-        <div>
-          <Dialog>
-            <Dialog.Trigger>
-              <Button>
-                <Plus />
-                إضافة أمر
-              </Button>
-            </Dialog.Trigger>
-            <Dialog.Content title="إضافة أمر جديد">
-              <div></div>
-            </Dialog.Content>
-          </Dialog>
-        </div>
+        <Button>
+          <Link href={"/orders/new"}>
+            <Plus className="inline-block" size={16} />
+            أمر جديد
+          </Link>
+        </Button>
       </div>
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <SearchInput title="بحث .." />
-        <Select name="ServiceId" placeholder="اسم الخدمة" selectItems={[]} />
+        <Select
+          name="ServiceId"
+          placeholder="اسم الخدمة"
+          selectItems={services.map((service) => ({
+            value: service.id,
+            label: service.name,
+          }))}
+        />
         <Select
           name="OrderStatusIds"
           placeholder="حاله الامر"
-          selectItems={[]}
+          selectItems={orderStatus.map((status) => ({
+            value: status.id,
+            label: status.name,
+          }))}
         />
       </div>
       <Suspense
@@ -100,9 +105,13 @@ async function OrdersTable({
   const renderOrderRows = items.map((order: Order) => (
     <TableRow
       key={order.id}
-      className={`bg-${order.recevingStatues.toLowerCase()}-200`}
+      className={`bg-${order.recevingStatues.toLowerCase()}-100`}
     >
-      <TableCell>{order.orderCode}</TableCell>
+      <TableCell className="text-center">
+        <Link href={`/orders/${order.id}`} className="underline">
+          {order.id}
+        </Link>
+      </TableCell>
       <TableCell>{order.serviceName}</TableCell>
       <TableCell>{order.clientName}</TableCell>
       <TableCell>{order.clientPhoneNumber}</TableCell>
@@ -118,27 +127,13 @@ async function OrdersTable({
           <PopoverContent>{order.notes}</PopoverContent>
         </Popover>
       </TableCell>
-      <TableCell>
-        <Dialog>
-          <Dialog.Trigger>
-            <Button variant="ghost" size={"icon"}>
-              <Edit2Icon />
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="تعديل الامر">
-            <div></div>
-          </Dialog.Content>
-        </Dialog>
-        <Dialog>
-          <Dialog.Trigger>
-            <Button variant="ghost" size={"icon"}>
-              <ClipboardIcon />
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="= تفاصيل الامر">
-            <div></div>
-          </Dialog.Content>
-        </Dialog>
+      <TableCell className="space-x-2">
+        <Link href={`/orders/${order.id}/edit`}>
+          <Edit3Icon className="inline-block" size={16} />
+        </Link>
+        <Link href={`/orders/${order.id}`}>
+          <ClipboardIcon className="inline-block" size={16} />
+        </Link>
       </TableCell>
     </TableRow>
   ));

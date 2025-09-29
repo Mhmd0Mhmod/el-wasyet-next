@@ -12,9 +12,11 @@ import {
   FormMessage,
   FormDescription,
 } from "../ui/form";
+import { Skeleton } from "../ui/skeleton";
 
 interface FormFieldProps<T extends FieldValues, N extends FieldPath<T>> {
   className?: string;
+  isLoading?: boolean;
   label?: string;
   description?: string;
   name: N;
@@ -27,8 +29,10 @@ export function createFormField<T extends FieldValues>(form: UseFormReturn<T>) {
     label,
     description,
     name,
+    isLoading = false,
     render,
   }: FormFieldProps<T, N>) {
+    if (isLoading) return <Skeleton className="h-10 w-full rounded-md" />;
     return (
       <FormField
         name={name}

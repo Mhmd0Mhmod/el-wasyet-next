@@ -109,7 +109,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
             className="mr-auto bg-green-100 text-lg text-green-700"
           >
             {isMainClient
-              ? `عميل رئيسي ${!client.isFromApp ? "(App User)" : ""}    `
+              ? `عميل رئيسي ${client.isFromApp ? "(App User)" : ""}    `
               : "عميل فرعي"}
           </Badge>
         </CardHeader>

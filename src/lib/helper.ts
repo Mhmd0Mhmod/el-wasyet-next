@@ -1,3 +1,4 @@
+import { ServiceOverhead } from "@/types/service";
 import { AxiosError } from "axios";
 import { AuthError } from "next-auth";
 
@@ -15,6 +16,29 @@ export const formatCurrency = (value: number) => {
     style: "currency",
     currency: "EGP",
   }).format(value);
+};
+
+export const formatDate = (
+  dateString: string,
+  type: "date" | "datetime" | "time",
+) => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "Invalid Date";
+  const options: Intl.DateTimeFormatOptions =
+    type === "date"
+      ? { year: "numeric", month: "2-digit", day: "2-digit" }
+      : type === "time"
+        ? { hour: "2-digit", minute: "2-digit", hour12: true }
+        : {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          };
+
+  return date.toLocaleString("ar-EG", options);
 };
 
 export const handleErrorResponse = (
@@ -39,4 +63,11 @@ export const handleErrorResponse = (
     returnError.message = error.message;
   }
   return returnError;
+};
+
+export const convertOverheadLabel = (overhead: ServiceOverhead): string => {
+  if (overhead.penalty) return "غرامة";
+  if (overhead.adminFees) return "رسوم إدارية";
+  if (overhead.forms) return "استمارات";
+  return "";
 };
