@@ -8,7 +8,7 @@ function useClients(searchTerm: string) {
   } = useQuery({
     queryKey: ["clients", searchTerm],
     queryFn: () => searchClients(searchTerm),
-    enabled: searchTerm.length >= 2,
+    enabled: searchTerm.length === 11 || searchTerm.length === 14,
     staleTime: 5 * 60 * 1000,
   });
   return { clients, isLoadingClients: isLoading, clientsError: error };

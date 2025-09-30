@@ -103,12 +103,12 @@ export async function getOrderStatuses() {
     throw new Error("An unexpected error occurred");
   }
 }
-export const searchClients = async (searchTerm: string): Promise<Client[]> => {
-  if (!searchTerm?.trim()) return [];
+export const searchClients = async (phoneNumber: string): Promise<Client[]> => {
+  if (!phoneNumber?.trim()) return [];
 
-  const response = await authFetch.get<Client[]>(
-    `/Client/search?term=${searchTerm}`,
-  );
+  const response = await authFetch.get<Client[]>(`/Order/get-Clients`, {
+    params: { phoneNumber },
+  });
   return response.data;
 };
 export const getOrdersTypes = async () => {

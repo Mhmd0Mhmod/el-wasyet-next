@@ -32,7 +32,7 @@ function ClientSelector({
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClientId, setSelectedClientId] = useState<string>("");
-  const { clients, isLoadingClients, clientsError } = useClients(searchTerm);
+  const { clients, isLoadingClients } = useClients(searchTerm);
 
   const selectedClient = useMemo(
     () => clients.find((client) => client.id.toString() === selectedClientId),
@@ -50,7 +50,7 @@ function ClientSelector({
   );
 
   const handleSearchChange = useCallback((value: string) => {
-    setSearchTerm(value);
+    setSearchTerm(value.replace(/[^+\d]/g, ""));
   }, []);
   return (
     <>
@@ -71,6 +71,7 @@ function ClientSelector({
         <PopoverContent align="start">
           <Command shouldFilter={false}>
             <CommandInput
+              dir="ltr"
               placeholder="ابحث عن عميل (رقم الهاتف )"
               value={searchTerm}
               onValueChange={handleSearchChange}
