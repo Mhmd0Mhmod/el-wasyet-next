@@ -1,12 +1,14 @@
 "use client";
 
+import { useAgents } from "@/hooks/useAgents";
+import { useOffers } from "@/hooks/useOffers";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
-import { useFormContext } from "react-hook-form";
 import AddOverheadForm from "../general/AddOverheadForm";
 import Table from "../general/Table";
 import TableSkeleton from "../general/TableSkeleton";
 import {
   OrderFormField,
+  useOrderForm,
   useOrderService,
 } from "../providers/OrderFormProvider";
 import { Badge } from "../ui/badge";
@@ -14,6 +16,8 @@ import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { TableCell, TableRow } from "../ui/table";
+import { useFormContext } from "react-hook-form";
+import { OrderFormValues } from "@/schema/order";
 const columns = [
   {
     id: "overhead",
@@ -31,28 +35,62 @@ const columns = [
 
 function OverheadsForms() {
   const { service, isLoading } = useOrderService();
-  const form = useFormContext();
+  const form = useFormContext<OrderFormValues>();
+  const { offers } = useOffers();
+  const { agents } = useAgents();
+
   if (!service) return null;
   if (isLoading) return <TableSkeleton columns={3} rows={4} />;
+  const { watch } = form;
   const { overheads } = service;
+  const selectedOverheads = watch("OverheadIds") || [];
 
+  function onOverheadChange(overheadId: number, checked: boolean) {
+    const currentOverheads = watch("OverheadIds") || [];
+    if (checked) {
+      form.setValue("OverheadIds", [...currentOverheads, overheadId]);
+    } else {
+      form.setValue(
+        "OverheadIds",
+        currentOverheads.filter((id: number) => id !== overheadId),
+      );
+    }
+  }
+
+  const selectedOverheadsValue = overheads
+    .filter((overhead) => selectedOverheads.includes(overhead.id))
+    .reduce((acc, curr) => acc + curr.value, 0);
+  const customOverheadsValue = watch("CustomOverheads")?.reduce(
+    (acc, curr) => acc + (curr.Amount || 0),
+    0,
+  );
+
+  const offerPercentage = offers?.find(
+    (o) => o.offerId === watch("OfferId"),
+  )?.discountPercentage;
+  const agentPercentage = agents?.find(
+    (a) => a.id === watch("AgentId"),
+  )?.commissionPercentage;
+  const totalAmount =
+    service.defaultFees + selectedOverheadsValue + (customOverheadsValue || 0);
+  console.log({ selectedOverheadsValue, customOverheadsValue, totalAmount });
   return (
     <div className="space-y-4" dir="rtl">
       <h4 className="text-lg font-semibold">الرسوم الإضافية</h4>
 
       {/* Header Fields */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <OrderFormField
           name="Amount"
           label="إجمالي قيمة الطلب"
+          disabled
           render={({ field }) => (
             <div className="relative">
               <Input
                 type="text"
-                value={(field.value as number) || ""}
+                value={totalAmount}
+                disabled
                 onChange={(e) => field.onChange(parseInt(e.target.value))}
-                className="pl-12"
-                placeholder="200"
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م
@@ -63,15 +101,31 @@ function OverheadsForms() {
 
         <OrderFormField
           name="ServiceFees"
-          label="رسوم المحدة"
+          label="رسوم الخدمة"
+          disabled
+          render={({ field }) => (
+            <div className="relative">
+              <Input
+                type="text"
+                value={service.defaultFees}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                disabled
+              />
+              <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
+                ج.م
+              </span>
+            </div>
+          )}
+        />
+        <OrderFormField
+          name="Cash"
+          label="المجموع كاش"
           render={({ field }) => (
             <div className="relative">
               <Input
                 type="text"
                 value={(field.value as number) || ""}
                 onChange={(e) => field.onChange(parseInt(e.target.value))}
-                className="pl-12"
-                placeholder="200"
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م
@@ -89,8 +143,6 @@ function OverheadsForms() {
                 type="text"
                 value={(field.value as number) || ""}
                 onChange={(e) => field.onChange(parseInt(e.target.value))}
-                className="pl-12"
-                placeholder="00.00"
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م
@@ -101,22 +153,29 @@ function OverheadsForms() {
       </div>
       <Table
         columns={columns}
-        renderData={overheads.map((overhead) => (
-          <TableRow key={overhead.id}>
-            <TableCell>
-              <div className="flex items-center gap-4 ps-2">
-                <Checkbox />
-                <Label>{overhead.description}</Label>
-              </div>
-            </TableCell>
-            <TableCell>{formatCurrency(overhead.value)}</TableCell>
-            <TableCell>
-              <Badge variant={"outline"}>
-                {convertOverheadLabel(overhead)}
-              </Badge>
-            </TableCell>
-          </TableRow>
-        ))}
+        renderData={overheads.map((overhead) => {
+          const checked = selectedOverheads.includes(overhead.id);
+          return (
+            <TableRow key={overhead.id}>
+              <TableCell>
+                <div className="flex items-center gap-4 ps-2">
+                  <Checkbox
+                    onCheckedChange={() =>
+                      onOverheadChange(overhead.id, !checked)
+                    }
+                  />
+                  <Label>{overhead.description}</Label>
+                </div>
+              </TableCell>
+              <TableCell>{formatCurrency(overhead.value)}</TableCell>
+              <TableCell>
+                <Badge variant={"outline"}>
+                  {convertOverheadLabel(overhead)}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          );
+        })}
       />
       <AddOverheadForm form={form} name="CustomOverheads" />
     </div>

@@ -16,10 +16,20 @@ export async function getOrders({
   }>;
 }): Promise<PaginatedResponse<Order>> {
   try {
+    if (!searchParams.OrderStatusIds) {
+      return {
+        items: [],
+        pageNumber: 1,
+        pageSize: defaults.pageSize,
+        totalRecords: 0,
+        hasNextPage: false,
+        hasPreviousPage: false,
+        totalPages: 0,
+      };
+    }
     const res = await authFetch.get<PaginatedResponse<Order>>("Order/all", {
       params: {
         ...searchParams,
-        OrderStatusIds: 4,
         pageSize: defaults.pageSize,
       },
     });

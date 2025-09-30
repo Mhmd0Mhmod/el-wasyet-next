@@ -21,6 +21,7 @@ interface FormFieldProps<T extends FieldValues, N extends FieldPath<T>> {
   description?: string;
   name: N;
   render: (props: { field: ControllerRenderProps<T, N> }) => React.ReactNode;
+  disabled?: boolean;
 }
 
 export function createFormField<T extends FieldValues>(form: UseFormReturn<T>) {
@@ -31,11 +32,13 @@ export function createFormField<T extends FieldValues>(form: UseFormReturn<T>) {
     name,
     isLoading = false,
     render,
+    disabled = false,
   }: FormFieldProps<T, N>) {
     if (isLoading) return <Skeleton className="h-10 w-full rounded-md" />;
     return (
       <FormField
         name={name}
+        disabled={form.formState.isSubmitting || disabled}
         control={form.control}
         render={(fieldProps) => {
           const { field } = fieldProps as {
