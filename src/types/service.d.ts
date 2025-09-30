@@ -31,6 +31,9 @@ interface ServiceOverhead {
   forms: boolean;
   adminFees: boolean;
   formTypeID: number | null;
+  relatedAgent: boolean;
+  penaltyExtraFee: number;
+  penaltyBankFeePrecentage: number;
 }
 
 type ShortWorkFlow = {

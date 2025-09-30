@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback } from "react";
-import { useFieldArray, UseFormReturn } from "react-hook-form";
+import { useFormsServices } from "@/hooks/useFormsServices";
 import { Plus, Trash2 } from "lucide-react";
+import { useCallback } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -16,20 +17,18 @@ import {
 } from "../ui/select";
 import { Switch } from "../ui/switch";
 import { createFormField } from "./FormComponent";
-import { useFormsServices } from "@/hooks/useFormsServices";
 
 interface AddOverheadFormProps {
-  form: UseFormReturn;
   name: string;
   title?: string;
 }
 
 function AddOverheadForm({
-  form,
   name,
   title = "التكاليف الإضافية",
 }: AddOverheadFormProps) {
   const { forms } = useFormsServices();
+  const form = useFormContext();
   const {
     fields: overheadFields,
     append: appendOverhead,
@@ -43,13 +42,11 @@ function AddOverheadForm({
 
   const onSelectFormChange = useCallback(
     (value: "penalty" | "forms" | "adminFees", idx: number) => {
-      // Reset all type flags
       form.setValue(`${name}.${idx}.value`, 0);
       form.setValue(`${name}.${idx}.penalty`, false);
       form.setValue(`${name}.${idx}.forms`, false);
       form.setValue(`${name}.${idx}.adminFees`, false);
       form.setValue(`${name}.${idx}.${value}`, true);
-
       if (value !== "forms") {
         form.setValue(`${name}.${idx}.formTypeID`, null);
       }
@@ -57,12 +54,15 @@ function AddOverheadForm({
     [form, name],
   );
 
-  const getOverheadType = (index: number) => {
-    if (form.getValues(`${name}.${index}.penalty`)) return "penalty";
-    if (form.getValues(`${name}.${index}.forms`)) return "forms";
-    if (form.getValues(`${name}.${index}.adminFees`)) return "adminFees";
-    return "penalty";
-  };
+  const getOverheadType = useCallback(
+    (index: number) => {
+      if (form.getValues(`${name}.${index}.penalty`)) return "penalty";
+      if (form.getValues(`${name}.${index}.forms`)) return "forms";
+      if (form.getValues(`${name}.${index}.adminFees`)) return "adminFees";
+      return "penalty";
+    },
+    [form, name],
+  );
 
   return (
     <Card>

@@ -121,8 +121,7 @@ const validateExclusiveOptions = (
   }
 };
 
-// Overhead schema
-const overheadSchema = z
+export const overheadSchema = z
   .object({
     value: z.number().min(0, ERROR_MESSAGES.INVALID_VALUE),
     description: z.string().min(1, ERROR_MESSAGES.REQUIRED_DESCRIPTION),

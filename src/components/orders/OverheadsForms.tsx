@@ -1,5 +1,4 @@
 "use client";
-
 import { useAgents } from "@/hooks/useAgents";
 import { useOffers } from "@/hooks/useOffers";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
@@ -8,7 +7,6 @@ import Table from "../general/Table";
 import TableSkeleton from "../general/TableSkeleton";
 import {
   OrderFormField,
-  useOrderForm,
   useOrderService,
 } from "../providers/OrderFormProvider";
 import { Badge } from "../ui/badge";
@@ -38,7 +36,6 @@ function OverheadsForms() {
   const form = useFormContext<OrderFormValues>();
   const { offers } = useOffers();
   const { agents } = useAgents();
-
   if (!service) return null;
   if (isLoading) return <TableSkeleton columns={3} rows={4} />;
   const { watch } = form;
@@ -61,9 +58,10 @@ function OverheadsForms() {
     .filter((overhead) => selectedOverheads.includes(overhead.id))
     .reduce((acc, curr) => acc + curr.value, 0);
   const customOverheadsValue = watch("CustomOverheads")?.reduce(
-    (acc, curr) => acc + (curr.Amount || 0),
+    (acc, curr) => acc + (curr.value || 0),
     0,
   );
+  console.log(customOverheadsValue);
 
   const offerPercentage = offers?.find(
     (o) => o.offerId === watch("OfferId"),
@@ -72,13 +70,14 @@ function OverheadsForms() {
     (a) => a.id === watch("AgentId"),
   )?.commissionPercentage;
   const totalAmount =
-    service.defaultFees + selectedOverheadsValue + (customOverheadsValue || 0);
-  console.log({ selectedOverheadsValue, customOverheadsValue, totalAmount });
+    (service.defaultFees +
+      selectedOverheadsValue +
+      (customOverheadsValue || 0)) *
+    (1 - (offerPercentage || 0) / 100) *
+    (1 + (agentPercentage || 0) / 100);
   return (
     <div className="space-y-4" dir="rtl">
       <h4 className="text-lg font-semibold">الرسوم الإضافية</h4>
-
-      {/* Header Fields */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <OrderFormField
           name="Amount"
@@ -177,7 +176,10 @@ function OverheadsForms() {
           );
         })}
       />
-      <AddOverheadForm form={form} name="CustomOverheads" />
+      <AddOverheadForm
+        name="CustomOverheads"
+        title="التكاليف الإضافية المخصصة"
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { searchClients } from "@/data/orders";
+import { useQuery } from "@tanstack/react-query";
 function useClients(searchTerm: string) {
   const {
     data: clients = [],
@@ -9,9 +9,8 @@ function useClients(searchTerm: string) {
     queryKey: ["clients", searchTerm],
     queryFn: () => searchClients(searchTerm),
     enabled: searchTerm.length >= 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
-  console.log("refetcing clients");
   return { clients, isLoadingClients: isLoading, clientsError: error };
 }
 export { useClients };

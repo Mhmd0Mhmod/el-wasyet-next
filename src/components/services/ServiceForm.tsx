@@ -1,28 +1,19 @@
 "use client";
 import { createService, updateService } from "@/actions/services/actions";
-import { useFormsServices } from "@/hooks/useFormsServices";
 import { generateServiceSchema, ServiceValues } from "@/schema/service";
 import { Service, ShortWorkFlow } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
-import { useCallback } from "react";
 import { ControllerRenderProps, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import AddOverheadForm from "../general/AddOverheadForm";
 import { createFormField } from "../general/FormComponent";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Form, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
 function ServiceForm({
   service,
   workFlows,
@@ -35,7 +26,6 @@ function ServiceForm({
     resolver: zodResolver(ServiceSchema),
     defaultValues: generateDefalutValues(service),
   });
-  const { forms } = useFormsServices();
   const {
     fields: documentFields,
     append: appendDocument,
@@ -43,15 +33,6 @@ function ServiceForm({
   } = useFieldArray({
     control: form.control,
     name: "documents",
-  });
-
-  const {
-    fields: overheadFields,
-    append: appendOverhead,
-    remove: removeOverhead,
-  } = useFieldArray({
-    control: form.control,
-    name: "overheads",
   });
 
   function handleNumberInputChange(
@@ -83,26 +64,6 @@ function ServiceForm({
         }
       });
     }
-  };
-  const onSelectFormChange = useCallback(
-    (value: "penalty" | "forms" | "adminFees", idx: number) => {
-      form.setValue(`overheads.${idx}.value`, 0);
-      form.setValue(`overheads.${idx}.penalty`, false);
-      form.setValue(`overheads.${idx}.forms`, false);
-      form.setValue(`overheads.${idx}.adminFees`, false);
-      form.setValue(`overheads.${idx}.${value}`, true);
-      if (form.getValues(`overheads.${idx}.forms`) === false) {
-        form.setValue(`overheads.${idx}.formTypeID`, null);
-      }
-    },
-    [form],
-  );
-
-  const overheadType = (index: number) => {
-    if (form.getValues(`overheads.${index}.penalty`)) return "penalty";
-    if (form.getValues(`overheads.${index}.forms`)) return "forms";
-    if (form.getValues(`overheads.${index}.adminFees`)) return "adminFees";
-    return "penalty";
   };
 
   const FormComponent = createFormField<ServiceValues>(form);
@@ -280,185 +241,7 @@ function ServiceForm({
           </Card>
 
           {/* Overheads */}
-          <Card>
-            <CardHeader>
-              <CardTitle>التكاليف الإضافية</CardTitle>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  appendOverhead({
-                    value: 0,
-                    description: "",
-                    penalty: true,
-                    forms: false,
-                    adminFees: false,
-                    penaltyBankFeePrecentage: 0,
-                    penaltyExtraFee: 0,
-                    relatedAgent: false,
-                    formTypeID: null,
-                  })
-                }
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                إضافة تكلفة
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {overheadFields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="gap-2 space-y-4 rounded-lg border p-4 md:grid md:grid-cols-[repeat(3,1fr)_auto] md:space-y-0"
-                  >
-                    <FormComponent
-                      label="رسوم التكلفه"
-                      name={`overheads.${index}.value`}
-                      render={({ field }) => (
-                        <Input
-                          type="text"
-                          pattern="[0-9]*"
-                          {...field}
-                          disabled={form.getValues(`overheads.${index}.forms`)}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                      )}
-                    />
-
-                    {form.watch(`overheads.${index}.forms`) ? (
-                      forms.length > 0 ? (
-                        <FormComponent
-                          label="اختر نوع الاستمارة"
-                          name={`overheads.${index}.formTypeID`}
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              onValueChange={(value: string) => {
-                                field.onChange(Number(value));
-                                form.setValue(
-                                  `overheads.${index}.value`,
-                                  forms.find((f) => f.id === Number(value))
-                                    ?.value || 0,
-                                );
-                              }}
-                              value={field.value?.toString()}
-                            >
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="اختر نوع الاستمارة" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {forms.map((el) => (
-                                  <SelectItem
-                                    key={el?.id}
-                                    value={el?.id?.toString()}
-                                  >
-                                    {el.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
-                      ) : (
-                        <Input
-                          type="text"
-                          disabled
-                          value={"لا توجد استمارات"}
-                        />
-                      )
-                    ) : (
-                      <FormComponent
-                        label="اسم التكلفه"
-                        name={`overheads.${index}.description`}
-                        render={({ field }) => <Input type="text" {...field} />}
-                      />
-                    )}
-                    <div className="flex flex-col gap-2">
-                      <Label>نوع التكلفة</Label>
-                      <Select
-                        onValueChange={(
-                          value: "penalty" | "forms" | "adminFees",
-                        ) => onSelectFormChange(value, index)}
-                        value={overheadType(index)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="penalty">غرامة</SelectItem>
-                          <SelectItem value="forms">استمارات</SelectItem>
-                          <SelectItem value="adminFees">رسوم ادارية</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="self-center"
-                      onClick={() => removeOverhead(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    {form.watch(`overheads.${index}.penalty`) && (
-                      <>
-                        <FormComponent
-                          name={`overheads.${index}.penaltyBankFeePrecentage`}
-                          label="نسبة رسوم البنك للغرامة (%)"
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              placeholder="نسبة رسوم البنك"
-                              step="0.01"
-                              min="0"
-                              {...field}
-                              value={field.value || 0}
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                            />
-                          )}
-                        />
-
-                        <FormComponent
-                          name={`overheads.${index}.penaltyExtraFee`}
-                          label="الرسوم الإضافية للغرامة"
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              placeholder="الرسوم الإضافية"
-                              step="0.01"
-                              min="0"
-                              {...field}
-                              value={field.value || 0}
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                            />
-                          )}
-                        />
-
-                        <FormComponent
-                          name={`overheads.${index}.relatedAgent`}
-                          label="وكيل مرتبط"
-                          className="col-span-2 flex items-center justify-between"
-                          render={({ field }) => (
-                            <Switch
-                              className="flex-row-reverse"
-                              checked={field.value || false}
-                              onCheckedChange={field.onChange}
-                            />
-                          )}
-                        />
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <AddOverheadForm name="overheads" title="التكاليف الإضافية" />
         </div>
         <Button type="submit" className="w-full">
           حفظ الخدمة

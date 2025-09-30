@@ -1,5 +1,6 @@
 import { OrderDetails } from "@/types/order";
 import { z } from "zod";
+import { overheadSchema } from "./service";
 
 export const orderFormSchema = z.object({
   ClientId: z.number().min(1, { message: "يجب اختيار عميل" }),
@@ -54,18 +55,7 @@ export const orderFormSchema = z.object({
   OverheadIds: z
     .array(z.number().min(1, { message: "يجب اختيار مصاريف" }))
     .optional(),
-  CustomOverheads: z
-    .array(
-      z.object({
-        Name: z
-          .string()
-          .max(100, { message: "يجب ان لا يزيد اسم المصاريف عن 100 حرف" }),
-        Amount: z
-          .number()
-          .min(0, { message: "يجب ان تكون المصاريف على الاقل 0" }),
-      }),
-    )
-    .optional(),
+  CustomOverheads: z.array(overheadSchema).optional(),
   CreateFiles: z
     .array(
       z.object({
