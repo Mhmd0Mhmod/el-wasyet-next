@@ -122,8 +122,8 @@ function OverheadsForms() {
             <div className="relative">
               <Input
                 type="text"
-                value={(field.value as number) || ""}
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                {...field}
+                value={field.value?.toString() || ""}
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م
