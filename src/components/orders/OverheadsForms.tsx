@@ -61,20 +61,19 @@ function OverheadsForms() {
     (acc, curr) => acc + (curr.value || 0),
     0,
   );
-  console.log(customOverheadsValue);
-
   const offerPercentage = offers?.find(
     (o) => o.offerId === watch("OfferId"),
   )?.discountPercentage;
   const agentPercentage = agents?.find(
     (a) => a.id === watch("AgentId"),
   )?.commissionPercentage;
-  const totalAmount =
-    (service.defaultFees +
-      selectedOverheadsValue +
-      (customOverheadsValue || 0)) *
-    (1 - (offerPercentage || 0) / 100) *
-    (1 + (agentPercentage || 0) / 100);
+
+  const baseAmount =
+    service.defaultFees + selectedOverheadsValue + (customOverheadsValue || 0);
+  const offerDiscount = (service.defaultFees * (offerPercentage || 0)) / 100;
+  const agentCommission = (service.defaultFees * (agentPercentage || 0)) / 100;
+
+  const totalAmount = baseAmount - offerDiscount + agentCommission;
   return (
     <div className="space-y-4" dir="rtl">
       <h4 className="text-lg font-semibold">الرسوم الإضافية</h4>

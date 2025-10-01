@@ -35,13 +35,9 @@ function DocumentSelector() {
   });
   function addCustomDocument(formData: FormData) {
     const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const quantity = formData.get("quantity") as string;
-    if (!description) return;
+    if (!name) return;
     append({
       Name: name,
-      Description: description,
-      Quantity: parseInt(quantity),
     });
   }
   function onRemoveCustomDocument(index: number) {
@@ -101,12 +97,6 @@ function DocumentSelector() {
                   >
                     <div className="flex-1">
                       <div className="font-medium">{field.Name}</div>
-                      <div className="text-sm text-gray-600">
-                        {field.Description}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        الكمية: {field.Quantity}
-                      </div>
                     </div>
                     <Button
                       size={"icon"}

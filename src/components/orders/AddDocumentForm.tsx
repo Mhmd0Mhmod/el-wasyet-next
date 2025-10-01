@@ -6,7 +6,6 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 
 function AddDocumentForm({
   onSubmit,
@@ -18,6 +17,7 @@ function AddDocumentForm({
     e.stopPropagation();
     const formData = new FormData(e.target as HTMLFormElement);
     onSubmit?.(formData);
+    (e.target as HTMLFormElement).reset();
   };
   return (
     <Collapsible className="space-y-4">
@@ -29,11 +29,7 @@ function AddDocumentForm({
       </CollapsibleTrigger>
       <CollapsibleContent>
         <form onSubmit={onAddDocumentFormSubmit} className="max-w-sm space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <Input name="name" placeholder="أدخل اسم المستند" />
-            <Input name="quantity" placeholder="أدخل كميه " pattern="[0-9]*" />
-          </div>
-          <Textarea name="description" placeholder="أدخل تفاصيل المستند" />
+          <Input name="name" placeholder="أدخل اسم المستند" />
           <Button
             type="submit"
             variant="outline"

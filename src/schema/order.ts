@@ -45,10 +45,6 @@ export const orderFormSchema = z.object({
         Name: z
           .string()
           .max(100, { message: "يجب ان لا يزيد اسم المستند عن 100 حرف" }),
-        Description: z.string().optional(),
-        Quantity: z
-          .number()
-          .min(1, { message: "يجب ان تكون الكمية على الاقل 1" }),
       }),
     )
     .optional(),
