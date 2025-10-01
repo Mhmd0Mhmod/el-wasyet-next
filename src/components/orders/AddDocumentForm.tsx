@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
   Collapsible,
@@ -12,12 +13,18 @@ function AddDocumentForm({
 }: {
   onSubmit: (formData: FormData) => void;
 }) {
-  const onAddDocumentFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const form = useForm({
+    defaultValues: { name: "" },
+  });
+  const onAddDocument = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    const formData = new FormData(e.target as HTMLFormElement);
-    onSubmit?.(formData);
-    (e.target as HTMLFormElement).reset();
+    form.handleSubmit((data) => {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      onSubmit(formData);
+    })();
+    form.reset();
   };
   return (
     <Collapsible className="space-y-4">
@@ -28,10 +35,10 @@ function AddDocumentForm({
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <form onSubmit={onAddDocumentFormSubmit} className="max-w-sm space-y-2">
-          <Input name="name" placeholder="أدخل اسم المستند" />
+        <div className="max-w-sm space-y-2">
+          <Input placeholder="أدخل اسم المستند" {...form.register("name")} />
           <Button
-            type="submit"
+            onClick={onAddDocument}
             variant="outline"
             size="sm"
             className="mr-auto flex"
@@ -39,7 +46,7 @@ function AddDocumentForm({
             <Plus className="ml-2 h-4 w-4" />
             <span>إضافة</span>
           </Button>
-        </form>
+        </div>
       </CollapsibleContent>
     </Collapsible>
   );

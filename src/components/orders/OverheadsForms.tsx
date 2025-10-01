@@ -2,6 +2,8 @@
 import { useAgents } from "@/hooks/useAgents";
 import { useOffers } from "@/hooks/useOffers";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
+import { OrderFormValues } from "@/schema/order";
+import { useFormContext } from "react-hook-form";
 import AddOverheadForm from "../general/AddOverheadForm";
 import Table from "../general/Table";
 import TableSkeleton from "../general/TableSkeleton";
@@ -14,8 +16,6 @@ import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { TableCell, TableRow } from "../ui/table";
-import { useFormContext } from "react-hook-form";
-import { OrderFormValues } from "@/schema/order";
 const columns = [
   {
     id: "overhead",
@@ -36,8 +36,10 @@ function OverheadsForms() {
   const form = useFormContext<OrderFormValues>();
   const { offers } = useOffers();
   const { agents } = useAgents();
+
   if (!service) return null;
   if (isLoading) return <TableSkeleton columns={3} rows={4} />;
+
   const { watch } = form;
   const { overheads } = service;
   const selectedOverheads = watch("OverheadIds") || [];
@@ -74,6 +76,7 @@ function OverheadsForms() {
   const agentCommission = (service.defaultFees * (agentPercentage || 0)) / 100;
 
   const totalAmount = baseAmount - offerDiscount + agentCommission;
+
   return (
     <div className="space-y-4" dir="rtl">
       <h4 className="text-lg font-semibold">الرسوم الإضافية</h4>
@@ -86,9 +89,9 @@ function OverheadsForms() {
             <div className="relative">
               <Input
                 type="text"
-                value={totalAmount}
+                {...field}
+                value={totalAmount.toFixed(2)}
                 disabled
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م
@@ -121,9 +124,13 @@ function OverheadsForms() {
           render={({ field }) => (
             <div className="relative">
               <Input
-                type="text"
+                type="number"
                 {...field}
                 value={field.value?.toString() || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === "" ? 0 : Number(value));
+                }}
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م
@@ -138,9 +145,13 @@ function OverheadsForms() {
           render={({ field }) => (
             <div className="relative">
               <Input
-                type="text"
-                value={(field.value as number) || ""}
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                type="number"
+                {...field}
+                value={field.value?.toString() || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === "" ? 0 : Number(value));
+                }}
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
                 ج.م

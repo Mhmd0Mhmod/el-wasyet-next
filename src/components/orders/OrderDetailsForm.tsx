@@ -42,6 +42,10 @@ function OrderDetailsForm() {
                 type="number"
                 {...field}
                 value={field.value?.toString() || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === "" ? undefined : Number(value));
+                }}
               />
             )}
           />

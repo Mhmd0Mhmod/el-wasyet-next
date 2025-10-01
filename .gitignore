@@ -30,8 +30,14 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files - keep .env.example but ignore actual secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Allow .env.example to be committed (it's documentation)
+!.env.example
 
 # vercel
 .vercel
@@ -40,8 +46,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local deployment files
-.open-next 
+# cloudflare deployment files
+.open-next
 .open-next/*
 .wrangler
+# Allow wrangler.toml to be committed (it's configuration, not secrets)
+!wrangler.toml
+# But ignore the wrangler state directory
 .wrangler/*
