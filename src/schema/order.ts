@@ -55,10 +55,8 @@ export const orderFormSchema = z.object({
   CreateFiles: z
     .array(
       z.object({
-        FileId: z.number().min(1, { message: "يجب اختيار ملف" }),
-        Quantity: z
-          .number()
-          .min(1, { message: "يجب ان تكون الكمية على الاقل 1" }),
+        fileTypeId: z.number().min(1, { message: "يجب اختيار نوع الملف" }),
+        file: z.instanceof(File),
       }),
     )
     .optional(),

@@ -79,11 +79,11 @@ function ClientSelector({
             />
             <CommandList>
               {isLoadingClients && <CommandEmpty>جاري البحث...</CommandEmpty>}
-              {!isLoadingClients && searchTerm.length < 2 && (
-                <CommandEmpty>اكتب على الأقل حرفين للبحث</CommandEmpty>
+              {!isLoadingClients && searchTerm.length < 11 && (
+                <CommandEmpty>أدخل رقم هاتف مكون من 11 رقمًا</CommandEmpty>
               )}
               {!isLoadingClients &&
-                searchTerm.length >= 2 &&
+                searchTerm.length >= 11 &&
                 clients.length === 0 && (
                   <CommandEmpty>{emptyMessage}</CommandEmpty>
                 )}
