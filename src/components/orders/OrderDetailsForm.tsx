@@ -1,13 +1,13 @@
 "use client";
-import {
-  OrderFormField,
-  useOrderService,
-} from "../providers/OrderFormProvider";
+import { useOrderForm, useOrderService } from "../providers/OrderFormProvider";
 import { Input } from "../ui/input";
 import { Skeleton } from "../ui/skeleton";
 import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { handleNumberKeyPress } from "@/lib/utils";
 
 function OrderDetailsForm() {
+  const form = useOrderForm();
   const { service, isLoading } = useOrderService();
   if (isLoading) {
     return (
@@ -23,69 +23,61 @@ function OrderDetailsForm() {
     <div className="md:grid md:grid-cols-2 md:gap-4">
       {service?.isCertificate && (
         <>
-          <OrderFormField
-            name="BirthDate"
-            label="تاريخ الميلاد"
-            render={({ field }) => (
-              <Input
-                type="date"
-                {...field}
-                value={field.value?.toString() || ""}
-              />
+          <div className="space-y-2">
+            <Label htmlFor="BirthDate">تاريخ الميلاد</Label>
+            <Input type="date" {...form.register("BirthDate")} />
+            {form.formState.errors.BirthDate && (
+              <p className="text-sm text-red-600">
+                {form.formState.errors.BirthDate.message}
+              </p>
             )}
-          />
-          <OrderFormField
-            name="Amount"
-            label="العدد المطلوب"
-            render={({ field }) => (
-              <Input
-                type="number"
-                {...field}
-                value={field.value?.toString() || ""}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value === "" ? undefined : Number(value));
-                }}
-              />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="Amount">العدد المطلوب</Label>
+            <Input
+              type="number"
+              {...form.register("Amount", {
+                setValueAs: (value) =>
+                  value === "" ? undefined : Number(value),
+              })}
+              onKeyPress={handleNumberKeyPress}
+            />
+            {form.formState.errors.Amount && (
+              <p className="text-sm text-red-600">
+                {form.formState.errors.Amount.message}
+              </p>
             )}
-          />
+          </div>
         </>
       )}
-      <OrderFormField
-        name="RequiredChange"
-        label="التغيير المطلوب"
-        render={({ field }) => (
-          <Textarea
-            {...field}
-            onChange={field.onChange}
-            value={field.value?.toString() || ""}
-          />
+      <div className="space-y-2">
+        <Label htmlFor="RequiredChange">التغيير المطلوب</Label>
+        <Textarea {...form.register("RequiredChange")} />
+        {form.formState.errors.RequiredChange && (
+          <p className="text-sm text-red-600">
+            {form.formState.errors.RequiredChange.message}
+          </p>
         )}
-      />
+      </div>
 
-      <OrderFormField
-        name="DeliveryAddress"
-        label="عنوان (للتوصيل)"
-        render={({ field }) => (
-          <Textarea
-            {...field}
-            onChange={field.onChange}
-            value={field.value?.toString() || ""}
-          />
+      <div className="space-y-2">
+        <Label htmlFor="DeliveryAddress">عنوان (للتوصيل)</Label>
+        <Textarea {...form.register("DeliveryAddress")} />
+        {form.formState.errors.DeliveryAddress && (
+          <p className="text-sm text-red-600">
+            {form.formState.errors.DeliveryAddress.message}
+          </p>
         )}
-      />
-      <OrderFormField
-        name="Notes"
-        label="الملاحظات"
-        className="col-span-2"
-        render={({ field }) => (
-          <Textarea
-            {...field}
-            onChange={field.onChange}
-            value={field.value?.toString() || ""}
-          />
+      </div>
+      <div className="col-span-2 space-y-2">
+        <Label htmlFor="Notes">الملاحظات</Label>
+        <Textarea {...form.register("Notes")} />
+        {form.formState.errors.Notes && (
+          <p className="text-sm text-red-600">
+            {form.formState.errors.Notes.message}
+          </p>
         )}
-      />
+      </div>
     </div>
   );
 }

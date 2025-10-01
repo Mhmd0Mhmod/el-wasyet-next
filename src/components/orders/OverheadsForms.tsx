@@ -2,15 +2,11 @@
 import { useAgents } from "@/hooks/useAgents";
 import { useOffers } from "@/hooks/useOffers";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
-import { OrderFormValues } from "@/schema/order";
-import { useFormContext } from "react-hook-form";
+import { handleNumberKeyPress } from "@/lib/utils";
 import AddOverheadForm from "../general/AddOverheadForm";
 import Table from "../general/Table";
 import TableSkeleton from "../general/TableSkeleton";
-import {
-  OrderFormField,
-  useOrderService,
-} from "../providers/OrderFormProvider";
+import { useOrderForm, useOrderService } from "../providers/OrderFormProvider";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
@@ -33,7 +29,7 @@ const columns = [
 
 function OverheadsForms() {
   const { service, isLoading } = useOrderService();
-  const form = useFormContext<OrderFormValues>();
+  const form = useOrderForm();
   const { offers } = useOffers();
   const { agents } = useAgents();
 
@@ -81,84 +77,80 @@ function OverheadsForms() {
     <div className="space-y-4" dir="rtl">
       <h4 className="text-lg font-semibold">الرسوم الإضافية</h4>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <OrderFormField
-          name="Amount"
-          label="إجمالي قيمة الطلب"
-          disabled
-          render={({ field }) => (
-            <div className="relative">
-              <Input
-                type="text"
-                {...field}
-                value={totalAmount.toFixed(2)}
-                disabled
-              />
-              <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
-                ج.م
-              </span>
-            </div>
-          )}
-        />
+        <div className="space-y-2">
+          <Label htmlFor="Amount">إجمالي قيمة الطلب</Label>
+          <div className="relative">
+            <Input
+              type="text"
+              value={totalAmount.toFixed(2)}
+              disabled
+              readOnly
+              {...form.register("Amount")}
+            />
+            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+              ج.م
+            </span>
+          </div>
+        </div>
 
-        <OrderFormField
-          name="ServiceFees"
-          label="رسوم الخدمة"
-          disabled
-          render={({ field }) => (
-            <div className="relative">
-              <Input
-                type="text"
-                {...field}
-                value={service.defaultFees.toString()}
-                disabled
-              />
-              <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
-                ج.م
-              </span>
-            </div>
+        <div className="space-y-2">
+          <Label htmlFor="ServiceFees">رسوم الخدمة</Label>
+          <div className="relative">
+            <Input
+              type="text"
+              value={service.defaultFees.toString()}
+              disabled
+              readOnly
+              {...form.register("ServiceFees")}
+            />
+            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+              ج.م
+            </span>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="Cash">المجموع كاش</Label>
+          <div className="relative">
+            <Input
+              type="number"
+              {...form.register("Cash", {
+                setValueAs: (value) =>
+                  value === "" ? undefined : Number(value),
+              })}
+              onKeyPress={handleNumberKeyPress}
+            />
+            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+              ج.م
+            </span>
+          </div>
+          {form.formState.errors.Cash && (
+            <p className="text-sm text-red-600">
+              {form.formState.errors.Cash.message}
+            </p>
           )}
-        />
-        <OrderFormField
-          name="Cash"
-          label="المجموع كاش"
-          render={({ field }) => (
-            <div className="relative">
-              <Input
-                type="number"
-                {...field}
-                value={field.value?.toString() || ""}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value === "" ? 0 : Number(value));
-                }}
-              />
-              <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
-                ج.م
-              </span>
-            </div>
-          )}
-        />
+        </div>
 
-        <OrderFormField
-          name="Credit"
-          label="المجموع كارديت"
-          render={({ field }) => (
-            <div className="relative">
-              <Input
-                type="number"
-                {...field}
-                value={field.value?.toString() || ""}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value === "" ? 0 : Number(value));
-                }}
-              />
-              <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">
-                ج.م
-              </span>
-            </div>
+        <div className="space-y-2">
+          <Label htmlFor="Credit">المجموع كارديت</Label>
+          <div className="relative">
+            <Input
+              type="number"
+              {...form.register("Credit", {
+                setValueAs: (value) =>
+                  value === "" ? undefined : Number(value),
+              })}
+              onKeyPress={handleNumberKeyPress}
+            />
+            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+              ج.م
+            </span>
+          </div>
+          {form.formState.errors.Credit && (
+            <p className="text-sm text-red-600">
+              {form.formState.errors.Credit.message}
+            </p>
           )}
-        />
+        </div>
       </div>
       <Table
         columns={columns}

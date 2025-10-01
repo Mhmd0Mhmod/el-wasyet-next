@@ -4,6 +4,7 @@ import { useFormsServices } from "@/hooks/useFormsServices";
 import { Plus, Trash2 } from "lucide-react";
 import { useCallback } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { handleNumberKeyPress } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -83,8 +84,8 @@ function Overhead({ index, name }: { index: number; name: string }) {
     name,
   });
 
-  // Use getValues to get current values without causing re-renders
-  const fieldValues = form.getValues(`${name}.${index}`) || {};
+  // Use watch to get current values reactively
+  const fieldValues = form.watch(`${name}.${index}`) || {};
   const isFormType = fieldValues.forms || false;
   const isPenaltyType = fieldValues.penalty || false;
 
@@ -145,6 +146,7 @@ function Overhead({ index, name }: { index: number; name: string }) {
               {...form.register(`${name}.${index}.value`, {
                 setValueAs: (value) => (value === "" ? 0 : Number(value)),
               })}
+              onKeyPress={handleNumberKeyPress}
             />
           </div>
           {isFormType && <FormsComponent index={index} name={name} />}
@@ -162,6 +164,7 @@ function PenaltyComponent({ index, name }: { index: number; name: string }) {
       <Label htmlFor={`${name}.${index}.penaltyExtraFee`}>
         الرسوم الإضافية للغرامة
       </Label>
+
       <Input
         id={`${name}.${index}.penaltyExtraFee`}
         type="number"
@@ -170,6 +173,7 @@ function PenaltyComponent({ index, name }: { index: number; name: string }) {
         {...form.register(`${name}.${index}.penaltyExtraFee`, {
           setValueAs: (value) => (value === "" ? 0 : Number(value)),
         })}
+        onKeyPress={handleNumberKeyPress}
       />
     </div>
   );
@@ -198,7 +202,7 @@ function FormsComponent({ index, name }: { index: number; name: string }) {
     [form, name, index, getOverheadFormType],
   );
 
-  const currentValue = form.getValues(`${name}.${index}.formTypeID`);
+  const currentValue = form.watch(`${name}.${index}.formTypeID`);
 
   return (
     <div className="flex flex-col gap-2">

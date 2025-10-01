@@ -1,6 +1,6 @@
 "use client";
 import { useService } from "@/hooks/useService";
-import { OrderFormField, useOrderForm } from "../providers/OrderFormProvider";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
@@ -55,35 +55,25 @@ function DocumentSelector() {
           <>
             {isLoading && LoadingSkeleton}
             {!isLoading && documentsServcie.length !== 0 && (
-              <OrderFormField
-                name="Documents"
-                render={() => (
-                  <div className="space-y-2">
-                    {documentsServcie.map((doc) => {
-                      const isChecked = documents.some(
-                        (d) => d.DocumentId === doc.id,
-                      );
-                      return (
-                        <div
-                          key={doc.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`doc-${doc.id}`}
-                            checked={isChecked}
-                            onCheckedChange={(checked) =>
-                              handleDocumentChange(doc.id.toString(), !!checked)
-                            }
-                          />
-                          <Label htmlFor={`doc-${doc.id}`}>
-                            {doc.description}
-                          </Label>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              />
+              <div className="space-y-2">
+                {documentsServcie.map((doc) => {
+                  const isChecked = documents.some(
+                    (d) => d.DocumentId === doc.id,
+                  );
+                  return (
+                    <div key={doc.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`doc-${doc.id}`}
+                        checked={isChecked}
+                        onCheckedChange={(checked) =>
+                          handleDocumentChange(doc.id.toString(), !!checked)
+                        }
+                      />
+                      <Label htmlFor={`doc-${doc.id}`}>{doc.description}</Label>
+                    </div>
+                  );
+                })}
+              </div>
             )}
 
             {/* Display Custom Documents */}

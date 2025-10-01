@@ -2,7 +2,7 @@
 import { useFieldArray } from "react-hook-form";
 import { useRef, useState } from "react";
 import Dialog from "../general/Dialog";
-import { OrderFormField, useOrderForm } from "../providers/OrderFormProvider";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -107,11 +107,10 @@ function UploadDocumentButton() {
             </CardContent>
           </Card>
 
-          {/* Uploaded Files List using OrderFormField */}
-          <OrderFormField
-            name="CreateFiles"
-            label="الملفات المرفوعة"
-            render={() => (
+          {/* Uploaded Files List */}
+          <div className="space-y-2">
+            <Label>الملفات المرفوعة</Label>
+            <div>
               <div className="space-y-4">
                 {fields.length > 0 ? (
                   <div className="space-y-3">
@@ -168,8 +167,8 @@ function UploadDocumentButton() {
                   </Card>
                 )}
               </div>
-            )}
-          />
+            </div>
+          </div>
         </div>
       </Dialog.Content>
     </Dialog>
