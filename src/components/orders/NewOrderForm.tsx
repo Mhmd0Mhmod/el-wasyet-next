@@ -4,7 +4,10 @@ import DocumentSelector from "./DocumentSelector";
 import FinancialDetailsForm from "./FinancialDetailsForm";
 import OrderDetailsForm from "./OrderDetailsForm";
 import OverheadsForms from "./OverheadsForms";
+import ResetButton from "./ResetButton";
 import ServiceTypeSelector from "./ServiceTypeSelector";
+import SubmitButton from "./SubmitButton";
+import UploadDocumentButton from "./UploadDocumentButton";
 
 function NewOrderForm() {
   return (
@@ -28,6 +31,11 @@ function NewOrderForm() {
         <div className="col-span-2">
           <OverheadsForms />
         </div>
+      </div>
+      <div className="mt-10 flex justify-end gap-4">
+        <ResetButton />
+        <UploadDocumentButton />
+        <SubmitButton />
       </div>
     </OrderFromProvider>
   );

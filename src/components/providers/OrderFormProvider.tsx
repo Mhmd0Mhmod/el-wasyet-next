@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { createFormField } from "../general/FormComponent";
 import { useService } from "@/hooks/useService";
+import { Form } from "../ui/form";
 
 function OrderFromProvider({
   orderDetails,
@@ -22,7 +23,18 @@ function OrderFromProvider({
     resolver: zodResolver(orderFormSchema),
     defaultValues: generateOrderDefaultValues(orderDetails),
   });
-  return <FormProvider {...form}>{children}</FormProvider>;
+  function onSubmit(data: OrderFormValues) {
+    console.log(data);
+  }
+  return (
+    <FormProvider {...form}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+          {children}
+        </form>
+      </Form>
+    </FormProvider>
+  );
 }
 export function useOrderForm() {
   return useFormContext<OrderFormValues>();
