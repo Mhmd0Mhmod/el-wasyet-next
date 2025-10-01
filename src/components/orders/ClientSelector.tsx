@@ -1,11 +1,12 @@
 "use client";
 
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { useClients } from "@/hooks/useClients";
 import { cn } from "@/lib/utils";
+import { OrderFormValues } from "@/schema/order";
 import { Button } from "../ui/button";
 import {
   Command,
@@ -15,117 +16,134 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { Input } from "../ui/input";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Input } from "../ui/input";
 interface ClientSelectorProps {
   placeholder?: string;
   emptyMessage?: string;
   className?: string;
+  label?: string;
 }
 
 function ClientSelector({
   placeholder = "اختر عميل...",
   emptyMessage = "لا يوجد عملاء.",
   className,
+  label = "العميل",
 }: ClientSelectorProps = {}) {
-  const form = useFormContext();
+  const form = useFormContext<OrderFormValues>();
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedClientId, setSelectedClientId] = useState<string>("");
   const { clients, isLoadingClients } = useClients(searchTerm);
-
-  const selectedClient = useMemo(
-    () => clients.find((client) => client.id.toString() === selectedClientId),
-    [clients, selectedClientId],
-  );
-
-  const handleSelect = useCallback(
-    (clientId: string) => {
-      const newValue = clientId === selectedClientId ? "" : clientId;
-      setSelectedClientId(newValue);
-      form.setValue("clientId", newValue ? parseInt(newValue) : null);
-      setOpen(false);
-    },
-    [selectedClientId, form],
-  );
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value.replace(/[^+\d]/g, ""));
   }, []);
+  const selectedClientId = form.watch("ClientId");
+  const selectedClient = clients.find(
+    (client) => client.id === selectedClientId,
+  );
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className={cn("w-full justify-between", className)}
-          >
-            <span className="truncate">
-              {selectedClient ? selectedClient.name : placeholder}
-            </span>
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent align="start">
-          <Command shouldFilter={false}>
-            <CommandInput
-              dir="ltr"
-              placeholder="ابحث عن عميل (رقم الهاتف )"
-              value={searchTerm}
-              onValueChange={handleSearchChange}
-              className="h-9"
-            />
-            <CommandList>
-              {isLoadingClients && <CommandEmpty>جاري البحث...</CommandEmpty>}
-              {!isLoadingClients && searchTerm.length < 11 && (
-                <CommandEmpty>أدخل رقم هاتف مكون من 11 رقمًا</CommandEmpty>
-              )}
-              {!isLoadingClients &&
-                searchTerm.length >= 11 &&
-                clients.length === 0 && (
-                  <CommandEmpty>{emptyMessage}</CommandEmpty>
-                )}
-              {!isLoadingClients && clients.length > 0 && (
-                <CommandGroup>
-                  {clients.map((client) => (
-                    <CommandItem
-                      key={client.id}
-                      value={client.id.toString()}
-                      onSelect={handleSelect}
-                      className="flex items-center gap-2"
+      <FormField
+        control={form.control}
+        name="ClientId"
+        render={({ field }) => {
+          const selectedClient = clients.find(
+            (client) => client.id === field.value,
+          );
+          return (
+            <FormItem className={className}>
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-full justify-between"
                     >
-                      <div className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate font-medium">
-                          {client.name}
-                        </span>
-                        <span className="text-muted-foreground text-sm">
-                          {client.phone1}
-                        </span>
-                      </div>
-                      <Check
-                        className={cn(
-                          "h-4 w-4 shrink-0",
-                          selectedClientId === client.id.toString()
-                            ? "opacity-100"
-                            : "opacity-0",
+                      <span className="truncate">
+                        {selectedClient ? selectedClient.name : placeholder}
+                      </span>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent align="start">
+                  <Command shouldFilter={false}>
+                    <CommandInput
+                      dir="ltr"
+                      placeholder="ابحث عن عميل (رقم الهاتف )"
+                      value={searchTerm}
+                      onValueChange={handleSearchChange}
+                      className="h-9"
+                    />
+                    <CommandList>
+                      {isLoadingClients && (
+                        <CommandEmpty>جاري البحث...</CommandEmpty>
+                      )}
+                      {!isLoadingClients && searchTerm.length < 11 && (
+                        <CommandEmpty>
+                          أدخل رقم هاتف مكون من 11 رقمًا
+                        </CommandEmpty>
+                      )}
+                      {!isLoadingClients &&
+                        searchTerm.length >= 11 &&
+                        clients.length === 0 && (
+                          <CommandEmpty>{emptyMessage}</CommandEmpty>
                         )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-      <Input
-        placeholder="اسم العميل "
-        value={selectedClient?.name || ""}
-        readOnly
-        disabled
+                      {!isLoadingClients && clients.length > 0 && (
+                        <CommandGroup>
+                          {clients.map((client) => (
+                            <CommandItem
+                              key={client.id}
+                              value={client.id.toString()}
+                              onSelect={() => {
+                                field.onChange(
+                                  client.id === field.value ? 0 : client.id,
+                                );
+                                setOpen(false);
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              <div className="flex min-w-0 flex-1 flex-col">
+                                <span className="truncate font-medium">
+                                  {client.name}
+                                </span>
+                                <span className="text-muted-foreground text-sm">
+                                  {client.phone1}
+                                </span>
+                              </div>
+                              <Check
+                                className={cn(
+                                  "h-4 w-4 shrink-0",
+                                  field.value === client.id
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      )}
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
+      <Input value={selectedClient?.name} disabled />
     </>
   );
 }

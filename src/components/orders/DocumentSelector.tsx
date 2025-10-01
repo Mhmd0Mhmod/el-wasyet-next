@@ -1,17 +1,17 @@
 "use client";
 import { useService } from "@/hooks/useService";
-import { useOrderForm } from "../providers/OrderFormProvider";
+import { OrderFormValues } from "@/schema/order";
+import { Trash2Icon } from "lucide-react";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { Skeleton } from "../ui/skeleton";
 import AddDocumentForm from "./AddDocumentForm";
-import { useFieldArray } from "react-hook-form";
-import { Trash2Icon } from "lucide-react";
-import { Button } from "../ui/button";
 
 function DocumentSelector() {
-  const form = useOrderForm();
+  const form = useFormContext<OrderFormValues>();
   const serviceId = form.watch("ServiceId");
   const documents = form.watch("Documents") || [];
   const { isLoading, service } = useService(serviceId);
@@ -24,9 +24,10 @@ function DocumentSelector() {
     </div>
   );
   function handleDocumentChange(docId: string, isChecked: boolean) {
+    const docIdNumber = parseInt(docId);
     const updatedDocuments = isChecked
-      ? [...documents, { DocumentId: parseInt(docId), Quantity: 1 }]
-      : documents.filter((doc) => doc.DocumentId !== parseInt(docId));
+      ? [...documents, docIdNumber]
+      : documents.filter((id) => id !== docIdNumber);
     form.setValue("Documents", updatedDocuments);
   }
   const { fields, append, remove } = useFieldArray({
@@ -34,10 +35,10 @@ function DocumentSelector() {
     name: "CustomDocuments",
   });
   function addCustomDocument(formData: FormData) {
-    const name = formData.get("name") as string;
-    if (!name) return;
+    const description = formData.get("description") as string;
+    if (!description) return;
     append({
-      Name: name,
+      Description: description,
     });
   }
   function onRemoveCustomDocument(index: number) {
@@ -57,9 +58,7 @@ function DocumentSelector() {
             {!isLoading && documentsServcie.length !== 0 && (
               <div className="space-y-2">
                 {documentsServcie.map((doc) => {
-                  const isChecked = documents.some(
-                    (d) => d.DocumentId === doc.id,
-                  );
+                  const isChecked = documents.includes(doc.id);
                   return (
                     <div key={doc.id} className="flex items-center space-x-2">
                       <Checkbox
@@ -86,7 +85,7 @@ function DocumentSelector() {
                     className="flex items-center justify-between rounded-md border p-2"
                   >
                     <div className="flex-1">
-                      <div className="font-medium">{field.Name}</div>
+                      <div className="font-medium">{field.Description}</div>
                     </div>
                     <Button
                       size={"icon"}

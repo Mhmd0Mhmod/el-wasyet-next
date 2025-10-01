@@ -14,14 +14,14 @@ function AddDocumentForm({
   onSubmit: (formData: FormData) => void;
 }) {
   const form = useForm({
-    defaultValues: { name: "" },
+    defaultValues: { description: "" },
   });
   const onAddDocument = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     form.handleSubmit((data) => {
       const formData = new FormData();
-      formData.append("name", data.name);
+      formData.append("description", data.description);
       onSubmit(formData);
     })();
     form.reset();
@@ -36,7 +36,10 @@ function AddDocumentForm({
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="max-w-sm space-y-2">
-          <Input placeholder="أدخل اسم المستند" {...form.register("name")} />
+          <Input
+            placeholder="أدخل اسم المستند"
+            {...form.register("description")}
+          />
           <Button
             onClick={onAddDocument}
             variant="outline"

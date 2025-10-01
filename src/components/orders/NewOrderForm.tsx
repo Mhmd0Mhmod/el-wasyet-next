@@ -1,4 +1,4 @@
-import OrderFromProvider from "../providers/OrderFormProvider";
+import OrderFormProvider from "../providers/OrderFormProvider";
 import ClientSelector from "./ClientSelector";
 import DocumentSelector from "./DocumentSelector";
 import FinancialDetailsForm from "./FinancialDetailsForm";
@@ -11,7 +11,7 @@ import UploadDocumentButton from "./UploadDocumentButton";
 
 function NewOrderForm() {
   return (
-    <OrderFromProvider>
+    <OrderFormProvider>
       <div className="md:grid md:grid-cols-[1fr_auto] md:items-start md:gap-6">
         <div className="space-y-6">
           <div className="space-y-2">
@@ -37,7 +37,7 @@ function NewOrderForm() {
         <UploadDocumentButton />
         <SubmitButton />
       </div>
-    </OrderFromProvider>
+    </OrderFormProvider>
   );
 }
 export default NewOrderForm;

@@ -1,15 +1,24 @@
 "use client";
-import { useOrderForm, useOrderService } from "../providers/OrderFormProvider";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Input } from "../ui/input";
 import { Skeleton } from "../ui/skeleton";
 import { Textarea } from "../ui/textarea";
-import { Label } from "../ui/label";
-import { handleNumberKeyPress } from "@/lib/utils";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { useFormContext } from "react-hook-form";
+import { OrderFormValues } from "@/schema/order";
 
 function OrderDetailsForm() {
-  const form = useOrderForm();
-  const { service, isLoading } = useOrderService();
-  if (isLoading) {
+  const form = useFormContext<OrderFormValues>();
+  const { service, isLoadingService } = useOrderForm();
+
+  if (isLoadingService) {
     return (
       <div className="grid grid-cols-2 gap-5">
         {Array.from({ length: 4 }).map((_, index) => (
@@ -23,61 +32,87 @@ function OrderDetailsForm() {
     <div className="md:grid md:grid-cols-2 md:gap-4">
       {service?.isCertificate && (
         <>
-          <div className="space-y-2">
-            <Label htmlFor="BirthDate">تاريخ الميلاد</Label>
-            <Input type="date" {...form.register("BirthDate")} />
-            {form.formState.errors.BirthDate && (
-              <p className="text-sm text-red-600">
-                {form.formState.errors.BirthDate.message}
-              </p>
+          <FormField
+            control={form.control}
+            name="BirthDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>تاريخ الميلاد</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormDescription />
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="Amount">العدد المطلوب</Label>
-            <Input
-              type="number"
-              {...form.register("Amount", {
-                setValueAs: (value) =>
-                  value === "" ? undefined : Number(value),
-              })}
-              onKeyPress={handleNumberKeyPress}
-            />
-            {form.formState.errors.Amount && (
-              <p className="text-sm text-red-600">
-                {form.formState.errors.Amount.message}
-              </p>
+          />
+          <FormField
+            control={form.control}
+            name="Quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>العدد المطلوب</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    {...field}
+                    value={field.value?.toString() || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === "" ? undefined : Number(value));
+                    }}
+                  />
+                </FormControl>
+                <FormDescription />
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
+          />
         </>
       )}
-      <div className="space-y-2">
-        <Label htmlFor="RequiredChange">التغيير المطلوب</Label>
-        <Textarea {...form.register("RequiredChange")} />
-        {form.formState.errors.RequiredChange && (
-          <p className="text-sm text-red-600">
-            {form.formState.errors.RequiredChange.message}
-          </p>
+      <FormField
+        control={form.control}
+        name="RequiredChange"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>التغيير المطلوب</FormLabel>
+            <FormControl>
+              <Textarea {...field} />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
         )}
-      </div>
+      />
 
-      <div className="space-y-2">
-        <Label htmlFor="DeliveryAddress">عنوان (للتوصيل)</Label>
-        <Textarea {...form.register("DeliveryAddress")} />
-        {form.formState.errors.DeliveryAddress && (
-          <p className="text-sm text-red-600">
-            {form.formState.errors.DeliveryAddress.message}
-          </p>
+      <FormField
+        control={form.control}
+        name="DeliveryAddress"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>عنوان (للتوصيل)</FormLabel>
+            <FormControl>
+              <Textarea {...field} />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
         )}
-      </div>
-      <div className="col-span-2 space-y-2">
-        <Label htmlFor="Notes">الملاحظات</Label>
-        <Textarea {...form.register("Notes")} />
-        {form.formState.errors.Notes && (
-          <p className="text-sm text-red-600">
-            {form.formState.errors.Notes.message}
-          </p>
+      />
+      <FormField
+        control={form.control}
+        name="Notes"
+        render={({ field }) => (
+          <FormItem className="col-span-2">
+            <FormLabel>الملاحظات</FormLabel>
+            <FormControl>
+              <Textarea {...field} />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
         )}
-      </div>
+      />
     </div>
   );
 }

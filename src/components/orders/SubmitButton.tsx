@@ -1,12 +1,11 @@
 "use client";
 
-import { useOrderForm } from "../providers/OrderFormProvider";
+import { useFormContext } from "react-hook-form";
 import { Button } from "../ui/button";
 function SubmitButton() {
-  const form = useOrderForm();
+  const form = useFormContext();
   const isSubmitting = form.formState.isSubmitting;
-  console.log(form.watch());
-
+  console.log(form.getValues());
   return (
     <Button type="submit" disabled={isSubmitting}>
       {isSubmitting ? "جاري الإرسال..." : "إرسال الطلب"}

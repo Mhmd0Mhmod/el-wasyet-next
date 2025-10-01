@@ -1,14 +1,21 @@
 "use client";
-import { useAgents } from "@/hooks/useAgents";
-import { useOffers } from "@/hooks/useOffers";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
-import { handleNumberKeyPress } from "@/lib/utils";
+import { OrderFormValues } from "@/schema/order";
+import { useFormContext } from "react-hook-form";
 import AddOverheadForm from "../general/AddOverheadForm";
 import Table from "../general/Table";
 import TableSkeleton from "../general/TableSkeleton";
-import { useOrderForm, useOrderService } from "../providers/OrderFormProvider";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { TableCell, TableRow } from "../ui/table";
@@ -28,13 +35,10 @@ const columns = [
 ];
 
 function OverheadsForms() {
-  const { service, isLoading } = useOrderService();
-  const form = useOrderForm();
-  const { offers } = useOffers();
-  const { agents } = useAgents();
-
+  const { service, isLoadingService, totalAmount } = useOrderForm();
+  const form = useFormContext<OrderFormValues>();
   if (!service) return null;
-  if (isLoading) return <TableSkeleton columns={3} rows={4} />;
+  if (isLoadingService) return <TableSkeleton columns={3} rows={4} />;
 
   const { watch } = form;
   const { overheads } = service;
@@ -52,105 +56,115 @@ function OverheadsForms() {
     }
   }
 
-  const selectedOverheadsValue = overheads
-    .filter((overhead) => selectedOverheads.includes(overhead.id))
-    .reduce((acc, curr) => acc + curr.value, 0);
-  const customOverheadsValue = watch("CustomOverheads")?.reduce(
-    (acc, curr) => acc + (curr.value || 0),
-    0,
-  );
-  const offerPercentage = offers?.find(
-    (o) => o.offerId === watch("OfferId"),
-  )?.discountPercentage;
-  const agentPercentage = agents?.find(
-    (a) => a.id === watch("AgentId"),
-  )?.commissionPercentage;
-
-  const baseAmount =
-    service.defaultFees + selectedOverheadsValue + (customOverheadsValue || 0);
-  const offerDiscount = (service.defaultFees * (offerPercentage || 0)) / 100;
-  const agentCommission = (service.defaultFees * (agentPercentage || 0)) / 100;
-
-  const totalAmount = baseAmount - offerDiscount + agentCommission;
-
   return (
     <div className="space-y-4" dir="rtl">
       <h4 className="text-lg font-semibold">الرسوم الإضافية</h4>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="Amount">إجمالي قيمة الطلب</Label>
-          <div className="relative">
-            <Input
-              type="text"
-              value={totalAmount.toFixed(2)}
-              disabled
-              readOnly
-              {...form.register("Amount")}
-            />
-            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
-              ج.م
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="ServiceFees">رسوم الخدمة</Label>
-          <div className="relative">
-            <Input
-              type="text"
-              value={service.defaultFees.toString()}
-              disabled
-              readOnly
-              {...form.register("ServiceFees")}
-            />
-            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
-              ج.م
-            </span>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="Cash">المجموع كاش</Label>
-          <div className="relative">
-            <Input
-              type="number"
-              {...form.register("Cash", {
-                setValueAs: (value) =>
-                  value === "" ? undefined : Number(value),
-              })}
-              onKeyPress={handleNumberKeyPress}
-            />
-            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
-              ج.م
-            </span>
-          </div>
-          {form.formState.errors.Cash && (
-            <p className="text-sm text-red-600">
-              {form.formState.errors.Cash.message}
-            </p>
+        <FormField
+          control={form.control}
+          name="Amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>المجموع الكلي للخدمة</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    {...field}
+                    value={totalAmount.toFixed(2)}
+                    disabled
+                  />
+                  <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+                    ج.م
+                  </span>
+                </div>
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="Credit">المجموع كارديت</Label>
-          <div className="relative">
-            <Input
-              type="number"
-              {...form.register("Credit", {
-                setValueAs: (value) =>
-                  value === "" ? undefined : Number(value),
-              })}
-              onKeyPress={handleNumberKeyPress}
-            />
-            <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
-              ج.م
-            </span>
-          </div>
-          {form.formState.errors.Credit && (
-            <p className="text-sm text-red-600">
-              {form.formState.errors.Credit.message}
-            </p>
+        <FormField
+          control={form.control}
+          name="ServiceFees"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>رسوم الخدمة</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    {...field}
+                    value={service.defaultFees.toString()}
+                    disabled
+                  />
+                  <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+                    ج.م
+                  </span>
+                </div>
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
+
+        <FormField
+          control={form.control}
+          name="Cash"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>المجموع كاش</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    {...field}
+                    value={field.value?.toString() || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === "" ? 0 : Number(value));
+                    }}
+                  />
+                  <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+                    ج.م
+                  </span>
+                </div>
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="Credit"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>المجموع كارديت</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    {...field}
+                    value={field.value?.toString() || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === "" ? 0 : Number(value));
+                    }}
+                  />
+                  <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
+                    ج.م
+                  </span>
+                </div>
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
       <Table
         columns={columns}

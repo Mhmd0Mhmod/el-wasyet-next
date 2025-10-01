@@ -1,13 +1,14 @@
 "use client";
-import { useFieldArray } from "react-hook-form";
+import { OrderFormValues } from "@/schema/order";
+import { FileText, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import Dialog from "../general/Dialog";
-import { useOrderForm } from "../providers/OrderFormProvider";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Badge } from "../ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Select,
   SelectContent,
@@ -15,10 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Trash2, Upload, FileText } from "lucide-react";
 
 function UploadDocumentButton() {
-  const form = useOrderForm();
+  const form = useFormContext<OrderFormValues>();
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "CreateFiles",
@@ -37,8 +37,8 @@ function UploadDocumentButton() {
   const handleAddFile = () => {
     if (selectedFile && selectedFileType) {
       append({
-        fileTypeId: parseInt(selectedFileType),
-        file: selectedFile,
+        FileTypeId: parseInt(selectedFileType),
+        File: selectedFile,
       });
       setSelectedFile(null);
       setSelectedFileType("");
@@ -116,9 +116,9 @@ function UploadDocumentButton() {
                   <div className="space-y-3">
                     {fields.map((field, index) => {
                       const fileTypeLabel =
-                        field.fileTypeId === 1 ? "ملف مدخل" : "ملف مخرج";
+                        field.FileTypeId === 1 ? "ملف مدخل" : "ملف مخرج";
                       const badgeVariant =
-                        field.fileTypeId === 1 ? "default" : "secondary";
+                        field.FileTypeId === 1 ? "default" : "secondary";
 
                       return (
                         <Card key={field.id} className="p-0">
@@ -128,14 +128,14 @@ function UploadDocumentButton() {
                                 <FileText className="text-primary h-8 w-8" />
                                 <div className="flex-1 space-y-2">
                                   <div className="text-sm font-medium">
-                                    {field.file.name}
+                                    {field.File.name}
                                   </div>
                                   <div className="flex items-center gap-2 text-sm">
                                     <Badge variant={badgeVariant}>
                                       {fileTypeLabel}
                                     </Badge>
                                     <span className="text-muted-foreground text-xs">
-                                      {(field.file.size / 1024).toFixed(1)} KB
+                                      {(field.File.size / 1024).toFixed(1)} KB
                                     </span>
                                   </div>
                                 </div>

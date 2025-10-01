@@ -4,7 +4,6 @@ import { useFormsServices } from "@/hooks/useFormsServices";
 import { Plus, Trash2 } from "lucide-react";
 import { useCallback } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { handleNumberKeyPress } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -146,7 +145,6 @@ function Overhead({ index, name }: { index: number; name: string }) {
               {...form.register(`${name}.${index}.value`, {
                 setValueAs: (value) => (value === "" ? 0 : Number(value)),
               })}
-              onKeyPress={handleNumberKeyPress}
             />
           </div>
           {isFormType && <FormsComponent index={index} name={name} />}
@@ -173,7 +171,6 @@ function PenaltyComponent({ index, name }: { index: number; name: string }) {
         {...form.register(`${name}.${index}.penaltyExtraFee`, {
           setValueAs: (value) => (value === "" ? 0 : Number(value)),
         })}
-        onKeyPress={handleNumberKeyPress}
       />
     </div>
   );

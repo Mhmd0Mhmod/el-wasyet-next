@@ -1,6 +1,14 @@
 "use client";
 import { useServices } from "@/hooks/useServices";
-import { useOrderForm } from "../providers/OrderFormProvider";
+import { OrderFormValues } from "@/schema/order";
+import { useFormContext } from "react-hook-form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
 import {
   Select,
   SelectContent,
@@ -12,7 +20,7 @@ import { Skeleton } from "../ui/skeleton";
 
 function ServiceTypeSelector() {
   const { services, isLoadingServices } = useServices();
-  const form = useOrderForm();
+  const form = useFormContext<OrderFormValues>();
 
   if (isLoadingServices) {
     return (
@@ -21,28 +29,33 @@ function ServiceTypeSelector() {
   }
 
   return (
-    <div className="space-y-2">
-      <Select
-        value={form.watch("ServiceId")?.toString() || ""}
-        onValueChange={(value) => form.setValue("ServiceId", parseInt(value))}
-      >
-        <SelectTrigger className="w-full" size="default" dir="rtl">
-          <SelectValue placeholder="أختر الخدمه" />
-        </SelectTrigger>
-        <SelectContent>
-          {services?.map((service) => (
-            <SelectItem key={service.id} value={service.id.toString()}>
-              {service.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      {form.formState.errors.ServiceId && (
-        <p className="text-sm text-red-600">
-          {form.formState.errors.ServiceId.message}
-        </p>
+    <FormField
+      control={form.control}
+      name="ServiceId"
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <Select
+              value={field.value?.toString() || ""}
+              onValueChange={(value) => field.onChange(parseInt(value))}
+            >
+              <SelectTrigger className="w-full" size="default" dir="rtl">
+                <SelectValue placeholder="أختر الخدمه" />
+              </SelectTrigger>
+              <SelectContent>
+                {services?.map((service) => (
+                  <SelectItem key={service.id} value={service.id.toString()}>
+                    {service.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormDescription />
+          <FormMessage />
+        </FormItem>
       )}
-    </div>
+    />
   );
 }
 export default ServiceTypeSelector;
