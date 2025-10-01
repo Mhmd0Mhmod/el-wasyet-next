@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+// import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const nextConfig: NextConfig = {
   /* config options here */
 };
 
-initOpenNextCloudflareForDev();
+// initOpenNextCloudflareForDev();
 export default nextConfig;
