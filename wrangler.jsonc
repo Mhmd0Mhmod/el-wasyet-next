@@ -19,4 +19,11 @@
   // 		"bucket_name": "cache"
   // 	}
   // ]
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "client",
+    },
+  ],
+  "send_metrics": false,
 }
