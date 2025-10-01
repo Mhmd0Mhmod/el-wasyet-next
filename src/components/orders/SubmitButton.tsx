@@ -5,10 +5,10 @@ import { Button } from "../ui/button";
 function SubmitButton() {
   const form = useOrderForm();
   const isSubmitting = form.formState.isSubmitting;
-  const isValid = form.formState.isValid;
+  console.log(form.watch());
 
   return (
-    <Button type="submit" disabled={isSubmitting || !isValid}>
+    <Button type="submit" disabled={isSubmitting}>
       {isSubmitting ? "جاري الإرسال..." : "إرسال الطلب"}
     </Button>
   );
