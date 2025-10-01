@@ -45,32 +45,31 @@ function OrderDetailsForm() {
               />
             )}
           />
-
-          <OrderFormField
-            name="RequiredChange"
-            label="التغيير المطلوب"
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                onChange={field.onChange}
-                value={field.value?.toString() || ""}
-              />
-            )}
-          />
-
-          <OrderFormField
-            name="DeliveryAddress"
-            label="عنوان (للتوصيل)"
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                onChange={field.onChange}
-                value={field.value?.toString() || ""}
-              />
-            )}
-          />
         </>
       )}
+      <OrderFormField
+        name="RequiredChange"
+        label="التغيير المطلوب"
+        render={({ field }) => (
+          <Textarea
+            {...field}
+            onChange={field.onChange}
+            value={field.value?.toString() || ""}
+          />
+        )}
+      />
+
+      <OrderFormField
+        name="DeliveryAddress"
+        label="عنوان (للتوصيل)"
+        render={({ field }) => (
+          <Textarea
+            {...field}
+            onChange={field.onChange}
+            value={field.value?.toString() || ""}
+          />
+        )}
+      />
       <OrderFormField
         name="Notes"
         label="الملاحظات"

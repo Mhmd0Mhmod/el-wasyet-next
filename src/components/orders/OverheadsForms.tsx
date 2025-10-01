@@ -105,8 +105,8 @@ function OverheadsForms() {
             <div className="relative">
               <Input
                 type="text"
-                value={service.defaultFees}
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                {...field}
+                value={service.defaultFees.toString()}
                 disabled
               />
               <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-sm text-gray-500">

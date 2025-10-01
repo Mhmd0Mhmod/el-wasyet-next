@@ -57,8 +57,8 @@ async function BranchesTableData({
   searchParams: { search?: string; page?: string };
 }) {
   const branches = await getBranches({
-    search: searchParams.search || "",
-    page: parseInt(searchParams.page || "1", 10),
+    search: searchParams.search,
+    page: searchParams.page,
   });
 
   return (

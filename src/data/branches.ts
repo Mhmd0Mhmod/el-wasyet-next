@@ -8,7 +8,7 @@ export async function getBranches({
   page,
 }: {
   search?: string;
-  page?: number;
+  page?: string;
 }): Promise<Branch[]> {
   try {
     const { data } = await authFetch.get<Branch[]>("Branch/all", {
