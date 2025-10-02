@@ -39,7 +39,11 @@ function OrderDetailsForm() {
               <FormItem>
                 <FormLabel>تاريخ الميلاد</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Input
+                    type="date"
+                    {...field}
+                    value={field.value ? field.value : ""}
+                  />
                 </FormControl>
                 <FormDescription />
                 <FormMessage />
