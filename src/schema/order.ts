@@ -32,7 +32,7 @@ export const orderFormSchema = z.object({
     .string()
     .max(255, { message: "يجب ان لا يزيد عنوان التسليم عن 255 حرف" })
     .optional(),
-  BirthDate: z.string().optional(),
+  BirthDate: z.string().nullable().optional(),
   Quantity: z
     .number()
     .min(1, { message: "يجب ان تكون الكمية على الاقل 1" })
@@ -66,7 +66,7 @@ export function generateOrderDefaultValues(order?: Partial<OrderDetails>) {
     RequiredChange: order?.requiredChange || "",
     Notes: order?.notes || "",
     DeliveryAddress: order?.deliveryAddress || "",
-    BirthDate: "",
+    BirthDate: null,
     Quantity: undefined,
     Cash: order?.cash || 0,
     Credit: order?.credit || 0,
