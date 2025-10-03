@@ -1,9 +1,9 @@
 "use client";
-import { useFormContext } from "react-hook-form";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Button } from "../ui/button";
 
 function ResetButton() {
-  const form = useFormContext();
+  const { form } = useOrderForm();
   function onReset() {
     form.reset();
   }

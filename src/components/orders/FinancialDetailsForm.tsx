@@ -1,7 +1,5 @@
 "use client";
 
-import { OrderFormValues } from "@/schema/order";
-import { useFormContext } from "react-hook-form";
 import { useOrderForm } from "../providers/OrderFormProvider";
 import { Button } from "../ui/button";
 import {
@@ -21,8 +19,8 @@ import {
 import { Skeleton } from "../ui/skeleton";
 
 function FinancialDetailsForm() {
-  const form = useFormContext<OrderFormValues>();
-  const { agents, isLoadingAgents, isLoadingOffers, offers } = useOrderForm();
+  const { agents, isLoadingAgents, isLoadingOffers, offers, form } =
+    useOrderForm();
 
   const resetSelect = (type: "offer" | "agent") => {
     form.setValue(type === "offer" ? "OfferId" : "AgentId", undefined);

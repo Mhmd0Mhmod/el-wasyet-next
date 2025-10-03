@@ -1,8 +1,5 @@
 "use client";
 import { useOrderForm } from "../providers/OrderFormProvider";
-import { Input } from "../ui/input";
-import { Skeleton } from "../ui/skeleton";
-import { Textarea } from "../ui/textarea";
 import {
   FormControl,
   FormDescription,
@@ -11,12 +8,12 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useFormContext } from "react-hook-form";
-import { OrderFormValues } from "@/schema/order";
+import { Input } from "../ui/input";
+import { Skeleton } from "../ui/skeleton";
+import { Textarea } from "../ui/textarea";
 
 function OrderDetailsForm() {
-  const form = useFormContext<OrderFormValues>();
-  const { service, isLoadingService } = useOrderForm();
+  const { service, isLoadingService, form } = useOrderForm();
 
   if (isLoadingService) {
     return (

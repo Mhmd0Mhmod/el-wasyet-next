@@ -1,7 +1,5 @@
 "use client";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
-import { OrderFormValues } from "@/schema/order";
-import { useFormContext } from "react-hook-form";
 import AddOverheadForm from "../general/AddOverheadForm";
 import Table from "../general/Table";
 import TableSkeleton from "../general/TableSkeleton";
@@ -19,6 +17,7 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { TableCell, TableRow } from "../ui/table";
+import { useEffect } from "react";
 const columns = [
   {
     id: "overhead",
@@ -35,16 +34,18 @@ const columns = [
 ];
 
 function OverheadsForms() {
-  const { service, isLoadingService, totalAmount } = useOrderForm();
-  const form = useFormContext<OrderFormValues>();
+  const { service, isLoadingService, totalAmount, form } = useOrderForm();
+  useEffect(() => {
+    if (!service) return;
+    form.setValue("Amount", totalAmount);
+    form.setValue("ServiceFees", service.defaultFees);
+  }, [service, form, totalAmount]);
   if (!service) return null;
   if (isLoadingService) return <TableSkeleton columns={3} rows={4} />;
-
   const { watch } = form;
   const { overheads } = service;
   const selectedOverheads = watch("OverheadIds") || [];
-
-  function onOverheadChange(overheadId: number, checked: boolean) {
+  const onOverheadChange = function (overheadId: number, checked: boolean) {
     const currentOverheads = watch("OverheadIds") || [];
     if (checked) {
       form.setValue("OverheadIds", [...currentOverheads, overheadId]);
@@ -54,7 +55,7 @@ function OverheadsForms() {
         currentOverheads.filter((id: number) => id !== overheadId),
       );
     }
-  }
+  };
 
   return (
     <div className="space-y-4" dir="rtl">
@@ -63,17 +64,13 @@ function OverheadsForms() {
         <FormField
           control={form.control}
           name="Amount"
+          defaultValue={totalAmount}
           render={({ field }) => (
             <FormItem>
               <FormLabel>المجموع الكلي للخدمة</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input
-                    type="text"
-                    {...field}
-                    value={totalAmount.toFixed(2)}
-                    disabled
-                  />
+                  <Input type="text" {...field} disabled value={totalAmount} />
                   <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
                     ج.م
                   </span>
@@ -88,6 +85,7 @@ function OverheadsForms() {
         <FormField
           control={form.control}
           name="ServiceFees"
+          defaultValue={service.defaultFees}
           render={({ field }) => (
             <FormItem>
               <FormLabel>رسوم الخدمة</FormLabel>
@@ -96,8 +94,8 @@ function OverheadsForms() {
                   <Input
                     type="text"
                     {...field}
-                    value={service.defaultFees.toString()}
                     disabled
+                    value={service.defaultFees}
                   />
                   <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
                     ج.م

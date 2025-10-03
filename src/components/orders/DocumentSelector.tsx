@@ -1,8 +1,8 @@
 "use client";
 import { useService } from "@/hooks/useService";
-import { OrderFormValues } from "@/schema/order";
 import { Trash2Icon } from "lucide-react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
@@ -11,7 +11,7 @@ import { Skeleton } from "../ui/skeleton";
 import AddDocumentForm from "./AddDocumentForm";
 
 function DocumentSelector() {
-  const form = useFormContext<OrderFormValues>();
+  const { form } = useOrderForm();
   const serviceId = form.watch("ServiceId");
   const documents = form.watch("Documents") || [];
   const { isLoading, service } = useService(serviceId);

@@ -17,12 +17,8 @@ import { toast } from "sonner";
 import { Form } from "../ui/form";
 
 interface OrderFormContextProps {
+  form: ReturnType<typeof useForm<OrderFormValues>>;
   totalAmount: number;
-  baseAmount: number;
-  offerDiscount: number;
-  agentCommission: number;
-  selectedOverheadsValue: number;
-  customOverheadsValue: number;
   isLoadingService: boolean;
   isLoadingOffers: boolean;
   isLoadingAgents: boolean;
@@ -32,12 +28,8 @@ interface OrderFormContextProps {
 }
 
 const OrderContext = createContext<OrderFormContextProps>({
+  form: {} as ReturnType<typeof useForm<OrderFormValues>>,
   totalAmount: 0,
-  baseAmount: 0,
-  offerDiscount: 0,
-  agentCommission: 0,
-  selectedOverheadsValue: 0,
-  customOverheadsValue: 0,
   isLoadingService: false,
   isLoadingOffers: false,
   isLoadingAgents: false,
@@ -57,9 +49,10 @@ function OrderFromProvider({
     resolver: zodResolver(orderFormSchema),
     defaultValues: generateOrderDefaultValues(orderDetails),
   });
-  const selectedOverheads = form.watch("OverheadIds");
   function onSubmit(data: OrderFormValues) {
     const toastId = toast.loading("جاري إنشاء الطلب...");
+    console.log(data);
+
     createOrder(data)
       .then((res) => {
         if (res.success) {
@@ -76,11 +69,49 @@ function OrderFromProvider({
       });
   }
   const selectedService = form.watch("ServiceId");
-
   const { service, isLoading: isLoadingService } = useService(selectedService);
   const { offers, isLoadingOffers } = useOffers();
   const { agents, isLoadingAgents } = useAgents();
-  const { overheads = [] } = service || {};
+  const totalAmount = useCalculateOverheadsTotal(service, offers, agents, form);
+
+  return (
+    <OrderContext.Provider
+      value={{
+        form,
+        offers,
+        agents,
+        totalAmount,
+        service,
+        isLoadingService,
+        isLoadingOffers,
+        isLoadingAgents,
+      }}
+    >
+      <FormProvider {...form}>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
+        </Form>
+      </FormProvider>
+    </OrderContext.Provider>
+  );
+}
+export function useOrderForm() {
+  const values = useContext(OrderContext);
+  if (!values) {
+    throw new Error("useOrderForm must be used within an OrderFormProvider");
+  }
+  return values;
+}
+function useCalculateOverheadsTotal(
+  service: ReturnType<typeof useService>["service"],
+  offers: ReturnType<typeof useOffers>["offers"],
+  agents: ReturnType<typeof useAgents>["agents"],
+  form: ReturnType<typeof useForm<OrderFormValues>>,
+) {
+  if (!service) return 0;
+
+  const { overheads = [] } = service;
+  const selectedOverheads = form.watch("OverheadIds") || [];
   const selectedOverheadsValue = overheads
     .filter((overhead) => selectedOverheads?.includes(overhead.id))
     .reduce((acc, curr) => acc + curr.value, 0);
@@ -104,39 +135,7 @@ function OrderFromProvider({
   const agentCommission =
     ((service?.defaultFees || 0) * (agentPercentage || 0)) / 100;
 
-  const totalAmount = baseAmount - offerDiscount + agentCommission;
-
-  return (
-    <OrderContext.Provider
-      value={{
-        offers,
-        agents,
-        totalAmount,
-        baseAmount,
-        offerDiscount,
-        agentCommission,
-        selectedOverheadsValue,
-        customOverheadsValue,
-        service,
-        isLoadingService,
-        isLoadingOffers,
-        isLoadingAgents,
-      }}
-    >
-      <FormProvider {...form}>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
-        </Form>
-      </FormProvider>
-    </OrderContext.Provider>
-  );
-}
-export function useOrderForm() {
-  const values = useContext(OrderContext);
-  if (!values) {
-    throw new Error("useOrderForm must be used within an OrderFormProvider");
-  }
-  return values;
+  return baseAmount - offerDiscount + agentCommission;
 }
 
 export default OrderFromProvider;

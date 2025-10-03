@@ -2,11 +2,10 @@
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useCallback, useState } from "react";
-import { useFormContext } from "react-hook-form";
 
 import { useClients } from "@/hooks/useClients";
 import { cn } from "@/lib/utils";
-import { OrderFormValues } from "@/schema/order";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import { Button } from "../ui/button";
 import {
   Command,
@@ -16,29 +15,21 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 interface ClientSelectorProps {
   placeholder?: string;
   emptyMessage?: string;
   className?: string;
-  label?: string;
 }
 
 function ClientSelector({
   placeholder = "اختر عميل...",
   emptyMessage = "لا يوجد عملاء.",
   className,
-  label = "العميل",
 }: ClientSelectorProps = {}) {
-  const form = useFormContext<OrderFormValues>();
+  const { form } = useOrderForm();
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { clients, isLoadingClients } = useClients(searchTerm);
@@ -77,7 +68,7 @@ function ClientSelector({
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent align="start">
+                <PopoverContent>
                   <Command shouldFilter={false}>
                     <CommandInput
                       dir="ltr"
@@ -105,7 +96,7 @@ function ClientSelector({
                           {clients.map((client) => (
                             <CommandItem
                               key={client.id}
-                              value={client.id.toString()}
+                              value={client.id?.toString()}
                               onSelect={() => {
                                 field.onChange(
                                   client.id === field.value ? 0 : client.id,
@@ -143,7 +134,7 @@ function ClientSelector({
           );
         }}
       />
-      <Input value={selectedClient?.name} disabled />
+      <Input value={selectedClient?.name || ""} disabled />
     </>
   );
 }

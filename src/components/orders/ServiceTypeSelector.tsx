@@ -1,7 +1,6 @@
 "use client";
 import { useServices } from "@/hooks/useServices";
-import { OrderFormValues } from "@/schema/order";
-import { useFormContext } from "react-hook-form";
+import { useOrderForm } from "../providers/OrderFormProvider";
 import {
   FormControl,
   FormDescription,
@@ -20,12 +19,16 @@ import { Skeleton } from "../ui/skeleton";
 
 function ServiceTypeSelector() {
   const { services, isLoadingServices } = useServices();
-  const form = useFormContext<OrderFormValues>();
+  const { form } = useOrderForm();
 
   if (isLoadingServices) {
     return (
       <Skeleton className="h-10 w-full animate-pulse rounded-md bg-gray-200" />
     );
+  }
+  function onValueChange(value: string) {
+    const serviceId = parseInt(value, 10);
+    form.setValue("ServiceId", serviceId);
   }
 
   return (
@@ -37,7 +40,7 @@ function ServiceTypeSelector() {
           <FormControl>
             <Select
               value={field.value?.toString() || ""}
-              onValueChange={(value) => field.onChange(parseInt(value))}
+              onValueChange={onValueChange}
             >
               <SelectTrigger className="w-full" size="default" dir="rtl">
                 <SelectValue placeholder="أختر الخدمه" />
