@@ -8,14 +8,14 @@ import OrderSummaryCard from "@/components/orders/OrderSummaryCard";
 import RequiredChangesCard from "@/components/orders/RequiredChangesCard";
 import UploadedFilesCard from "@/components/orders/UploadedFilesCard";
 import { Button } from "@/components/ui/button";
-import { getOrderById } from "@/data/orders";
+import { getOrderByCode } from "@/data/orders";
 import { ArrowRight, Edit3 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-async function page({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const orderDetails = await getOrderById(Number(id));
+async function page({ params }: { params: Promise<{ code: string }> }) {
+  const { code } = await params;
+  const orderDetails = await getOrderByCode(code);
   if (!orderDetails) notFound();
 
   return (
@@ -35,7 +35,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
         <Button>
-          <Link href={`/orders/${id}/edit`}>
+          <Link href={`/orders/${code}/edit`}>
             <Edit3 className="inline-block" size={16} />
             تعديل الأمر
           </Link>
