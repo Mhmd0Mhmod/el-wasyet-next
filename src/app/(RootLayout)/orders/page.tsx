@@ -63,6 +63,7 @@ async function page({
             value: status.id,
             label: status.name,
           }))}
+          multiple
         />
       </div>
       <Suspense
