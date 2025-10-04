@@ -26,7 +26,11 @@ function AddOverheadForm({
   title = "التكاليف الإضافية",
 }: AddOverheadFormProps) {
   const form = useFormContext();
-  const { fields: overheadFields, append: appendOverhead } = useFieldArray({
+  const {
+    fields: overheadFields,
+    remove: removeOverhead,
+    append: appendOverhead,
+  } = useFieldArray({
     control: form.control,
     name,
   });
@@ -56,14 +60,27 @@ function AddOverheadForm({
       <CardContent>
         <div className="space-y-6">
           {overheadFields.map((field, index) => (
-            <Overhead index={index} key={field.id} name={name} />
+            <Overhead
+              index={index}
+              key={field.id}
+              name={name}
+              removeOverhead={removeOverhead}
+            />
           ))}
         </div>
       </CardContent>
     </Card>
   );
 }
-function Overhead({ index, name }: { index: number; name: string }) {
+function Overhead({
+  index,
+  name,
+  removeOverhead,
+}: {
+  index: number;
+  name: string;
+  removeOverhead: (idx: number) => void;
+}) {
   const form = useFormContext();
   const onSelectFormChange = useCallback(
     (value: "penalty" | "forms" | "adminFees") => {
@@ -78,12 +95,6 @@ function Overhead({ index, name }: { index: number; name: string }) {
     },
     [form, name, index],
   );
-  const { remove: removeOverhead } = useFieldArray({
-    control: form.control,
-    name,
-  });
-
-  // Use watch to get current values reactively
   const fieldValues = form.watch(`${name}.${index}`) || {};
   const isFormType = fieldValues.forms || false;
   const isPenaltyType = fieldValues.penalty || false;
@@ -148,31 +159,9 @@ function Overhead({ index, name }: { index: number; name: string }) {
             />
           </div>
           {isFormType && <FormsComponent index={index} name={name} />}
-          {isPenaltyType && <PenaltyComponent index={index} name={name} />}
         </div>
       </div>
     </>
-  );
-}
-function PenaltyComponent({ index, name }: { index: number; name: string }) {
-  const form = useFormContext();
-
-  return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={`${name}.${index}.penaltyExtraFee`}>
-        الرسوم الإضافية للغرامة
-      </Label>
-
-      <Input
-        id={`${name}.${index}.penaltyExtraFee`}
-        type="number"
-        placeholder="الرسوم الإضافية"
-        min="0"
-        {...form.register(`${name}.${index}.penaltyExtraFee`, {
-          setValueAs: (value) => (value === "" ? 0 : Number(value)),
-        })}
-      />
-    </div>
   );
 }
 

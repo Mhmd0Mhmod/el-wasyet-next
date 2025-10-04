@@ -50,22 +50,20 @@ function OrderFromProvider({
     defaultValues: generateOrderDefaultValues(orderDetails),
   });
   function onSubmit(data: OrderFormValues) {
-    const toastId = toast.loading("جاري إنشاء الطلب...");
-    console.log(data);
-
+    const id = toast.loading("جاري إنشاء الطلب...");
     createOrder(data)
       .then((res) => {
         if (res.success) {
-          toast.success("تم إنشاء الطلب بنجاح", { id: toastId });
+          toast.success("تم إنشاء الطلب بنجاح", { id });
           form.reset(generateOrderDefaultValues());
         } else {
           toast.error(res.message || "حدث خطأ أثناء إنشاء الطلب", {
-            id: toastId,
+            id,
           });
         }
       })
       .catch(() => {
-        toast.error("حدث خطأ أثناء إنشاء الطلب", { id: toastId });
+        toast.error("حدث خطأ أثناء إنشاء الطلب", { id });
       });
   }
   const selectedService = form.watch("ServiceId");

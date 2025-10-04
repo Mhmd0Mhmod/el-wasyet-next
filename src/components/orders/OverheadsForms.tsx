@@ -17,7 +17,7 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { TableCell, TableRow } from "../ui/table";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 const columns = [
   {
     id: "overhead",
@@ -35,6 +35,22 @@ const columns = [
 
 function OverheadsForms() {
   const { service, isLoadingService, totalAmount, form } = useOrderForm();
+
+  const { watch } = form;
+  const onOverheadChange = useCallback(
+    function (overheadId: number, checked: boolean) {
+      const currentOverheads = watch("OverheadIds") || [];
+      if (checked) {
+        form.setValue("OverheadIds", [...currentOverheads, overheadId]);
+      } else {
+        form.setValue(
+          "OverheadIds",
+          currentOverheads.filter((id: number) => id !== overheadId),
+        );
+      }
+    },
+    [form, watch],
+  );
   useEffect(() => {
     if (!service) return;
     form.setValue("Amount", totalAmount);
@@ -42,20 +58,8 @@ function OverheadsForms() {
   }, [service, form, totalAmount]);
   if (!service) return null;
   if (isLoadingService) return <TableSkeleton columns={3} rows={4} />;
-  const { watch } = form;
   const { overheads } = service;
   const selectedOverheads = watch("OverheadIds") || [];
-  const onOverheadChange = function (overheadId: number, checked: boolean) {
-    const currentOverheads = watch("OverheadIds") || [];
-    if (checked) {
-      form.setValue("OverheadIds", [...currentOverheads, overheadId]);
-    } else {
-      form.setValue(
-        "OverheadIds",
-        currentOverheads.filter((id: number) => id !== overheadId),
-      );
-    }
-  };
 
   return (
     <div className="space-y-4" dir="rtl">
