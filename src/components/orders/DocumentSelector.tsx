@@ -25,10 +25,7 @@ function DocumentSelector() {
     control: form.control,
     name: "CustomDocuments",
   });
-  const [documentsIds, customDocuments] = form.watch([
-    "Documents",
-    "CustomDocuments",
-  ]);
+  const documentsIds = form.watch("Documents");
 
   const handleDocumentChange = useCallback(
     (documentId: string, isChecked: boolean) => {
@@ -98,12 +95,12 @@ function DocumentSelector() {
                 })}
               </div>
             )}
-            {customDocuments && (
+            {fields.length > 0 && (
               <div className="mt-4 space-y-2">
                 <h4 className="text-sm font-medium">المستندات المخصصة</h4>
-                {customDocuments.map((field, index) => (
+                {fields.map((field, index) => (
                   <div
-                    key={index}
+                    key={field.id}
                     className="flex items-center justify-between rounded-md border p-2"
                   >
                     <div className="flex-1">
