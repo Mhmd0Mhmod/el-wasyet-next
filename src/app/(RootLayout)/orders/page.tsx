@@ -112,7 +112,7 @@ async function OrdersTable({
       className={`bg-${order.recevingStatues.toLowerCase()}-100`}
     >
       <TableCell className="text-center">
-        <Link href={`/orders/${order.orderCode}`} className="underline">
+        <Link href={`/orders/${order.id}`} className="underline">
           {order.orderCode}
         </Link>
       </TableCell>

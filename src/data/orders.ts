@@ -50,9 +50,9 @@ export async function getOrders({
   }
 }
 
-export async function getOrderByCode(code: string): Promise<OrderDetails> {
+export async function getOrderById(id: string): Promise<OrderDetails> {
   try {
-    const res = await authFetch.get<OrderDetails>(`Order/${code}/details`);
+    const res = await authFetch.get<OrderDetails>(`Order/${id}/details`);
     return res.data;
   } catch (err) {
     if (err instanceof AxiosError) {
