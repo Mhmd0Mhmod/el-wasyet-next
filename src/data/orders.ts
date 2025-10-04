@@ -11,28 +11,19 @@ export async function getOrders({
   searchParams: Partial<{
     searchTerm?: string;
     page?: string;
-    ServiceId?: string;
+    ServiceIds?: string;
     OrderStatusIds?: string;
   }>;
 }): Promise<PaginatedResponse<Order>> {
   try {
-    if (!searchParams.OrderStatusIds) {
-      return {
-        items: [],
-        pageNumber: 1,
-        pageSize: defaults.pageSize,
-        totalRecords: 0,
-        hasNextPage: false,
-        hasPreviousPage: false,
-        totalPages: 0,
-      };
-    }
-    const orderStatusIds = searchParams.OrderStatusIds.split(",").map(Number);
+    const orderStatusIds = searchParams?.OrderStatusIds?.split(",").map(Number);
+    const serviceIds = searchParams?.ServiceIds?.split(",").map(Number);
     const res = await authFetch.get<PaginatedResponse<Order>>("Order/all", {
       params: {
         ...searchParams,
         OrderStatusIds: orderStatusIds,
-        pageSize: defaults.pageSize,
+        ServiceIds: serviceIds,
+        PageSize: defaults.pageSize,
       },
     });
 

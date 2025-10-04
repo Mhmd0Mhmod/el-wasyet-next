@@ -26,7 +26,7 @@ async function page({
   searchParams: Promise<{
     searchTerm?: string;
     page?: string;
-    ServiceId?: string;
+    ServiceIds?: string;
     OrderStatusIds?: string;
   }>;
 }) {
@@ -52,12 +52,13 @@ async function page({
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <SearchInput title="بحث .." />
         <Select
-          name="ServiceId"
+          name="ServiceIds"
           placeholder="اسم الخدمة"
           selectItems={services.map((service) => ({
             value: service.id,
             label: service.name,
           }))}
+          multiple
         />
         <Select
           name="OrderStatusIds"
@@ -98,7 +99,7 @@ async function OrdersTable({
   searchParams: {
     searchTerm?: string;
     page?: string;
-    ServiceId?: string;
+    ServiceIds?: string;
     OrderStatusIds?: string;
   };
 }) {
