@@ -1,6 +1,6 @@
 "use client";
-import { useService } from "@/hooks/useService";
 import { Trash2Icon } from "lucide-react";
+import { memo, useCallback } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useOrderForm } from "../providers/OrderFormProvider";
 import { Button } from "../ui/button";
@@ -9,13 +9,8 @@ import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { Skeleton } from "../ui/skeleton";
 import AddDocumentForm from "./AddDocumentForm";
-
-function DocumentSelector() {
-  const { form } = useOrderForm();
-  const serviceId = form.watch("ServiceId");
-  const documents = form.watch("Documents") || [];
-  const { isLoading, service } = useService(serviceId);
-  const LoadingSkeleton = (
+const LoadingSkeleton = memo(function LoadingSkeleton() {
+  return (
     <div className="space-y-2">
       <Skeleton className="h-8 w-3/4 rounded-md" />
       <Skeleton className="h-8 w-full rounded-md" />
@@ -23,29 +18,53 @@ function DocumentSelector() {
       <Skeleton className="h-8 w-full rounded-md" />
     </div>
   );
-  function handleDocumentChange(docId: string, isChecked: boolean) {
-    const docIdNumber = parseInt(docId);
-    const updatedDocuments = isChecked
-      ? [...documents, docIdNumber]
-      : documents.filter((id) => id !== docIdNumber);
-    form.setValue("Documents", updatedDocuments);
-  }
+});
+function DocumentSelector() {
+  const { form, service, isLoadingService } = useOrderForm();
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "CustomDocuments",
   });
-  function addCustomDocument(formData: FormData) {
-    const description = formData.get("description") as string;
-    if (!description) return;
-    append({
-      Description: description,
-    });
-  }
-  function onRemoveCustomDocument(index: number) {
-    remove(index);
-  }
+  const [documentsIds, customDocuments] = form.watch([
+    "Documents",
+    "CustomDocuments",
+  ]);
+
+  const handleDocumentChange = useCallback(
+    (documentId: string, isChecked: boolean) => {
+      const id = parseInt(documentId, 10);
+      const currentDocuments = documentsIds;
+      if (isChecked) {
+        form.setValue("Documents", [...currentDocuments, id]);
+      } else {
+        form.setValue(
+          "Documents",
+          currentDocuments.filter((docId) => docId !== id),
+        );
+      }
+    },
+    [form, documentsIds],
+  );
+
+  const addCustomDocument = useCallback(
+    (formData: FormData) => {
+      const description = formData.get("description") as string;
+      if (!description) return;
+      append({
+        Description: description,
+      });
+    },
+    [append],
+  );
+  const onRemoveCustomDocument = useCallback(
+    (index: number) => {
+      remove(index);
+    },
+    [remove],
+  );
 
   const { documents: documentsServcie } = service || { documents: [] };
+
   return (
     <Card className="max-w-sm min-w-sm">
       <CardHeader>
@@ -54,34 +73,37 @@ function DocumentSelector() {
       <CardContent className="space-y-4">
         {!!service?.id ? (
           <>
-            {isLoading && LoadingSkeleton}
-            {!isLoading && documentsServcie.length !== 0 && (
+            {isLoadingService && <LoadingSkeleton />}
+            {!isLoadingService && documentsServcie.length !== 0 && (
               <div className="space-y-2">
                 {documentsServcie.map((doc) => {
-                  const isChecked = documents.includes(doc.id);
+                  const isChecked = documentsIds.includes(doc.id);
                   return (
-                    <div key={doc.id} className="flex items-center space-x-2">
+                    <div key={doc.id} className="flex items-center gap-2">
                       <Checkbox
                         id={`doc-${doc.id}`}
                         checked={isChecked}
-                        onCheckedChange={(checked) =>
-                          handleDocumentChange(doc.id.toString(), !!checked)
+                        onClick={() =>
+                          handleDocumentChange(doc.id.toString(), !isChecked)
                         }
                       />
-                      <Label htmlFor={`doc-${doc.id}`}>{doc.description}</Label>
+                      <Label
+                        htmlFor={`doc-${doc.id}`}
+                        className="cursor-pointer"
+                      >
+                        {doc.description}
+                      </Label>
                     </div>
                   );
                 })}
               </div>
             )}
-
-            {/* Display Custom Documents */}
-            {fields.length > 0 && (
+            {customDocuments && (
               <div className="mt-4 space-y-2">
                 <h4 className="text-sm font-medium">المستندات المخصصة</h4>
-                {fields.map((field, index) => (
+                {customDocuments.map((field, index) => (
                   <div
-                    key={field.id}
+                    key={index}
                     className="flex items-center justify-between rounded-md border p-2"
                   >
                     <div className="flex-1">
@@ -98,7 +120,6 @@ function DocumentSelector() {
                 ))}
               </div>
             )}
-
             <AddDocumentForm onSubmit={addCustomDocument} />
           </>
         ) : (

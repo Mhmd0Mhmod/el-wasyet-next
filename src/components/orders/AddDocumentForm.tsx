@@ -23,9 +23,10 @@ function AddDocumentForm({
       const formData = new FormData();
       formData.append("description", data.description);
       onSubmit(formData);
+      form.reset();
     })();
-    form.reset();
   };
+  const disabled = !form.watch("description");
   return (
     <Collapsible className="space-y-4">
       <CollapsibleTrigger className="w-full" asChild>
@@ -45,6 +46,7 @@ function AddDocumentForm({
             variant="outline"
             size="sm"
             className="mr-auto flex"
+            disabled={disabled}
           >
             <Plus className="ml-2 h-4 w-4" />
             <span>إضافة</span>

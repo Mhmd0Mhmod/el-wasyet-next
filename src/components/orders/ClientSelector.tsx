@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { useCallback, useState } from "react";
 
 import { useClients } from "@/hooks/useClients";
@@ -18,6 +18,8 @@ import {
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import Dialog from "../general/Dialog";
+import ClientForm from "../clients/ClientsForm";
 interface ClientSelectorProps {
   placeholder?: string;
   emptyMessage?: string;
@@ -89,7 +91,17 @@ function ClientSelector({
                       {!isLoadingClients &&
                         searchTerm.length >= 11 &&
                         clients.length === 0 && (
-                          <CommandEmpty>{emptyMessage}</CommandEmpty>
+                          <Dialog>
+                            <Dialog.Trigger>
+                              <Button variant="ghost" className="w-full">
+                                <Plus size={16} />
+                                إضافة عميل
+                              </Button>
+                            </Dialog.Trigger>
+                            <Dialog.Content title="إضافة عميل">
+                              <ClientForm />
+                            </Dialog.Content>
+                          </Dialog>
                         )}
                       {!isLoadingClients && clients.length > 0 && (
                         <CommandGroup>
