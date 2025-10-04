@@ -1,23 +1,23 @@
 "use client";
-import * as React from "react";
-import {
-  Select as SelectRoot,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ChevronDownIcon, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import {
+  SelectContent,
+  SelectItem,
+  Select as SelectRoot,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronDownIcon, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
 
 type SelectItem = {
   label: string;

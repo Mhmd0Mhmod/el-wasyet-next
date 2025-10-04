@@ -110,7 +110,7 @@ async function OrdersTable({
     >
       <TableCell className="text-center">
         <Link href={`/orders/${order.id}`} className="underline">
-          {order.id}
+          {order.orderCode}
         </Link>
       </TableCell>
       <TableCell>{order.serviceName}</TableCell>
@@ -142,8 +142,6 @@ async function OrdersTable({
   return (
     <>
       <Table columns={ORDER_TABLE_COLUMNS} renderData={renderOrderRows} />
-
-      {/* Order Status Legend */}
       <div className="bg-muted/30 border-t p-4">
         <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
           <span className="text-foreground font-medium">
