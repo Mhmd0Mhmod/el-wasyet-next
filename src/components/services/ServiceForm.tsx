@@ -24,7 +24,7 @@ function ServiceForm({
   const ServiceSchema = generateServiceSchema(workFlows);
   const form = useForm<ServiceValues>({
     resolver: zodResolver(ServiceSchema),
-    defaultValues: generateDefalutValues(service),
+    defaultValues: generateDefaultValues(service),
   });
   const {
     fields: documentFields,
@@ -79,7 +79,7 @@ function ServiceForm({
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-2">
               <FormComponent
-                name="name"
+                name="Name"
                 label="اسم الخدمة"
                 render={({ field }) => <Input {...field} />}
               />
@@ -183,7 +183,7 @@ function ServiceForm({
                 {workFlows.map((workflow) => (
                   <FormComponent
                     key={workflow.id}
-                    name="workflows"
+                    name="Workflows"
                     render={({ field }) => {
                       const selectedWorkflow = field.value.find(
                         (w) => w.orderStatusId === workflow.id,
@@ -251,15 +251,15 @@ function ServiceForm({
   );
 }
 export default ServiceForm;
-function generateDefalutValues(service: Service | undefined) {
+function generateDefaultValues(service: Service | undefined) {
   return {
-    name: service?.name || "",
+    Name: service?.name || "",
     defaultFees: service?.defaultFees || 0,
     validityPeriodDays: service?.validityPeriodDays || 0,
     expiryPeriodYears: service?.expiryPeriodYears || 0,
     isCertificate: service?.isCertificate || false,
     documents: service?.documents || [],
-    workflows:
+    Workflows:
       service?.workflows.map((workflow) => ({
         orderStatusId: workflow.orderStatusId,
         sequence: workflow.sequence || 1,

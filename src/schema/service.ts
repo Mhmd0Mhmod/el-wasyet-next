@@ -148,7 +148,7 @@ export const overheadSchema = z
 // Main service schema generator
 export const generateServiceSchema = (workFlows: ShortWorkFlow[]) =>
   z.object({
-    name: z.string().min(1, ERROR_MESSAGES.REQUIRED_NAME),
+    Name: z.string().min(1, ERROR_MESSAGES.REQUIRED_NAME),
     defaultFees: z.number().min(0, ERROR_MESSAGES.INVALID_DEFAULT_FEES),
     validityPeriodDays: z
       .number()
@@ -156,7 +156,7 @@ export const generateServiceSchema = (workFlows: ShortWorkFlow[]) =>
     expiryPeriodYears: z.number().min(0, ERROR_MESSAGES.INVALID_EXPIRY_PERIOD),
     isCertificate: z.boolean(),
     documents: z.array(documentSchema),
-    workflows: z.array(createWorkflowSchema(workFlows)),
+    Workflows: z.array(createWorkflowSchema(workFlows)),
     overheads: z.array(overheadSchema),
   });
 
