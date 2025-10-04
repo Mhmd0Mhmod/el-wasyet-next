@@ -1,7 +1,7 @@
 import { authFetch } from "@/lib/axios";
 import { defaults } from "@/lib/utils";
 import { Client } from "@/types/client";
-import { Agent, Offer, Order, OrderDetails } from "@/types/order";
+import { Agent, Offer, Order, OrderDetails, OrderLog } from "@/types/order";
 import { Service } from "@/types/service";
 import { AxiosError } from "axios";
 
@@ -181,3 +181,28 @@ export const getServiceById = async (ServiceId: number) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+export async function getOrderLogs({
+  id,
+  search,
+  page,
+}: {
+  id: number;
+  search: string;
+  page: number;
+}): Promise<OrderLog[]> {
+  try {
+    const { data } = await authFetch.get<OrderLog[]>(`/Order/${id}/audits`);
+    return data;
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      const errors = Object.values(err.response?.data.errors || {})
+        .flat()
+        .join(" ");
+      throw new Error(errors || err.response?.data?.message || err.message);
+    }
+    if (err instanceof Error) throw new Error(err.message);
+
+    throw new Error("An unexpected error occurred");
+  }
+}

@@ -67,3 +67,22 @@ interface OrderService extends Omit<Service, "documents" | "overheads"> {
   documentForCreateDTOs: ServiceDocument[];
   overheadForCreates: Omit<ServiceOverhead, "description" | "formTypeID">[];
 }
+
+interface OrderLog {
+  id: number;
+  actionDate: string;
+  orderID: number;
+  orderCode: string | null;
+  operationTypeId: number;
+  operationTypeName: string;
+  employeeId: number;
+  employeeName: string;
+  serviceName: string;
+  clientId: number;
+  clientName: string;
+  clientPhoneNumber: string;
+  amount: number;
+  orderStatues: string;
+  requiredChange: string;
+  comments: string;
+}

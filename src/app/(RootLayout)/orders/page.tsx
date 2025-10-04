@@ -1,8 +1,10 @@
+import Dialog from "@/components/general/Dialog";
 import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Select from "@/components/general/Select";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import OrderLogs from "@/components/orders/[id]/order-logs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
+import { formatCurrency, formatDate } from "@/lib/helper";
 import { Order } from "@/types/order";
 import { ClipboardIcon, Edit3Icon, Plus } from "lucide-react";
 import Link from "next/link";
@@ -116,10 +119,10 @@ async function OrdersTable({
       <TableCell>{order.serviceName}</TableCell>
       <TableCell>{order.clientName}</TableCell>
       <TableCell>{order.clientPhoneNumber}</TableCell>
-      <TableCell>{order.orderDate}</TableCell>
+      <TableCell>{formatDate(order.orderDate, "datetime")}</TableCell>
       <TableCell>{order.orderStatus}</TableCell>
       <TableCell>{order.requiredChange}</TableCell>
-      <TableCell>{order.amount}</TableCell>
+      <TableCell>{formatCurrency(order.amount)}</TableCell>
       <TableCell>
         <Popover>
           <PopoverTrigger>
@@ -129,12 +132,21 @@ async function OrdersTable({
         </Popover>
       </TableCell>
       <TableCell className="space-x-2">
-        <Link href={`/orders/${order.id}/edit`}>
-          <Edit3Icon className="inline-block" size={16} />
-        </Link>
-        <Link href={`/orders/${order.id}`}>
-          <ClipboardIcon className="inline-block" size={16} />
-        </Link>
+        <Button variant="ghost" size="icon">
+          <Link href={`/orders/${order.id}/edit`}>
+            <Edit3Icon className="inline-block" size={16} />
+          </Link>
+        </Button>
+        <Dialog>
+          <Dialog.Trigger>
+            <Button variant="ghost" size="icon">
+              <ClipboardIcon className="inline-block" size={16} />
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Content title="سجل الامر" className="sm:max-w-fit">
+            <OrderLogs order={order} />
+          </Dialog.Content>
+        </Dialog>
       </TableCell>
     </TableRow>
   ));
