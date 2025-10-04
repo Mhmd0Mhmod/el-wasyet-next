@@ -197,6 +197,7 @@ function OverheadsForms() {
       <AddOverheadForm
         name="CustomOverheads"
         title="التكاليف الإضافية المخصصة"
+        penaltyExtraFee={false}
       />
     </div>
   );

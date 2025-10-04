@@ -19,11 +19,13 @@ import {
 interface AddOverheadFormProps {
   name: string;
   title?: string;
+  penaltyExtraFee?: boolean;
 }
 
 function AddOverheadForm({
   name,
   title = "التكاليف الإضافية",
+  penaltyExtraFee = true,
 }: AddOverheadFormProps) {
   const form = useFormContext();
   const {
@@ -65,6 +67,7 @@ function AddOverheadForm({
               key={field.id}
               name={name}
               removeOverhead={removeOverhead}
+              penaltyExtraFee={penaltyExtraFee}
             />
           ))}
         </div>
@@ -76,10 +79,12 @@ function Overhead({
   index,
   name,
   removeOverhead,
+  penaltyExtraFee,
 }: {
   index: number;
   name: string;
   removeOverhead: (idx: number) => void;
+  penaltyExtraFee?: boolean;
 }) {
   const form = useFormContext();
   const onSelectFormChange = useCallback(
@@ -140,7 +145,7 @@ function Overhead({
         </div>
         <div className="md:grid md:grid-cols-3 md:gap-5">
           <div className="flex flex-col gap-2">
-            <Label htmlFor={`${name}.${index}.description`}>اسم التكلفه</Label>
+            <Label htmlFor={`${name}.${index}.description`}>اسم الرسوم</Label>
             <Input
               id={`${name}.${index}.description`}
               type="text"
@@ -148,7 +153,7 @@ function Overhead({
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor={`${name}.${index}.value`}>رسوم التكلفه</Label>
+            <Label htmlFor={`${name}.${index}.value`}> الرسوم</Label>
             <Input
               id={`${name}.${index}.value`}
               type="number"
@@ -159,6 +164,9 @@ function Overhead({
             />
           </div>
           {isFormType && <FormsComponent index={index} name={name} />}
+          {isPenaltyType && penaltyExtraFee && (
+            <PenaltyComponent index={index} name={name} />
+          )}
         </div>
       </div>
     </>
@@ -215,5 +223,25 @@ function FormsComponent({ index, name }: { index: number; name: string }) {
     </div>
   );
 }
+function PenaltyComponent({ index, name }: { index: number; name: string }) {
+  const form = useFormContext();
 
+  return (
+    <div className="flex flex-col gap-2">
+      <Label htmlFor={`${name}.${index}.penaltyExtraFee`}>
+        الرسوم الإضافية
+      </Label>
+
+      <Input
+        id={`${name}.${index}.penaltyExtraFee`}
+        type="number"
+        placeholder="الرسوم الإضافية"
+        min="0"
+        {...form.register(`${name}.${index}.penaltyExtraFee`, {
+          setValueAs: (value) => (value === "" ? 0 : Number(value)),
+        })}
+      />
+    </div>
+  );
+}
 export default AddOverheadForm;
