@@ -127,7 +127,11 @@ async function OrdersTable({
       <TableCell>
         <Popover>
           <PopoverTrigger>
-            {order.notes.length > 0 ? "عرض الملاحظات" : "لا توجد ملاحظات"}
+            {order.notes?.length > 0 ? (
+              <span className="text-primary underline">عرض الملاحظات</span>
+            ) : (
+              "لا توجد ملاحظات"
+            )}
           </PopoverTrigger>
           <PopoverContent>{order.notes}</PopoverContent>
         </Popover>
