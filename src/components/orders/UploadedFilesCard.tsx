@@ -1,23 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { FileText, User, Download, Printer } from "lucide-react";
-
-interface UploadedFile {
-  id: number;
-  name: string;
-  type: "document" | "output";
-}
+import { OrderDetails } from "@/types/order";
+import { FileText, User } from "lucide-react";
+import DownloadPDF from "./DownloadPDF";
+import ExportReceiptButton from "./ExportReceiptButton";
 
 interface UploadedFilesCardProps {
-  uploadedFiles: UploadedFile[];
-  outputFiles: UploadedFile[];
+  files: OrderDetails["files"];
+  orderId?: number;
 }
 
-function UploadedFilesCard({
-  uploadedFiles,
-  outputFiles,
-}: UploadedFilesCardProps) {
+function UploadedFilesCard({ files, orderId }: UploadedFilesCardProps) {
+  const uploadedFiles = files.filter((file) => file.fileTypeID === 1);
+  const outputFiles = files.filter((file) => file.fileTypeID === 2);
+
   return (
     <Card className="shadow-sm" dir="rtl">
       <CardHeader>
@@ -26,10 +22,9 @@ function UploadedFilesCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* الملفات المحذة - Uploaded Files */}
         <div>
           <h4 className="mb-4 text-center font-semibold text-gray-700">
-            الملفات المحذة
+            الملفات الداخله
           </h4>
           <div className="grid grid-cols-5 gap-4">
             {uploadedFiles.map((file) => (
@@ -40,8 +35,8 @@ function UploadedFilesCard({
                 <div className="flex h-16 w-16 items-center justify-center rounded-lg border-2 border-gray-200 bg-gray-50">
                   <FileText className="h-6 w-6 text-gray-500" />
                 </div>
-                <span className="text-center text-xs text-gray-600">
-                  {file.name}
+                <span className="max-w-1/2 text-center text-xs text-ellipsis text-gray-600">
+                  {file.fileUrl.split("/").pop()}
                 </span>
               </div>
             ))}
@@ -65,7 +60,7 @@ function UploadedFilesCard({
                   <User className="h-6 w-6 text-gray-500" />
                 </div>
                 <span className="text-center text-xs text-gray-600">
-                  {file.name}
+                  {file.fileUrl.split("/").pop()}
                 </span>
               </div>
             ))}
@@ -76,17 +71,8 @@ function UploadedFilesCard({
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-4">
-          <Button className="bg-blue-600 text-white hover:bg-blue-700">
-            <Printer className="ml-2 h-4 w-4" />
-            طباعة الفاتورة
-          </Button>
-          <Button
-            variant="outline"
-            className="border-green-600 text-green-600 hover:bg-green-50"
-          >
-            <Download className="ml-2 h-4 w-4" />
-            تحميل PDF
-          </Button>
+          <ExportReceiptButton orderId={orderId!} />
+          <DownloadPDF orderId={orderId!} />
         </div>
       </CardContent>
     </Card>

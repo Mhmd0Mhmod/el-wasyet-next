@@ -56,7 +56,7 @@ function OrderFromProvider({
       .then((res) => {
         if (res.success) {
           toast.success("تم إنشاء الطلب بنجاح", { id });
-          form.reset(generateOrderDefaultValues());
+          form.reset();
         } else {
           toast.error(res.message || "حدث خطأ أثناء إنشاء الطلب", {
             id,

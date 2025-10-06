@@ -262,7 +262,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
               }).format(order.amount)}
             </TableCell>
             <TableCell>
-              {order.note.length > 0 ? (
+              {order.note?.length > 0 ? (
                 <Popover>
                   <PopoverTrigger className="text-primary underline">
                     عرض الملاحظات

@@ -122,12 +122,23 @@ async function OrdersTable({
       <TableCell>{order.clientPhoneNumber}</TableCell>
       <TableCell>{formatDate(order.orderDate, "datetime")}</TableCell>
       <TableCell>{order.orderStatus}</TableCell>
-      <TableCell>{order.requiredChange}</TableCell>
+      <TableCell>
+        <Popover>
+          <PopoverTrigger disabled={!order.requiredChange}>
+            {order.requiredChange?.length > 0 ? (
+              <span className="text-primary underline">عرض التغييرات</span>
+            ) : (
+              "لا توجد تغييرات"
+            )}
+          </PopoverTrigger>
+          <PopoverContent>{order.requiredChange}</PopoverContent>
+        </Popover>
+      </TableCell>
       <TableCell>{formatCurrency(order.amount)}</TableCell>
       <TableCell>
         <Popover>
           <PopoverTrigger>
-            {order.notes?.length > 0 ? (
+            {order?.notes?.length > 0 ? (
               <span className="text-primary underline">عرض الملاحظات</span>
             ) : (
               "لا توجد ملاحظات"

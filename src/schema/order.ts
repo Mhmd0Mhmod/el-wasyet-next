@@ -60,7 +60,9 @@ export const orderFormSchema = z.object({
 
 export type OrderFormValues = z.infer<typeof orderFormSchema>;
 
-export function generateOrderDefaultValues(order?: Partial<OrderDetails>) {
+export function generateOrderDefaultValues(
+  order?: Partial<OrderDetails>,
+): Partial<OrderFormValues> {
   return {
     ClientId: 0,
     RequiredChange: order?.requiredChange || "",
@@ -79,6 +81,6 @@ export function generateOrderDefaultValues(order?: Partial<OrderDetails>) {
     CreateFiles: [],
     IsPending: false,
     OfferId: undefined,
-    AgentId: order?.agentId || undefined,
+    AgentId: order?.agentId ? Number(order.agentId) : undefined,
   };
 }

@@ -27,28 +27,34 @@ interface Order {
 
 interface OrderDetails extends Order {
   branchName: string;
+  createdDate: string;
+  createdBy: string;
+  deliveryAddress: string;
   netAmount: number;
   expenses: number;
   cash: number;
   credit: number;
-  agentName: string | null;
-  agentId: number | null;
-  overheads: [
-    {
-      overheadID: number;
-      description: string;
-      value: number;
-    },
-  ];
-  documents: [
-    {
-      id: number;
-      documentName: string;
-    },
-  ];
-  deliveryAddress: string;
-  createdDate: string;
-  createdBy: string;
+  agentName: string;
+  agentId: string;
+  offerName: string;
+  offerId: string;
+  overheads: {
+    overheadID: number;
+    description: string;
+    value: number;
+  }[];
+  documents: {
+    id: number;
+    documentName: string;
+  }[];
+  files: {
+    id: number;
+    fileUrl: string;
+    fileExtension: string;
+    fileTypeID: number;
+    fileTypeName: string | null;
+    orderID: number;
+  }[];
 }
 interface Offer {
   offerId: nubmer;

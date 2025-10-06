@@ -54,7 +54,7 @@ function Select({
   const handleSingleValueChange = (value: string) => {
     const searchParams = new URLSearchParams(searchParamsValues);
     searchParams.set(name, value);
-    router.push(`?${searchParams.toString()}`);
+    router.push(`?${searchParams.toString()}`, { scroll: false });
   };
 
   const handleMultipleValueChange = (value: string, checked: boolean) => {
@@ -72,7 +72,7 @@ function Select({
     } else {
       searchParams.delete(name);
     }
-    router.push(`?${searchParams.toString()}`);
+    router.push(`?${searchParams.toString()}`, { scroll: false });
   };
 
   const handleRemoveValue = (value: string, e: React.MouseEvent) => {
