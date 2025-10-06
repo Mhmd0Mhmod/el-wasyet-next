@@ -20,8 +20,11 @@ const clientFormSchema = z.object({
     .max(100, { message: "الاسم الكامل يجب ألا يزيد عن 100 حرف" }),
   email: z
     .string()
-    .email({ message: "البريد الإلكتروني غير صحيح" })
-    .min(1, { message: "البريد الإلكتروني مطلوب" }),
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+      message: "البريد الإلكتروني غير صحيح",
+    })
+    .optional()
+    .or(z.literal("")),
   phone1: z
     .string()
     .min(10, { message: "رقم الهاتف يجب أن يحتوي على 10 أرقام على الأقل" })
@@ -30,11 +33,14 @@ const clientFormSchema = z.object({
     .string()
     .min(10, { message: "رقم الهاتف يجب أن يحتوي على 10 أرقام على الأقل" })
     .max(15, { message: "رقم الهاتف يجب ألا يزيد عن 15 رقم" })
-    .optional(),
+    .optional()
+    .or(z.literal("")),
   address: z
     .string()
     .min(5, { message: "العنوان يجب أن يحتوي على 5 أحرف على الأقل" })
-    .max(200, { message: "العنوان يجب ألا يزيد عن 200 حرف" }),
+    .max(200, { message: "العنوان يجب ألا يزيد عن 200 حرف" })
+    .optional()
+    .or(z.literal("")),
   childClients: z.array(branchClientSchema).optional(),
 });
 

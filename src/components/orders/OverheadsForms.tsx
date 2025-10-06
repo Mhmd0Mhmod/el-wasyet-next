@@ -198,6 +198,7 @@ function OverheadsForms() {
         name="CustomOverheads"
         title="التكاليف الإضافية المخصصة"
         penaltyExtraFee={false}
+        penaltyBankFeePrecentage={false}
       />
     </div>
   );

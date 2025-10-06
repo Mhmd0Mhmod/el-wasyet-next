@@ -20,7 +20,8 @@ export async function getOrders({
     const serviceIds = searchParams?.ServiceIds?.split(",").map(Number);
     const res = await authFetch.get<PaginatedResponse<Order>>("Order/all", {
       params: {
-        ...searchParams,
+        searchTerm: searchParams?.searchTerm || "",
+        pageNumber: searchParams?.page || 1,
         OrderStatusIds: orderStatusIds,
         ServiceIds: serviceIds,
         PageSize: defaults.pageSize,

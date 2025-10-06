@@ -20,12 +20,14 @@ interface AddOverheadFormProps {
   name: string;
   title?: string;
   penaltyExtraFee?: boolean;
+  penaltyBankFeePrecentage?: boolean;
 }
 
 function AddOverheadForm({
   name,
   title = "التكاليف الإضافية",
   penaltyExtraFee = true,
+  penaltyBankFeePrecentage = true,
 }: AddOverheadFormProps) {
   const form = useFormContext();
   const {
@@ -68,6 +70,7 @@ function AddOverheadForm({
               name={name}
               removeOverhead={removeOverhead}
               penaltyExtraFee={penaltyExtraFee}
+              penaltyBankFeePrecentage={penaltyBankFeePrecentage}
             />
           ))}
         </div>
@@ -80,11 +83,13 @@ function Overhead({
   name,
   removeOverhead,
   penaltyExtraFee,
+  penaltyBankFeePrecentage,
 }: {
   index: number;
   name: string;
   removeOverhead: (idx: number) => void;
   penaltyExtraFee?: boolean;
+  penaltyBankFeePrecentage?: boolean;
 }) {
   const form = useFormContext();
   const onSelectFormChange = useCallback(
@@ -164,8 +169,13 @@ function Overhead({
             />
           </div>
           {isFormType && <FormsComponent index={index} name={name} />}
-          {isPenaltyType && penaltyExtraFee && (
-            <PenaltyComponent index={index} name={name} />
+          {isPenaltyType && (
+            <PenaltyComponent
+              index={index}
+              name={name}
+              penaltyExtraFee={penaltyExtraFee}
+              penaltyBankFeePrecentage={penaltyBankFeePrecentage}
+            />
           )}
         </div>
       </div>
@@ -223,25 +233,56 @@ function FormsComponent({ index, name }: { index: number; name: string }) {
     </div>
   );
 }
-function PenaltyComponent({ index, name }: { index: number; name: string }) {
+function PenaltyComponent({
+  index,
+  name,
+  penaltyExtraFee,
+  penaltyBankFeePrecentage,
+}: {
+  index: number;
+  name: string;
+  penaltyExtraFee?: boolean;
+  penaltyBankFeePrecentage?: boolean;
+}) {
   const form = useFormContext();
 
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={`${name}.${index}.penaltyExtraFee`}>
-        الرسوم الإضافية
-      </Label>
+    <>
+      {penaltyExtraFee && (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor={`${name}.${index}.penaltyExtraFee`}>
+            الرسوم الإضافية
+          </Label>
 
-      <Input
-        id={`${name}.${index}.penaltyExtraFee`}
-        type="number"
-        placeholder="الرسوم الإضافية"
-        min="0"
-        {...form.register(`${name}.${index}.penaltyExtraFee`, {
-          setValueAs: (value) => (value === "" ? 0 : Number(value)),
-        })}
-      />
-    </div>
+          <Input
+            id={`${name}.${index}.penaltyExtraFee`}
+            type="number"
+            placeholder="الرسوم الإضافية"
+            min="0"
+            {...form.register(`${name}.${index}.penaltyExtraFee`, {
+              setValueAs: (value) => (value === "" ? 0 : Number(value)),
+            })}
+          />
+        </div>
+      )}
+      {penaltyBankFeePrecentage && (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor={`${name}.${index}.penaltyBankFeePrecentage`}>
+            نسبة الرسوم البنكيه%
+          </Label>
+          <Input
+            id={`${name}.${index}.penaltyBankFeePrecentage`}
+            type="number"
+            placeholder="نسبة الرسوم البنكيه%"
+            min="0"
+            max="100"
+            {...form.register(`${name}.${index}.penaltyBankFeePrecentage`, {
+              setValueAs: (value) => (value === "" ? 0 : Number(value)),
+            })}
+          />
+        </div>
+      )}
+    </>
   );
 }
 export default AddOverheadForm;

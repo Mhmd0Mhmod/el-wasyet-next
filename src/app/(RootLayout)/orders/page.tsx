@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
-import { formatCurrency, formatDate } from "@/lib/helper";
+import { formatCurrency, formatDate, getOrderStatusColor } from "@/lib/helper";
 import { Order } from "@/types/order";
 import { ClipboardIcon, Edit3Icon, Plus } from "lucide-react";
 import Link from "next/link";
@@ -103,14 +103,14 @@ async function OrdersTable({
     OrderStatusIds?: string;
   };
 }) {
-  const { items, pageNumber, pageSize, totalRecords } = await getOrders({
+  const { items, pageNumber, totalPages } = await getOrders({
     searchParams,
   });
 
   const renderOrderRows = items.map((order: Order) => (
     <TableRow
       key={order.id}
-      className={`bg-${order.recevingStatues.toLowerCase()}-100`}
+      className={getOrderStatusColor(order.recevingStatues)}
     >
       <TableCell className="text-center">
         <Link href={`/orders/${order.id}`} className="underline">
@@ -170,7 +170,15 @@ async function OrdersTable({
             className="gap-2 border-green-200 bg-green-50 text-green-800"
           >
             <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            تم التسليم في الموعد
+            تم الاستلام قبل عتبة الخدمة
+          </Badge>
+
+          <Badge
+            variant="outline"
+            className="gap-2 border-yellow-200 bg-yellow-50 text-yellow-800"
+          >
+            <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
+            تم الاستلام متأخرًا
           </Badge>
 
           <Badge
@@ -178,28 +186,24 @@ async function OrdersTable({
             className="gap-2 border-gray-200 bg-gray-50 text-gray-800"
           >
             <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-            تم التسليم متأخر
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="gap-2 border-yellow-200 bg-yellow-50 text-yellow-800"
-          >
-            <div className="h-2 w-2 rounded-full bg-yellow-400"></div>
-            لم يسلم - الموعد لم يصل بعد
+            لم يتم الاستلام
           </Badge>
 
           <Badge
             variant="outline"
             className="gap-2 border-red-200 bg-red-50 text-red-800"
           >
-            <div className="h-2 w-2 rounded-full bg-red-400"></div>
-            لم يسلم وتجاوز الموعد
+            <div className="h-2 w-2 rounded-full bg-red-500"></div>
+            لم يتم الاستلام وتجاوز فترة الصلاحية
           </Badge>
         </div>
       </div>
 
-      <Pagination page={pageNumber} pageSize={pageSize} total={totalRecords} />
+      <Pagination
+        page={pageNumber}
+        totalPages={totalPages}
+        searchParams={searchParams}
+      />
     </>
   );
 }

@@ -114,9 +114,9 @@ async function ClientsTableData({
         ))}
       />
       <Pagination
-        total={clients?.totalRecords || 0}
+        totalPages={clients?.totalPages || 0}
         page={clients?.pageNumber || parseInt(searchParams.page || "1") || 1}
-        pageSize={clients?.pageSize || defaults.pageSize}
+        searchParams={searchParams}
       />
     </>
   );

@@ -73,7 +73,7 @@ async function EmployeesTable({
     items: employees,
     pageSize,
     pageNumber,
-    totalRecords,
+    totalPages,
   } = await getEmployees({
     search: searchParams.search || "",
     page: parseInt(searchParams.page || "1", 10),
@@ -137,7 +137,11 @@ async function EmployeesTable({
           </TableRow>
         ))}
       />
-      <Pagination total={totalRecords} pageSize={pageSize} page={pageNumber} />
+      <Pagination
+        totalPages={totalPages}
+        page={pageNumber}
+        searchParams={searchParams}
+      />
     </>
   );
 }
