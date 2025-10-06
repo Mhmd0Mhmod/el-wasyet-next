@@ -8,6 +8,7 @@ export const NAVBARLINKS = [
   { label: "الموظفين", href: "/employees" },
   { label: "العملاء", href: "/clients" },
   { label: "الأوامر", href: "/orders" },
+  { label: "أمر جديد", href: "/orders/new" },
   {
     label: "العمليات",
     children: [
