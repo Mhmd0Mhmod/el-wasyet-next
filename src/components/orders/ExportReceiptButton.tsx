@@ -25,7 +25,6 @@ function ExportReceiptButton({ orderId }: { orderId: number }) {
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
       setTimeout(() => URL.revokeObjectURL(url), 2000);
-
       toast.success("تم تصدير الفاتورة بنجاح", { id });
     } catch (err) {
       if (err instanceof Error) {
