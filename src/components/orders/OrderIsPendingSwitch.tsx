@@ -12,6 +12,7 @@ function OrderIsPendingSwitch() {
       render={({ field }) => (
         <Switch
           checked={field.value}
+          id="is-pending"
           onCheckedChange={field.onChange}
           className="flex-row-reverse"
         />

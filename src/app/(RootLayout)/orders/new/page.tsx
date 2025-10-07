@@ -10,6 +10,7 @@ import SubmitButton from "@/components/orders/SubmitButton";
 import UploadDocumentButton from "@/components/orders/UploadDocumentButton";
 import OrderFormProvider from "@/components/providers/OrderFormProvider";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 function page() {
@@ -31,7 +32,9 @@ function page() {
             </div>
           </div>
           <div className="bg-primary/10 m-auto flex w-11/12 items-center justify-between gap-10 rounded-xl px-8 py-2 md:m-0 md:w-auto md:justify-start">
-            <h3 className="mb-1 font-medium">هل تريد جعل هذا الأمر معلقًا؟</h3>
+            <Label htmlFor="is-pending" className="text-md font-medium">
+              هل تريد جعل هذا الأمر معلقًا؟
+            </Label>
             <OrderIsPendingSwitch />
           </div>
         </div>
