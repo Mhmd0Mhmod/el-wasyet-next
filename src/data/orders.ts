@@ -9,23 +9,35 @@ export async function getOrders({
   searchParams,
 }: {
   searchParams: Partial<{
-    searchTerm?: string;
+    search?: string;
     page?: string;
-    ServiceIds?: string;
-    OrderStatusIds?: string;
+    serviceIds?: string;
+    orderStatusIds?: string;
   }>;
 }): Promise<PaginatedResponse<Order>> {
   try {
-    const orderStatusIds = searchParams?.OrderStatusIds?.split(",").map(Number);
-    const serviceIds = searchParams?.ServiceIds?.split(",").map(Number);
+    const orderStatusIds = searchParams?.orderStatusIds?.split(",").map(Number);
+    const serviceIds = searchParams?.serviceIds?.split(",").map(Number);
+    const params = new URLSearchParams();
+    if (searchParams?.search) {
+      params.append("search", searchParams.search);
+    }
+    if (searchParams?.page) {
+      params.append("pageNumber", searchParams.page);
+    } else {
+      params.append("pageNumber", "1");
+    }
+    if (orderStatusIds && orderStatusIds.length > 0) {
+      orderStatusIds.forEach((id) =>
+        params.append("orderStatusIds", id.toString()),
+      );
+    }
+    if (serviceIds && serviceIds.length > 0) {
+      serviceIds.forEach((id) => params.append("serviceIds", id.toString()));
+    }
+    params.append("PageSize", defaults.pageSize.toString());
     const res = await authFetch.get<PaginatedResponse<Order>>("Order/all", {
-      params: {
-        searchTerm: searchParams?.searchTerm || "",
-        pageNumber: searchParams?.page || 1,
-        OrderStatusIds: orderStatusIds,
-        ServiceIds: serviceIds,
-        PageSize: defaults.pageSize,
-      },
+      params,
     });
 
     return res.data;

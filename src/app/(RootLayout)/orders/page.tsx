@@ -24,10 +24,10 @@ async function page({
   searchParams,
 }: {
   searchParams: Promise<{
-    searchTerm?: string;
+    search?: string;
     page?: string;
-    ServiceIds?: string;
-    OrderStatusIds?: string;
+    serviceIds?: string;
+    orderStatusIds?: string;
   }>;
 }) {
   const searchParamsValues = await searchParams;
@@ -52,7 +52,7 @@ async function page({
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <SearchInput title="بحث .." />
         <Select
-          name="ServiceIds"
+          name="serviceIds"
           placeholder="اسم الخدمة"
           selectItems={services.map((service) => ({
             value: service.id,
@@ -61,7 +61,7 @@ async function page({
           multiple
         />
         <Select
-          name="OrderStatusIds"
+          name="orderStatusIds"
           placeholder="حاله الامر"
           selectItems={orderStatus.map((status) => ({
             value: status.id,
@@ -97,10 +97,10 @@ async function OrdersTable({
   searchParams,
 }: {
   searchParams: {
-    searchTerm?: string;
+    search?: string;
     page?: string;
-    ServiceIds?: string;
-    OrderStatusIds?: string;
+    serviceIds?: string;
+    orderStatusIds?: string;
   };
 }) {
   const { items, pageNumber, totalPages } = await getOrders({
@@ -181,7 +181,7 @@ async function OrdersTable({
             className="gap-2 border-green-200 bg-green-50 text-green-800"
           >
             <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            تم الاستلام قبل عتبة الخدمة
+            تم الاستلام قبل انتهاء فترة الخدمة
           </Badge>
 
           <Badge
@@ -189,7 +189,7 @@ async function OrdersTable({
             className="gap-2 border-yellow-200 bg-yellow-50 text-yellow-800"
           >
             <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-            تم الاستلام متأخرًا
+            تم الاستلام بعد انتهاء فترة الخدمة
           </Badge>
 
           <Badge
@@ -197,7 +197,7 @@ async function OrdersTable({
             className="gap-2 border-gray-200 bg-gray-50 text-gray-800"
           >
             <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-            لم يتم الاستلام
+            لم يتم الاستلام ولكن لم تنتهي مده الخدمة
           </Badge>
 
           <Badge
@@ -205,7 +205,7 @@ async function OrdersTable({
             className="gap-2 border-red-200 bg-red-50 text-red-800"
           >
             <div className="h-2 w-2 rounded-full bg-red-500"></div>
-            لم يتم الاستلام وتجاوز فترة الصلاحية
+            لم يتم الاستلام وتجاوز فترة الخدمة
           </Badge>
         </div>
       </div>
