@@ -4,6 +4,7 @@ import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import PageLayout from "@/components/Layout/PageLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -12,34 +13,6 @@ import { cn } from "@/lib/utils";
 import { CheckCircle, Edit, Eye, Plus, XCircle } from "lucide-react";
 import { Suspense } from "react";
 
-async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{ search?: string; page?: string }>;
-}) {
-  const { search, page } = await searchParams;
-  return (
-    <section className="container space-y-12 pt-6">
-      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">الموظفين</h1>
-          <p className="text-gray-500">إدارة جميع موظفي الشركة</p>
-        </div>
-        <div>
-          <NewEmployeeButton />
-        </div>
-      </div>
-      <>
-        <Suspense
-          fallback={<TableSkeleton rows={5} columns={5} />}
-          key={search + (page || "")}
-        >
-          <EmployeesTable searchParams={{ search, page }} />
-        </Suspense>
-      </>
-    </section>
-  );
-}
 function NewEmployeeButton() {
   return (
     <Dialog>
@@ -71,7 +44,6 @@ async function EmployeesTable({
 }) {
   const {
     items: employees,
-    pageSize,
     pageNumber,
     totalPages,
   } = await getEmployees({
@@ -143,6 +115,27 @@ async function EmployeesTable({
         searchParams={searchParams}
       />
     </>
+  );
+}
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; page?: string }>;
+}) {
+  const { search, page } = await searchParams;
+  return (
+    <PageLayout
+      title="الموظفين"
+      description="إدارة جميع موظفي الشركة"
+      extra={<NewEmployeeButton />}
+    >
+      <Suspense
+        fallback={<TableSkeleton rows={5} columns={5} />}
+        key={search + (page || "")}
+      >
+        <EmployeesTable searchParams={{ search, page }} />
+      </Suspense>
+    </PageLayout>
   );
 }
 export default page;

@@ -5,52 +5,13 @@ import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import PageLayout from "@/components/Layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getClients } from "@/data/clients";
-import { defaults } from "@/lib/utils";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 
-async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    search?: string;
-    page?: string;
-  }>;
-}) {
-  const { search, page } = await searchParams;
-  return (
-    <section className="container space-y-12 pt-6">
-      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">العملاء</h1>
-          <p className="text-gray-500">إدارة العملاء الرئيسين والفرعيين</p>
-        </div>
-        <div>
-          <Dialog>
-            <Dialog.Trigger>
-              <Button>
-                <Plus size={16} />
-                إضافة عميل
-              </Button>
-            </Dialog.Trigger>
-            <Dialog.Content title="إضافة عميل">
-              <ClientForm />
-            </Dialog.Content>
-          </Dialog>
-        </div>
-      </div>
-      <Suspense
-        fallback={<TableSkeleton rows={5} columns={6} />}
-        key={search + (page || "")}
-      >
-        <ClientsTableData searchParams={{ search, page }} />
-      </Suspense>
-    </section>
-  );
-}
 const columns = [
   { id: "name", label: "الاسم" },
   { id: "address", label: "العنوان" },
@@ -73,7 +34,6 @@ async function ClientsTableData({
   });
   return (
     <>
-      <SearchInput title="البحث عن عميل..." />
       <Table
         columns={columns}
         renderData={clients?.items.map((client) => (
@@ -119,6 +79,43 @@ async function ClientsTableData({
         searchParams={searchParams}
       />
     </>
+  );
+}
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    search?: string;
+    page?: string;
+  }>;
+}) {
+  const { search, page } = await searchParams;
+  return (
+    <PageLayout
+      title="العملاء"
+      description="إدارة العملاء الرئيسين والفرعيين"
+      extra={
+        <Dialog>
+          <Dialog.Trigger>
+            <Button>
+              <Plus size={16} />
+              إضافة عميل
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Content title="إضافة عميل">
+            <ClientForm />
+          </Dialog.Content>
+        </Dialog>
+      }
+    >
+      <SearchInput title="البحث عن عميل..." />
+      <Suspense
+        fallback={<TableSkeleton rows={5} columns={6} />}
+        key={search + (page || "")}
+      >
+        <ClientsTableData searchParams={{ search, page }} />
+      </Suspense>
+    </PageLayout>
   );
 }
 export default page;

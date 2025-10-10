@@ -4,6 +4,7 @@ import SearchInput from "@/components/general/SearchInput";
 import Select from "@/components/general/Select";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import PageLayout from "@/components/Layout/PageLayout";
 import OrderLogs from "@/components/orders/[id]/order-logs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,66 +20,6 @@ import { Order } from "@/types/order";
 import { ClipboardIcon, Edit3Icon, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-
-async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    search?: string;
-    page?: string;
-    serviceIds?: string;
-    orderStatusIds?: string;
-  }>;
-}) {
-  const searchParamsValues = await searchParams;
-  const services = await getServices();
-  const orderStatus = await getOrderStatuses();
-  return (
-    <section className="container space-y-12 pt-6">
-      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">الاوامر</h1>
-          <p className="text-gray-500">
-            إدارة أوامر العملاء ومتابعة حالة الخدمات
-          </p>
-        </div>
-        <Button>
-          <Link href={"/orders/new"}>
-            <Plus className="inline-block" size={16} />
-            أمر جديد
-          </Link>
-        </Button>
-      </div>
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-        <SearchInput title="بحث .." />
-        <Select
-          name="serviceIds"
-          placeholder="اسم الخدمة"
-          selectItems={services.map((service) => ({
-            value: service.id,
-            label: service.name,
-          }))}
-          multiple
-        />
-        <Select
-          name="orderStatusIds"
-          placeholder="حاله الامر"
-          selectItems={orderStatus.map((status) => ({
-            value: status.id,
-            label: status.name,
-          }))}
-          multiple
-        />
-      </div>
-      <Suspense
-        fallback={<TableSkeleton rows={5} columns={5} />}
-        key={Object.values(searchParamsValues).join("-")}
-      >
-        <OrdersTable searchParams={searchParamsValues} />
-      </Suspense>
-    </section>
-  );
-}
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -218,5 +159,60 @@ async function OrdersTable({
     </>
   );
 }
-
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    search?: string;
+    page?: string;
+    serviceIds?: string;
+    orderStatusIds?: string;
+  }>;
+}) {
+  const searchParamsValues = await searchParams;
+  const services = await getServices();
+  const orderStatus = await getOrderStatuses();
+  return (
+    <PageLayout
+      title="الاوامر"
+      description="إدارة أوامر العملاء ومتابعة حالة الخدمات"
+      extra={
+        <Button>
+          <Link href={"/orders/new"}>
+            <Plus className="inline-block" size={16} />
+            أمر جديد
+          </Link>
+        </Button>
+      }
+    >
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+        <SearchInput title="بحث .." />
+        <Select
+          name="serviceIds"
+          placeholder="اسم الخدمة"
+          selectItems={services.map((service) => ({
+            value: service.id,
+            label: service.name,
+          }))}
+          multiple
+        />
+        <Select
+          name="orderStatusIds"
+          placeholder="حاله الامر"
+          selectItems={orderStatus.map((status) => ({
+            value: status.id,
+            label: status.name,
+          }))}
+          multiple
+        />
+      </div>
+      <Suspense
+        fallback={<TableSkeleton rows={5} columns={5} />}
+        key={Object.values(searchParamsValues).join("-")}
+      >
+        <OrdersTable searchParams={searchParamsValues} />
+      </Suspense>
+    </PageLayout>
+  );
+}
 export default page;

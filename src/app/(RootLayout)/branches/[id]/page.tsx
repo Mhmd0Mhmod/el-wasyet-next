@@ -3,6 +3,7 @@ import LastActivities from "@/components/Branches/LastActivities";
 import NewBranchButton from "@/components/Branches/NewBranch";
 import ServicesTable from "@/components/Branches/ServicesTable";
 import { TabsList, TabsTrigger } from "@/components/general/Tabs";
+import PageLayout from "@/components/Layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,27 +30,21 @@ async function BranchDetailsPage({
   }
 
   return (
-    <section className="container space-y-12 pt-6">
-      {/* Page Header */}
-      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">فرع {branch.name}</h1>
-          <p className="text-gray-500">تفاصيل واداره الفرع</p>
-        </div>
-        <div>
-          <NewBranchButton
-            branch={branch}
-            Trigger={() => (
-              <Button>
-                <Edit2 />
-                تعديل الفرع
-              </Button>
-            )}
-          />
-        </div>
-      </div>
-
-      {/* Branch Information Card */}
+    <PageLayout
+      title={`فرع ${branch.name}`}
+      description="تفاصيل واداره الفرع"
+      extra={
+        <NewBranchButton
+          branch={branch}
+          Trigger={() => (
+            <Button>
+              <Edit2 />
+              تعديل الفرع
+            </Button>
+          )}
+        />
+      }
+    >
       <Card dir="rtl">
         <CardHeader>
           <CardTitle className="text-2xl">معلومات الفرع</CardTitle>
@@ -112,7 +107,7 @@ async function BranchDetailsPage({
           </TabsContent>
         </Card>
       </Tabs>
-    </section>
+    </PageLayout>
   );
 }
 

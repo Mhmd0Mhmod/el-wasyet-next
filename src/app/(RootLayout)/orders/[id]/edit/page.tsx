@@ -1,3 +1,4 @@
+import PageLayout from "@/components/Layout/PageLayout";
 import ClientSelector from "@/components/orders/ClientSelector";
 import DocumentSelector from "@/components/orders/DocumentSelector";
 import FinancialDetailsForm from "@/components/orders/FinancialDetailsForm";
@@ -9,11 +10,8 @@ import ServiceTypeSelector from "@/components/orders/ServiceTypeSelector";
 import SubmitButton from "@/components/orders/SubmitButton";
 import UploadDocumentButton from "@/components/orders/UploadDocumentButton";
 import OrderFormProvider from "@/components/providers/OrderFormProvider";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { getOrderById } from "@/data/orders";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 async function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -21,30 +19,19 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   if (!orderDetails) notFound();
   return (
     <OrderFormProvider>
-      <section className="container space-y-12">
-        <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost">
-              <Link href={"/orders"} className="text-gray-500 hover:underline">
-                <ArrowRight className="inline-block" size={24} />
-              </Link>
-            </Button>
-            <div className="space-y-2">
-              <h1 className="text-2xl font-bold">تعديل الاوامر</h1>
-              <p className="text-gray-500">
-                تعديل الأمر الخاص بـ {orderDetails.clientName} - كود الأمر #
-                {orderDetails.orderCode}
-              </p>
-            </div>
-          </div>
+      <PageLayout
+        title={`تعديل الأمر - ${orderDetails.clientName}`}
+        description={`تعديل الأمر الخاص بـ ${orderDetails.clientName} - كود الأمر #${orderDetails.orderCode}`}
+        extra={
           <div className="bg-primary/10 m-auto flex w-11/12 items-center justify-between gap-10 rounded-xl px-8 py-2 md:m-0 md:w-auto md:justify-start">
             <Label htmlFor="is-pending" className="text-md font-medium">
               هل تريد جعل هذا الأمر معلقًا؟
             </Label>
             <OrderIsPendingSwitch />
           </div>
-        </div>
-
+        }
+        backButton
+      >
         <div className="md:gap-6 xl:grid xl:grid-cols-[1fr_auto] xl:items-start">
           <div className="space-y-6">
             <div className="space-y-2">
@@ -70,7 +57,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
           <UploadDocumentButton />
           <SubmitButton />
         </div>
-      </section>
+      </PageLayout>
     </OrderFormProvider>
   );
 }

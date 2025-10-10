@@ -8,40 +8,7 @@ import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
 import TableSkeleton from "@/components/general/TableSkeleton";
-async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{ search?: string; page?: string }>;
-}) {
-  const { search, page } = await searchParams;
-  return (
-    <section className="container space-y-12 pt-6">
-      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">الفروع</h1>
-          <p className="text-gray-500">إدارة جميع فروع الشركة</p>
-        </div>
-        <div>
-          <NewBranch
-            Trigger={() => (
-              <Button>
-                <Plus />
-                إضافة فرع جديد
-              </Button>
-            )}
-          />
-        </div>
-      </div>
-
-      <Suspense
-        fallback={<TableSkeleton rows={5} columns={5} />}
-        key={search + (page || "")}
-      >
-        <BranchesTableData searchParams={{ search, page }} />
-      </Suspense>
-    </section>
-  );
-}
+import PageLayout from "@/components/Layout/PageLayout";
 
 const columns = [
   { id: "name", label: "اسم الفرع" },
@@ -63,7 +30,6 @@ async function BranchesTableData({
 
   return (
     <>
-      <SearchInput title="ابحث عن فرع" />
       <Table
         columns={columns}
         renderData={branches?.map((branch) => (
@@ -93,4 +59,37 @@ async function BranchesTableData({
     </>
   );
 }
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; page?: string }>;
+}) {
+  const { search, page } = await searchParams;
+  return (
+    <PageLayout
+      title="الفروع"
+      description="إدارة جميع فروع الشركة"
+      extra={
+        <NewBranch
+          Trigger={() => (
+            <Button>
+              <Plus />
+              إضافة فرع جديد
+            </Button>
+          )}
+        />
+      }
+    >
+      <SearchInput title="ابحث عن فرع" />
+
+      <Suspense
+        fallback={<TableSkeleton rows={5} columns={5} />}
+        key={search + (page || "")}
+      >
+        <BranchesTableData searchParams={{ search, page }} />
+      </Suspense>
+    </PageLayout>
+  );
+}
+
 export default page;

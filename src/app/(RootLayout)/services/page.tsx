@@ -2,6 +2,7 @@ import Dialog from "@/components/general/Dialog";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import PageLayout from "@/components/Layout/PageLayout";
 import ServiceDetails from "@/components/services/ServiceDetails";
 import ServiceForm from "@/components/services/ServiceForm";
 import { Button } from "@/components/ui/button";
@@ -11,47 +12,6 @@ import { getServices, getWorkFlows } from "@/data/services";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 
-async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{ search?: string; page?: string }>;
-}) {
-  const { search, page } = await searchParams;
-  const workFlows = await getWorkFlows();
-
-  return (
-    <section className="container space-y-12 pt-6">
-      <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">الخدمات</h1>
-          <p className="text-gray-500">إدارة جميع الخدمات المتاحة في الفروع</p>
-        </div>
-        <div>
-          <Dialog>
-            <Dialog.Trigger>
-              <Button>
-                <Plus />
-                إضافة خدمة
-              </Button>
-            </Dialog.Trigger>
-            <Dialog.Content title="إضافة خدمة جديدة" className="sm:max-w-xl">
-              <ServiceForm workFlows={workFlows} />
-            </Dialog.Content>
-          </Dialog>
-        </div>
-      </div>
-      <SearchInput title="ابحث عن خدمة" />
-      <>
-        <Suspense
-          fallback={<TableSkeleton rows={5} columns={5} />}
-          key={search + (page || "")}
-        >
-          <ServicesTable searchParams={{ search, page }} />
-        </Suspense>
-      </>
-    </section>
-  );
-}
 const serviceColumns = [
   ...ServicesTableHeaders.slice(0, -1),
   {
@@ -120,5 +80,42 @@ async function ServicesTable({
     </>
   );
 }
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; page?: string }>;
+}) {
+  const { search, page } = await searchParams;
+  const workFlows = await getWorkFlows();
 
+  return (
+    <PageLayout
+      title="الخدمات"
+      description="إدارة جميع الخدمات المتاحة في الفروع"
+      extra={
+        <Dialog>
+          <Dialog.Trigger>
+            <Button>
+              <Plus />
+              إضافة خدمة
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Content title="إضافة خدمة جديدة" className="sm:max-w-xl">
+            <ServiceForm workFlows={workFlows} />
+          </Dialog.Content>
+        </Dialog>
+      }
+    >
+      <SearchInput title="ابحث عن خدمة" />
+      <>
+        <Suspense
+          fallback={<TableSkeleton rows={5} columns={5} />}
+          key={search + (page || "")}
+        >
+          <ServicesTable searchParams={{ search, page }} />
+        </Suspense>
+      </>
+    </PageLayout>
+  );
+}
 export default page;
