@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
-import { formatCurrency, formatDate, getOrderStatusColor } from "@/lib/helper";
+import { formatCurrency, formatDate } from "@/lib/helper";
+import { cn } from "@/lib/utils";
 import { Order } from "@/types/order";
 import { ClipboardIcon, Edit3Icon, Plus } from "lucide-react";
 import Link from "next/link";
@@ -51,7 +52,10 @@ async function OrdersTable({
   const renderOrderRows = items.map((order: Order) => (
     <TableRow
       key={order.id}
-      className={getOrderStatusColor(order.recevingStatues)}
+      className={cn(
+        "hover:bg-muted",
+        `bg-${order.recevingStatues.toLowerCase()}-100`,
+      )}
     >
       <TableCell className="text-center">
         <Link href={`/orders/${order.id}`} className="underline">

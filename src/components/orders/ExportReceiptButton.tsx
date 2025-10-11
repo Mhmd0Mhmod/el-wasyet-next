@@ -9,7 +9,7 @@ function ExportReceiptButton({ orderId }: { orderId: number }) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/Invoice/order/${orderId}/details-pdf`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/Invoice/order/${orderId}/pdf`,
         {
           method: "GET",
           headers: {

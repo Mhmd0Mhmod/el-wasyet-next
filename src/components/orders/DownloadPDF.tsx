@@ -9,7 +9,7 @@ function DownloadPDF({ orderId }: { orderId: number }) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/Invoice/order/${orderId}/pdf`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/Invoice/order/${orderId}/details-pdf`,
         {
           method: "GET",
           headers: {
