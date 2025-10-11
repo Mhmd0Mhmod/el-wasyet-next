@@ -1,6 +1,7 @@
 import { ServiceOverhead } from "@/types/service";
 import { AxiosError } from "axios";
 import { AuthError } from "next-auth";
+import { Clock, AlertCircle, Bell } from "lucide-react";
 
 export const NAVBARLINKS = [
   { label: "الفروع", href: "/branches" },
@@ -112,4 +113,45 @@ export const getOrderStatusColor = (status: string) => {
     default:
       return "bg-gray-100 text-gray-800 border-gray-200";
   }
+};
+
+export const remainingDays = (dueDate: number): string => {
+  // dueDate is a number representing days relative to today
+  // Positive numbers = future days, Negative numbers = past days, 0 = today
+
+  if (dueDate === 0) {
+    return "اليوم";
+  }
+
+  if (dueDate < 0) {
+    const daysPassed = Math.abs(dueDate);
+    return `منتهي منذ ${daysPassed} يوم`;
+  }
+
+  return `متبقي ${dueDate} يوم`;
+};
+
+export const getRemainingDaysStyle = (dueDate: number) => {
+  if (dueDate === 0) {
+    return {
+      text: "اليوم",
+      className: "text-yellow-600 bg-yellow-50 border border-yellow-200",
+      icon: Clock,
+    };
+  }
+
+  if (dueDate < 0) {
+    const daysPassed = Math.abs(dueDate);
+    return {
+      text: `منتهي منذ ${daysPassed} يوم`,
+      className: "text-red-600 bg-red-50 border border-red-200",
+      icon: AlertCircle,
+    };
+  }
+
+  return {
+    text: `${dueDate} أيام`,
+    className: "text-green-600 bg-green-50 border border-green-200",
+    icon: Bell,
+  };
 };

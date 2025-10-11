@@ -1,7 +1,14 @@
 import { authFetch } from "@/lib/axios";
 import { defaults } from "@/lib/utils";
 import { Client } from "@/types/client";
-import { Agent, Offer, Order, OrderDetails, OrderLog } from "@/types/order";
+import {
+  Agent,
+  Offer,
+  Order,
+  OrderByStatus,
+  OrderDetails,
+  OrderLog,
+} from "@/types/order";
 import { Service } from "@/types/service";
 import { AxiosError } from "axios";
 
@@ -197,6 +204,54 @@ export async function getOrderLogs({
 }): Promise<OrderLog[]> {
   try {
     const { data } = await authFetch.get<OrderLog[]>(`/Order/${id}/audits`);
+    return data;
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      const errors = Object.values(err.response?.data.errors || {})
+        .flat()
+        .join(" ");
+      throw new Error(errors || err.response?.data?.message || err.message);
+    }
+    if (err instanceof Error) throw new Error(err.message);
+
+    throw new Error("An unexpected error occurred");
+  }
+}
+
+export async function getOrdersByStatusIds({
+  orderStatusIds,
+  IsCertificate,
+}: {
+  orderStatusIds: number[];
+  IsCertificate?: boolean;
+}): Promise<
+  Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {
+    items: {
+      orders: OrderByStatus[];
+      totalExpenses: number;
+    };
+  }
+> {
+  try {
+    const params = new URLSearchParams();
+    if (orderStatusIds && orderStatusIds.length > 0) {
+      orderStatusIds.forEach((id) =>
+        params.append("orderStatusIds", id.toString()),
+      );
+    }
+    if (IsCertificate !== undefined) {
+      params.append("IsCertificate", IsCertificate ? "true" : "false");
+    }
+    const { data } = await authFetch.get<
+      Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {
+        items: {
+          orders: OrderByStatus[];
+          totalExpenses: number;
+        };
+      }
+    >(`/Order/GetBy-Status`, {
+      params,
+    });
     return data;
   } catch (err) {
     if (err instanceof AxiosError) {
