@@ -1,6 +1,11 @@
 import { OrderByStatus } from "@/types/order";
-
+import { OperationsProvider } from "../providers/OperationsProvider";
+import OrdersTable from "./tables/OrdersTable";
 function Fulfillment({ orders }: { orders: OrderByStatus[] }) {
-  return <div>Fulfillment</div>;
+  return (
+    <OperationsProvider>
+      <OrdersTable orders={orders} ActionsSelect={<></>} />
+    </OperationsProvider>
+  );
 }
 export default Fulfillment;

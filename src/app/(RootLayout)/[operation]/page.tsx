@@ -1,5 +1,7 @@
+import Pagination from "@/components/general/Pagination";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
+import ExportButton from "@/components/operation/actions/ExportButton";
 import CertificateFulfillment from "@/components/operation/certificate-fulfillment";
 import ClientFulfillment from "@/components/operation/client-fulfillment";
 import Collected from "@/components/operation/Collected";
@@ -101,21 +103,26 @@ interface PageProps {
   params: Promise<{
     operation: string;
   }>;
+  searchParams: Promise<{
+    search?: string;
+    page?: string;
+  }>;
 }
 
-async function page({ params }: PageProps) {
+async function page({ params, searchParams }: PageProps) {
   const { operation } = await params;
   if (!(operation in OPERATION_CONFIGS)) {
     notFound();
   }
   const config = OPERATION_CONFIGS[operation as OperationType];
+  const searchParameters = await searchParams;
   return (
     <PageLayout title={config.title} description={config.description}>
       <Suspense
         fallback={<TableSkeleton rows={5} columns={7} />}
-        key={operation}
+        key={`${JSON.stringify(searchParameters)} - ${Object.values(config).join(",")}`}
       >
-        <LoadTable config={config} />
+        <LoadTable config={config} searchParams={searchParameters} />
       </Suspense>
     </PageLayout>
   );
@@ -123,21 +130,40 @@ async function page({ params }: PageProps) {
 
 export default page;
 
-async function LoadTable({ config }: { config: OperationConfig }) {
+async function LoadTable({
+  config,
+  searchParams,
+}: {
+  config: OperationConfig;
+  searchParams: {
+    search?: string;
+    page?: string;
+  };
+}) {
   const { Component, statusIds, isCertificate } = config;
   const { items, pageNumber, totalPages } = await getOrdersByStatusIds({
     orderStatusIds: statusIds,
     IsCertificate: isCertificate,
   });
+  console.log(items);
 
   return (
     <>
+      <div className="flex">
+        <div className="mr-auto">
+          <ExportButton orders={items.orders} />
+        </div>
+      </div>
       <Component orders={items.orders} />
+      <Pagination
+        page={pageNumber}
+        searchParams={searchParams}
+        totalPages={totalPages}
+      />
     </>
   );
 }
 
-// Generate static params for all supported operations
 export async function generateStaticParams() {
   return Object.keys(OPERATION_CONFIGS).map((operation) => ({
     operation,
