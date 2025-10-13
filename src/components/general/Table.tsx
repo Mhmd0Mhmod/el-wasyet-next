@@ -5,6 +5,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import React from "react";
 import { Checkbox } from "../ui/checkbox";
 type Column = {
   id: string;
@@ -18,6 +19,7 @@ interface TableProp {
   selectAll?: boolean;
   selected?: boolean;
   onSelectAllChange?: (checked: boolean) => void;
+  selectAllComponent?: React.FC;
 }
 
 function Table({
@@ -25,6 +27,7 @@ function Table({
   renderData,
   selectAll,
   selected,
+  selectAllComponent,
   onSelectAllChange,
 }: TableProp) {
   return (
@@ -37,6 +40,11 @@ function Table({
                 defaultChecked={selected}
                 onCheckedChange={onSelectAllChange}
               />
+            </TableHead>
+          )}
+          {selectAllComponent && (
+            <TableHead className="!px-2 text-center">
+              {React.createElement(selectAllComponent)}
             </TableHead>
           )}
           {columns.map((column) => (

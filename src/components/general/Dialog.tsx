@@ -9,8 +9,20 @@ import {
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { Separator } from "../ui/separator";
-function Dialog({ children }: { children: React.ReactNode }) {
-  return <DialogComponent>{children}</DialogComponent>;
+function Dialog({
+  open,
+  setOpen,
+  children,
+}: {
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <DialogComponent open={open} onOpenChange={setOpen}>
+      {children}
+    </DialogComponent>
+  );
 }
 
 function DialogTriggerButton({ children }: { children: React.ReactNode }) {

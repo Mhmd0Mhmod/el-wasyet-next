@@ -9,6 +9,7 @@ import {
   OrderDetails,
   OrderLog,
 } from "@/types/order";
+import { OrderAction } from "@/types/order-actions";
 import { Service } from "@/types/service";
 import { AxiosError } from "axios";
 
@@ -264,4 +265,64 @@ export async function getOrdersByStatusIds({
 
     throw new Error("An unexpected error occurred");
   }
+}
+
+export function getOrderActions(pathname: string): OrderAction[] {
+  const path = pathname.toLowerCase();
+  if (path.includes("pending-orders")) {
+    // 1. Pending Orders - for all users
+    return [
+      OrderAction.NEW_ORDER,
+      OrderAction.CANCEL,
+      OrderAction.REFUND, // [cash, credit dialog]
+    ];
+  }
+
+  if (path.includes("new-orders") || path.includes("new-certificates")) {
+    // 2 & 3. New Orders - for all users (condition: not asked before)
+    return [
+      OrderAction.ASK_EXPENSES, // Only if !closeAskExpense
+    ];
+  }
+
+  if (path.includes("collected")) {
+    // 4. Collection Done - for executives
+    return [
+      OrderAction.UNDER_PROCESSING,
+      OrderAction.STEFA_CLIENT, // Only if isStefaClient
+      OrderAction.STEFA_CERTIFICATE, // Only if isStefaCertificate
+      OrderAction.RETURN, // [cash, credit dialog]
+    ];
+  }
+
+  if (path.includes("in-progress")) {
+    // 5. Under Processing - for executives
+    return [
+      OrderAction.COMPLETED,
+      OrderAction.STEFA_SGL, // Only if isStefaSGL
+      OrderAction.RETURN, // [cash, credit dialog]
+    ];
+  }
+
+  if (path.includes("completed-orders")) {
+    // 6. Completed Orders - for call center
+    return [OrderAction.CONTACTED];
+  }
+
+  if (path.includes("order-receipt")) {
+    return [
+      OrderAction.SEND_CODE,
+      OrderAction.WRITE_CODE,
+      OrderAction.RECEIVING_DONE,
+    ];
+  }
+
+  if (path.includes("stefa-sgl")) {
+    return [
+      OrderAction.COLLECTION_DONE,
+      OrderAction.RETURN, // [cash, credit dialog]
+    ];
+  }
+
+  return [];
 }

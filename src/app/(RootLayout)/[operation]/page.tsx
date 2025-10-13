@@ -2,17 +2,8 @@ import Pagination from "@/components/general/Pagination";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import ExportButton from "@/components/operation/actions/ExportButton";
-import CertificateFulfillment from "@/components/operation/certificate-fulfillment";
-import ClientFulfillment from "@/components/operation/client-fulfillment";
-import Collected from "@/components/operation/Collected";
-import CompletedOrders from "@/components/operation/CompletedOrders";
-import Fulfillment from "@/components/operation/Fulfillment";
-import InProgress from "@/components/operation/InProgress";
-import NewCertificates from "@/components/operation/NewCertificates";
-import NewOrders from "@/components/operation/NewOrders";
-import OrderReceipt from "@/components/operation/OrderReceipt";
-import PendingCertificates from "@/components/operation/PendingCertificates";
-import PendingOrders from "@/components/operation/PendingOrders";
+import CertificatesTable from "@/components/operation/tables/CertificatesTable";
+import OrdersTable from "@/components/operation/tables/OrdersTable";
 import { getOrdersByStatusIds } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";
@@ -31,69 +22,69 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     statusIds: [1],
     title: "الاوامر المعلقه",
     description: "سجل أوامر المعلقه ومتابعة حالة الاوامر",
-    Component: PendingOrders,
+    Component: OrdersTable,
   },
   "pending-certificates": {
     statusIds: [1],
     isCertificate: true,
     title: "الشهادات المعلقة",
     description: "سجل الشهادات المعلقة ومتابعة حالتها",
-    Component: PendingCertificates,
+    Component: CertificatesTable,
   },
   "new-certificates": {
     statusIds: [2],
     title: "الشهادات الجديدة",
     isCertificate: true,
     description: "سجل الشهادات الجديدة ومتابعة حالتها",
-    Component: NewCertificates,
+    Component: CertificatesTable,
   },
   "new-orders": {
     statusIds: [2],
     title: "الاوامر الجديده",
     description: "سجل الاوامر االجديده ومتابعة حالة الاوامر",
-    Component: NewOrders,
+    Component: OrdersTable,
   },
   collected: {
     statusIds: [3],
     title: "تم التحصيل",
     description: "سجل تم التحصيل ومتابعة حالة الاوامر",
-    Component: Collected,
+    Component: OrdersTable,
   },
   "in-progress": {
     statusIds: [4],
     title: "تحت التنفيذ",
     description: "سجل الاوامر قيد التنفيذ ومتابعة حالة الاوامر",
-    Component: InProgress,
+    Component: OrdersTable,
   },
   "completed-orders": {
     statusIds: [5],
     title: "الاوامر المنتهيه (لخدمه العملاء)",
     description: "سجل الاوامر المكتملة ومتابعة حالة الاوامر",
-    Component: CompletedOrders,
+    Component: OrdersTable,
   },
   "order-receipt": {
     statusIds: [6, 7, 8, 9],
     title: "استلام الاوامر",
     description: "سجل استلام الاوامر من العملاء",
-    Component: OrderReceipt,
+    Component: OrdersTable,
   },
   fulfillment: {
     statusIds: [10],
     title: "استيفاء",
     description: "سجل الاستيفاء ومتابعة حالة الاوامر",
-    Component: Fulfillment,
+    Component: OrdersTable,
   },
   "client-fulfillment": {
     statusIds: [11],
     title: "استيفاء عميل",
     description: "سجل استيفاء العملاء ومتابعة حالة الاوامر",
-    Component: ClientFulfillment,
+    Component: OrdersTable,
   },
   "certificate-fulfillment": {
     statusIds: [12],
     title: "استيفاء شهادة",
     description: "سجل استيفاء الشهادات ومتابعة حالة الاوامر",
-    Component: CertificateFulfillment,
+    Component: OrdersTable,
   },
 };
 

@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useState } from "react";
 import { Button } from "../ui/button";
+import { OrderByStatus } from "@/types/order";
 
 interface Operation {
   orderId: number;
@@ -12,16 +13,24 @@ interface Operation {
   employeeId?: number;
 }
 interface OperationsContextType {
+  orders: OrderByStatus[];
   operations: Operation[];
   addOperation: (operation: Operation) => void;
   removeOperation: (orderId: number) => void;
   updateOperation: (operation: Operation) => void;
+  selectAllOrderIds: (action: string) => void;
 }
 const OperationsContext = createContext<OperationsContextType | undefined>(
   undefined,
 );
 
-function OperationsProvider({ children }: { children: React.ReactNode }) {
+function OperationsProvider({
+  orders,
+  children,
+}: {
+  orders: OrderByStatus[];
+  children: React.ReactNode;
+}) {
   const [operations, setOperations] = useState<Operation[]>([]);
   const updateOperation = useCallback((updatedOperation: Operation) => {
     setOperations((prevOperations) =>
@@ -45,6 +54,15 @@ function OperationsProvider({ children }: { children: React.ReactNode }) {
       prevOperations.filter((op) => op.orderId !== orderId),
     );
   }, []);
+
+  const selectAllOrderIds = (action: string) => {
+    const newOperations = orders.map((order) => ({
+      orderId: order.orderId,
+      action,
+    }));
+    setOperations(newOperations);
+  };
+
   const onSubmit = useCallback(() => {
     console.log("Submitting operations:", operations);
   }, [operations]);
@@ -54,7 +72,14 @@ function OperationsProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <OperationsContext.Provider
-      value={{ addOperation, removeOperation, updateOperation, operations }}
+      value={{
+        orders,
+        operations,
+        addOperation,
+        removeOperation,
+        updateOperation,
+        selectAllOrderIds,
+      }}
     >
       {children}
       {operations.length > 0 && (
