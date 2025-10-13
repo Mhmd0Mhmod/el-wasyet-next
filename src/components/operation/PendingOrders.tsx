@@ -6,7 +6,7 @@ import OrdersTable from "./tables/OrdersTable";
 async function PendingOrders({ orders }: { orders: OrderByStatus[] }) {
   return (
     <OperationsProvider>
-      <OrdersTable orders={orders} ActionsSelect={<Actions />} />
+      <OrdersTable orders={orders} ActionsSelect={Actions} />
     </OperationsProvider>
   );
 }

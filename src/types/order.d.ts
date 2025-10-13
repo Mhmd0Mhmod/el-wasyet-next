@@ -132,6 +132,7 @@ interface OrderByStatus
   orderId: number;
   orderCode: string;
   serviceId: number;
+  orderStatusForAction: string;
   orderDate: string;
   birthDate: string | null;
   remainingDays: number;

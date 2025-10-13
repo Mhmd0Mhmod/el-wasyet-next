@@ -10,9 +10,11 @@ import {
 } from "@/lib/helper";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import SelectOrderCheckbox from "./SelectOrderCheckbox";
+import { OrderAction } from "@/types/order-actions";
 
 const columns = [
-  { id: "actions", label: "إدارة الإيداعات" },
+  { id: "actions", label: "إدارة الاجراءات" },
   { id: "name", label: "الاسم الرباعي" },
   { id: "service", label: "الخدمة" },
   { id: "date", label: "التاريخ" },
@@ -31,16 +33,24 @@ function CertificatesTable({
   ActionsSelect,
 }: {
   orders: OrderByStatus[];
-  ActionsSelect: React.ReactNode;
+  ActionsSelect: React.FC<{ currentAction: OrderAction }>;
 }) {
   return (
     <Table
       columns={columns}
+      selectAll
       renderData={
         <>
           {orders.map((order) => (
             <TableRow key={order.orderId}>
-              <TableCell>{ActionsSelect}</TableCell>
+              <TableCell className="!px-2">
+                <SelectOrderCheckbox orderId={order.orderId} />
+              </TableCell>
+              <TableCell>
+                <ActionsSelect
+                  currentAction={order.orderStatusForAction as OrderAction}
+                />
+              </TableCell>
               <TableCell>
                 <Dialog>
                   <Dialog.Trigger>

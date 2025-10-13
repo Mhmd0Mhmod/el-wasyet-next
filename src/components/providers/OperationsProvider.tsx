@@ -5,11 +5,11 @@ import { Button } from "../ui/button";
 interface Operation {
   orderId: number;
   action: string;
-  notes: string;
-  amount: number;
-  cashAmount: number;
-  creditAmount: number;
-  employeeId: number;
+  notes?: string;
+  amount?: number;
+  cashAmount?: number;
+  creditAmount?: number;
+  employeeId?: number;
 }
 interface OperationsContextType {
   operations: Operation[];
@@ -46,7 +46,6 @@ function OperationsProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
   const onSubmit = useCallback(() => {
-    // Handle submission logic here
     console.log("Submitting operations:", operations);
   }, [operations]);
   const onCancel = useCallback(() => {

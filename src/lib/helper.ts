@@ -155,3 +155,38 @@ export const getRemainingDaysStyle = (dueDate: number) => {
     icon: Bell,
   };
 };
+
+export const translateToArabic = (text: string): string => {
+  const translations: { [key: string]: string } = {
+    // Pending Orders
+    "new order": "أمر جديد ",
+    cancel: "إلغاء",
+    refund: "استرداد",
+
+    // New Orders
+    "ask expenses": "طلب تحصيل",
+
+    // Collection Done
+    "under processing": "تحت المعالجة",
+    "stefa client": "استيفاء عميل",
+    "stefa certificate": "استيفاء شهادة",
+    return: "إرجاع",
+
+    // Under Processing
+    completed: "مكتمل",
+    "stefa sgl": "استيفاء SGL",
+
+    // Completed Orders
+    contacted: "تم الاتصال",
+
+    // Receiving Orders
+    "send code": "إرسال الرمز",
+    "write code": "كتابة الرمز",
+    "receiving done": "تم الاستلام",
+
+    // SGL
+    "collection done": "تحصيل مكتمل",
+  };
+
+  return translations[text.toLowerCase()] || text;
+};

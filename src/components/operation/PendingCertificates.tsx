@@ -6,7 +6,7 @@ import CertificatesTable from "./tables/CertificatesTable";
 function PendingCertificates({ orders }: { orders: OrderByStatus[] }) {
   return (
     <OperationsProvider>
-      <CertificatesTable orders={orders} ActionsSelect={<Actions />} />
+      <CertificatesTable orders={orders} ActionsSelect={Actions} />
     </OperationsProvider>
   );
 }

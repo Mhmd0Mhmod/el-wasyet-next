@@ -11,6 +11,8 @@ import {
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ReactNode } from "react";
+import SelectOrderCheckbox from "./SelectOrderCheckbox";
+import { OrderAction } from "@/types/order-actions";
 
 const columns = [
   { id: "actions", label: "إدارة ألاجراءات" },
@@ -28,17 +30,27 @@ function OrdersTable({
   orders,
   ActionsSelect,
 }: {
-  orders: OrderByStatus[];
-  ActionsSelect: ReactNode;
+  orders: (OrderByStatus & {
+    rowClassName?: string;
+  })[];
+  ActionsSelect: React.FC<{ currentAction: OrderAction }>;
 }) {
   return (
     <Table
       columns={columns}
+      selectAll
       renderData={
         <>
           {orders.map((order) => (
-            <TableRow key={order.orderId}>
-              <TableCell>{ActionsSelect}</TableCell>
+            <TableRow key={order.orderId} className={order?.rowClassName}>
+              <TableCell className="!px-2">
+                <SelectOrderCheckbox orderId={order.orderId} />
+              </TableCell>
+              <TableCell>
+                <ActionsSelect
+                  currentAction={order.orderStatusForAction as OrderAction}
+                />
+              </TableCell>
               <TableCell>
                 <Dialog>
                   <Dialog.Trigger>
