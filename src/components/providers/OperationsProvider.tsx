@@ -19,6 +19,7 @@ interface OperationsContextType {
   removeOperation: (orderId: number) => void;
   updateOperation: (operation: Operation) => void;
   selectAllOrderIds: (action: string) => void;
+  unSelectAllOrderIds: () => void;
 }
 const OperationsContext = createContext<OperationsContextType | undefined>(
   undefined,
@@ -55,13 +56,19 @@ function OperationsProvider({
     );
   }, []);
 
-  const selectAllOrderIds = (action: string) => {
-    const newOperations = orders.map((order) => ({
-      orderId: order.orderId,
-      action,
-    }));
-    setOperations(newOperations);
-  };
+  const selectAllOrderIds = useCallback(
+    (action: string) => {
+      const newOperations = orders.map((order) => ({
+        orderId: order.orderId,
+        action,
+      }));
+      setOperations(newOperations);
+    },
+    [orders],
+  );
+  const unSelectAllOrderIds = useCallback(() => {
+    setOperations([]);
+  }, []);
 
   const onSubmit = useCallback(() => {
     console.log("Submitting operations:", operations);
@@ -79,6 +86,7 @@ function OperationsProvider({
         removeOperation,
         updateOperation,
         selectAllOrderIds,
+        unSelectAllOrderIds,
       }}
     >
       {children}

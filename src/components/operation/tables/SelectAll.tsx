@@ -11,10 +11,13 @@ import { getOrderActions } from "@/data/orders";
 import { translateToArabic } from "@/lib/helper";
 import { OrderAction } from "@/types/order-actions";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 function SelectAll() {
+  const [open, setOpen] = useState(false);
   const pathName = usePathname();
-  const { selectAllOrderIds, operations, orders } = useOperations();
+  const { selectAllOrderIds, operations, orders, unSelectAllOrderIds } =
+    useOperations();
   const allSelected =
     orders.length > 0 &&
     orders.every((order) =>
@@ -23,11 +26,20 @@ function SelectAll() {
   const actions = getOrderActions(pathName);
   function onSelect(action: OrderAction) {
     selectAllOrderIds(action);
+    setOpen(false);
   }
+  function onClick() {
+    if (allSelected) {
+      unSelectAllOrderIds();
+    } else {
+      setOpen(true);
+    }
+  }
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open}>
       <DropdownMenuTrigger asChild>
-        <Checkbox checked={allSelected} />
+        <Checkbox checked={allSelected} onClick={onClick} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {actions.map((action) => (
