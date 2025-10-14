@@ -222,9 +222,13 @@ export async function getOrderLogs({
 export async function getOrdersByStatusIds({
   orderStatusIds,
   IsCertificate,
+  searchTerm,
+  pageNumber,
 }: {
   orderStatusIds: number[];
   IsCertificate?: boolean;
+  searchTerm?: string;
+  pageNumber?: number;
 }): Promise<
   Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {
     items: {
@@ -242,6 +246,12 @@ export async function getOrdersByStatusIds({
     }
     if (IsCertificate !== undefined) {
       params.append("IsCertificate", IsCertificate ? "true" : "false");
+    }
+    if (searchTerm) {
+      params.append("searchTerm", searchTerm);
+    }
+    if (pageNumber) {
+      params.append("pageNumber", pageNumber.toString());
     }
     const { data } = await authFetch.get<
       Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {

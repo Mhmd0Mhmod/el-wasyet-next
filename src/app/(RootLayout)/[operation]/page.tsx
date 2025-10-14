@@ -135,6 +135,8 @@ async function LoadTable({
   const { items, pageNumber, totalPages } = await getOrdersByStatusIds({
     orderStatusIds: statusIds,
     IsCertificate: isCertificate,
+    searchTerm: searchParams.search,
+    pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
   });
   console.log(items);
 
