@@ -11,11 +11,9 @@ import { getOrderActions } from "@/data/orders";
 import { translateToArabic } from "@/lib/helper";
 import { OrderAction } from "@/types/order-actions";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 function SelectAll() {
-  const [open, setOpen] = useState(false);
-  const pathName = usePathname();
+  const pathname = usePathname();
   const { selectAllOrderIds, operations, orders, unSelectAllOrderIds } =
     useOperations();
   const allSelected =
@@ -23,25 +21,32 @@ function SelectAll() {
     orders.every((order) =>
       operations.some((op) => op.orderId === order.orderId),
     );
-  const actions = getOrderActions(pathName);
+  const actions = getOrderActions({
+    canSelectAll: true,
+    pathname,
+  });
   function onSelect(action: OrderAction) {
     selectAllOrderIds(action);
-    setOpen(false);
   }
-  function onClick() {
-    if (allSelected) {
-      unSelectAllOrderIds();
-    } else {
-      setOpen(true);
-    }
+  function unSelectAll() {
+    unSelectAllOrderIds();
   }
 
   return (
-    <DropdownMenu open={open}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Checkbox checked={allSelected} onClick={onClick} />
+        <Checkbox checked={allSelected} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="center">
+        {allSelected && (
+          <DropdownMenuItem
+            variant="destructive"
+            className="text-sm"
+            onClick={unSelectAll}
+          >
+            الغاء تحديد الكل
+          </DropdownMenuItem>
+        )}
         {actions.map((action) => (
           <DropdownMenuItem key={action} onClick={() => onSelect(action)}>
             {translateToArabic(action)}

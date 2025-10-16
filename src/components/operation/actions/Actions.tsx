@@ -24,17 +24,18 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function Actions({ order }: { order: OrderByStatus }) {
-  const pathName = usePathname();
+  const pathname = usePathname();
+  const orderActions = getOrderActions({
+    pathname,
+  });
   const { orderStatusForAction } = order;
-  const { operations, addOperation, removeOperation, updateOperation } =
-    useOperations();
+  const { operations, addOperation } = useOperations();
 
   const operation = operations.find((op) => op.orderId === order.orderId);
   const action = (operation?.action as OrderAction) || orderStatusForAction;
   const [selectedAction, setSelectedAction] = useState<OrderAction | null>(
     action || null,
   );
-  const orderActions = getOrderActions(pathName || "");
   const [open, setOpen] = useState(false);
 
   const handleAction = (action: OrderAction) => {

@@ -5,6 +5,6 @@
 // }
 
 // Alternative cleaner approach using conditional types
-type APIResponse<T> = {
-  data: T;
-} & ({ success: true; message?: string } | { success: false; message: string });
+type APIResponse<T> =
+  | { success: true; message?: string; data: T | null }
+  | { success: false; message: string; data?: T | null };

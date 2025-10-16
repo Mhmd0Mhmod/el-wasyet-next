@@ -14,16 +14,18 @@ import SelectOrderCheckbox from "./SelectOrderCheckbox";
 import Actions from "../actions/Actions";
 import { OperationsProvider } from "@/components/providers/OperationsProvider";
 import SelectAll from "./SelectAll";
+import Link from "next/link";
 
 const columns = [
   { id: "actions", label: "إدارة الاجراءات" },
+  { id: "order_code", label: "كود الطلب" },
   { id: "name", label: "الاسم الرباعي" },
   { id: "service", label: "الخدمة" },
   { id: "date", label: "التاريخ" },
   { id: "employee", label: "الموظف" },
   { id: "birthDate", label: "تاريخ الميلاد" },
-  { id: "orderNumber", label: "رقم قومي" },
-  { id: "finesRealCost", label: "المصاريف" },
+  { id: "id", label: "رقم قومي" },
+  { id: "fines-real-cost", label: "المصاريف" },
   { id: "fines", label: "الغرامات" },
   { id: "remaining", label: "يتبقى على الانتهاء" },
   { id: "count", label: "العدد" },
@@ -51,6 +53,13 @@ function CertificatesTable({
                 </TableCell>
                 <TableCell>
                   <Actions order={order} />
+                </TableCell>
+                <TableCell>
+                  <Button asChild variant={"link"}>
+                    <Link href={`/orders/${order.orderId}`}>
+                      {order.orderCode}
+                    </Link>
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <Dialog>

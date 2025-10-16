@@ -14,14 +14,15 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Actions from "../actions/Actions";
 import SelectOrderCheckbox from "./SelectOrderCheckbox";
 import SelectAll from "./SelectAll";
+import Link from "next/link";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "actions", label: "إدارة ألاجراءات" },
+  { id: "order_code", label: "كود الطلب" },
   { id: "name", label: "الاسم" },
   { id: "service", label: "الخدمة" },
   { id: "date", label: "التاريخ" },
   { id: "employee", label: "الموظف" },
-  { id: "attachments", label: "المرفقات" },
   { id: "remainingChanges", label: "المطلوب تغييره" },
   { id: "overheads", label: "الغرامه" },
   { id: "remainingDays", label: "يتبقى على الانتهاء" },
@@ -50,6 +51,13 @@ function OrdersTable({
                   <Actions order={order} />
                 </TableCell>
                 <TableCell>
+                  <Button asChild variant={"link"}>
+                    <Link href={`/orders/${order.orderId}`}>
+                      {order.orderCode}
+                    </Link>
+                  </Button>
+                </TableCell>
+                <TableCell>
                   <Dialog>
                     <Dialog.Trigger>
                       <Button className="cursor-pointer p-0" variant={"link"}>
@@ -71,7 +79,6 @@ function OrdersTable({
                   {formatDate(order.orderDate, "datetime")}
                 </TableCell>
                 <TableCell>{order.createdBy}</TableCell>
-                <TableCell>{order.orderCode}</TableCell>
                 <TableCell>{order.requiredChange_forthName_Husbend}</TableCell>
                 <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
                 <TableCell>

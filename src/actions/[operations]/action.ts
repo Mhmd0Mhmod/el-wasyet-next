@@ -2,21 +2,24 @@
 
 import { authFetch } from "@/lib/axios";
 import { handleErrorResponse } from "@/lib/helper";
+import { getCurrentUser } from "../auth/actions";
 
-export async function sendCode(data: {
-  orderId: number;
-  employeeId: number;
-}): Promise<APIResponse<null>> {
+export async function sendCode(orderId: number): Promise<APIResponse<null>> {
   try {
-    const response = await authFetch.post(
+    const employeeId = (await getCurrentUser())?.user.id;
+    const body = { orderId, employeeId };
+    const { data } = await authFetch.post(
       "OperationLog/send-receipt-code",
-      data,
+      body,
     );
-    return {
-      data: null,
-      message: response.data.message,
-      success: true,
-    };
+    if (data.success) {
+      return { success: true, data: null };
+    } else {
+      return {
+        success: false,
+        message: data.message || "حدث خطأ ما",
+      };
+    }
   } catch (err) {
     return handleErrorResponse(err);
   }

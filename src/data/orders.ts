@@ -277,15 +277,22 @@ export async function getOrdersByStatusIds({
   }
 }
 
-export function getOrderActions(pathname: string): OrderAction[] {
+export function getOrderActions({
+  canSelectAll = false,
+  pathname,
+}: {
+  canSelectAll?: boolean;
+  pathname: string;
+}): OrderAction[] {
   const path = pathname.toLowerCase();
   if (path.includes("pending-orders")) {
+    const response = [OrderAction.NEW_ORDER, OrderAction.CANCEL];
     // 1. Pending Orders - for all users
-    return [
-      OrderAction.NEW_ORDER,
-      OrderAction.CANCEL,
-      OrderAction.REFUND, // [cash, credit dialog]
-    ];
+    if (canSelectAll) {
+      return response;
+    }
+    response.push(OrderAction.REFUND); // [cash, credit dialog]
+    return response;
   }
 
   if (path.includes("new-orders") || path.includes("new-certificates")) {
@@ -297,21 +304,27 @@ export function getOrderActions(pathname: string): OrderAction[] {
 
   if (path.includes("collected")) {
     // 4. Collection Done - for executives
-    return [
+    const response = [
       OrderAction.UNDER_PROCESSING,
       OrderAction.STEFA_CLIENT, // Only if isStefaClient
-      OrderAction.STEFA_CERTIFICATE, // Only if isStefaCertificate
-      OrderAction.RETURN, // [cash, credit dialog]
+      OrderAction.STEFA_CERTIFICATE,
     ];
+    if (canSelectAll) {
+      return response;
+    }
+    response.push(OrderAction.RETURN); // [cash, credit dialog]
+    return response;
   }
 
   if (path.includes("in-progress")) {
     // 5. Under Processing - for executives
-    return [
-      OrderAction.COMPLETED,
-      OrderAction.STEFA_SGL, // Only if isStefaSGL
-      OrderAction.RETURN, // [cash, credit dialog]
-    ];
+    const response = [OrderAction.COMPLETED, OrderAction.STEFA_SGL];
+
+    if (canSelectAll) {
+      return response;
+    }
+    response.push(OrderAction.RETURN); // [cash, credit dialog]
+    return response;
   }
 
   if (path.includes("completed-orders")) {
@@ -328,10 +341,12 @@ export function getOrderActions(pathname: string): OrderAction[] {
   }
 
   if (path.includes("stefa-sgl")) {
-    return [
-      OrderAction.COLLECTION_DONE,
-      OrderAction.RETURN, // [cash, credit dialog]
-    ];
+    const response = [OrderAction.COLLECTION_DONE];
+    if (canSelectAll) {
+      return response;
+    }
+    response.push(OrderAction.RETURN); // [cash, credit dialog]
+    return response;
   }
 
   return [];

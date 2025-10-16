@@ -9,10 +9,11 @@ import {
 } from "@/lib/helper";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import SendCode from "../actions/send-code";
+import Link from "next/link";
 import SendCodeButton from "../actions/send-code-button";
 
 const ORDER_TABLE_COLUMNS = [
+  { id: "order_code", label: "كود الطلب" },
   {
     id: "name",
     label: "الاسم",
@@ -62,6 +63,11 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
         columns={ORDER_TABLE_COLUMNS}
         renderData={orders.map((order) => (
           <TableRow key={order.orderId}>
+            <TableCell>
+              <Button asChild variant={"link"}>
+                <Link href={`/orders/${order.orderId}`}>{order.orderCode}</Link>
+              </Button>
+            </TableCell>
             <TableCell>{order.clientName}</TableCell>
             <TableCell>{order.serviceName}</TableCell>
             <TableCell>{formatDate(order.orderDate, "datetime")}</TableCell>
@@ -70,7 +76,30 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
             <TableCell>{order.requiredChange_forthName_Husbend}</TableCell>
             <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
             {/* should change to be the real overheads value */}
-            <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button
+                    variant={"ghost"}
+                    className="p-0"
+                    disabled={order.overheads.length === 0}
+                  >
+                    {order.overheads.length > 0 ? <EyeIcon /> : <EyeOffIcon />}
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content title="تفاصيل الغرامات">
+                  {order.overheads.length > 0 ? (
+                    <ul className="list-disc space-y-2">
+                      {order.overheads.map((overhead, index) => (
+                        <li key={index}>{overhead}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    "لا توجد غرامات"
+                  )}
+                </Dialog.Content>
+              </Dialog>
+            </TableCell>
             <TableCell>
               {(() => {
                 const style = getRemainingDaysStyle(order.remainingDays);
@@ -87,16 +116,7 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
               })()}
             </TableCell>
             <TableCell>
-              <Dialog>
-                <Dialog.Trigger>
-                  <SendCodeButton order={order} />
-                </Dialog.Trigger>
-                <Dialog.Content title="إرسال الكود">
-                  <div className="max-h-[70vh] space-y-10 overflow-auto">
-                    <SendCode order={order} />
-                  </div>
-                </Dialog.Content>
-              </Dialog>
+              <SendCodeButton order={order}>إرسال كود</SendCodeButton>
             </TableCell>
             <TableCell>
               <Dialog>

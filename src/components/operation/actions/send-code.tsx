@@ -1,4 +1,5 @@
 "use client";
+import { sendCode } from "@/actions/[operations]/action";
 import { Button } from "@/components/ui/button";
 import {
   InputOTP,
@@ -6,7 +7,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { OrderByStatus } from "@/types/order";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 function SendCode({ order }: { order: OrderByStatus }) {
   const [code, setCode] = useState("");
@@ -15,6 +17,20 @@ function SendCode({ order }: { order: OrderByStatus }) {
   );
 
   const disabled = code.length < 6 || state !== "success";
+  const handleClick = useCallback(async () => {
+    const id = toast.loading("جاري إرسال الكود...");
+    try {
+      const res = await sendCode(order.orderId);
+      if (res.success) {
+        toast.success("تم إرسال الكود بنجاح", { id });
+      } else {
+        toast.error(res.message || "حدث خطأ أثناء إرسال الكود", { id });
+      }
+      console.log(res);
+    } catch (error) {
+      toast.error("حدث خطأ أثناء إرسال الكود", { id });
+    }
+  }, [order.orderId]);
   return (
     <div className="flex flex-col items-center space-y-5">
       <p> تم إرسال كود مكون من 6 أرقام</p>
@@ -34,7 +50,14 @@ function SendCode({ order }: { order: OrderByStatus }) {
       </Button>
       <div>
         <p className="text-muted-foreground text-sm">
-          لم تستلم الكود؟ <Button variant="link">إعادة إرسال الكود</Button>
+          لم تستلم الكود؟{" "}
+          <Button
+            variant="link"
+            onClick={handleClick}
+            disabled={state === "loading"}
+          >
+            إعادة إرسال الكود
+          </Button>
         </p>
       </div>
     </div>
