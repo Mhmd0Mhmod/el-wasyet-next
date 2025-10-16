@@ -135,11 +135,11 @@ async function LoadTable({
   const { Component, statusIds, isCertificate } = config;
   const { items, pageNumber, totalPages } = await getOrdersByStatusIds({
     orderStatusIds: statusIds,
-    IsCertificate: isCertificate,
+    IsCertificate: isCertificate || false,
     searchTerm: searchParams.search,
     pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
   });
-  console.log(items);
+  console.log("Items:", items);
 
   return (
     <>
@@ -156,10 +156,4 @@ async function LoadTable({
       />
     </>
   );
-}
-
-export async function generateStaticParams() {
-  return Object.keys(OPERATION_CONFIGS).map((operation) => ({
-    operation,
-  }));
 }

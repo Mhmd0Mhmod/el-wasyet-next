@@ -2,11 +2,14 @@
 import { createContext, useCallback, useContext, useState } from "react";
 import { Button } from "../ui/button";
 import { OrderByStatus } from "@/types/order";
+import { submitActions } from "@/actions/[operations]/action";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 
-interface Operation {
+export interface Operation {
   orderId: number;
   action: string;
-  notes?: string;
+  notes: string;
   amount?: number;
   cashAmount?: number;
   creditAmount?: number;
@@ -33,6 +36,8 @@ function OperationsProvider({
   children: React.ReactNode;
 }) {
   const [operations, setOperations] = useState<Operation[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const pathname = usePathname();
   const updateOperation = useCallback((updatedOperation: Operation) => {
     setOperations((prevOperations) =>
       prevOperations.map((op) =>
@@ -61,6 +66,7 @@ function OperationsProvider({
       const newOperations = orders.map((order) => ({
         orderId: order.orderId,
         action,
+        notes: order.notes || "",
       }));
       setOperations(newOperations);
     },
@@ -70,9 +76,31 @@ function OperationsProvider({
     setOperations([]);
   }, []);
 
-  const onSubmit = useCallback(() => {
-    console.log("Submitting operations:", operations);
-  }, [operations]);
+  const onSubmit = useCallback(async () => {
+    if (operations.length === 0) return;
+    setIsSubmitting(true);
+    console.log(operations);
+
+    try {
+      const result = await submitActions({
+        operations,
+        pathname,
+      });
+
+      if (result.success) {
+        toast.success("تم حفظ العمليات بنجاح");
+        setOperations([]);
+      } else {
+        toast.error(result.message || "حدث خطأ أثناء حفظ العمليات");
+      }
+    } catch (error) {
+      toast.error("حدث خطأ غير متوقع");
+      console.error("Submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [operations, pathname]);
+
   const onCancel = useCallback(() => {
     setOperations([]);
   }, []);
@@ -91,12 +119,15 @@ function OperationsProvider({
     >
       {children}
       {operations.length > 0 && (
-        <div className="flex items-center justify-end-safe gap-4">
-          <Button onClick={onCancel} variant={"outline"}>
-            إالغاء
+        <div className="flex items-center justify-end gap-4">
+          <Button onClick={onCancel} variant="outline" disabled={isSubmitting}>
+            إلغاء
           </Button>
-          <Button onClick={onSubmit} disabled={operations.length === 0}>
-            حفظ العمليات
+          <Button
+            onClick={onSubmit}
+            disabled={operations.length === 0 || isSubmitting}
+          >
+            {isSubmitting ? "جارٍ الحفظ..." : `حفظ ${operations.length} عمليات`}
           </Button>
         </div>
       )}

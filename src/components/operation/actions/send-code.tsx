@@ -26,7 +26,6 @@ function SendCode({ order }: { order: OrderByStatus }) {
       } else {
         toast.error(res.message || "حدث خطأ أثناء إرسال الكود", { id });
       }
-      console.log(res);
     } catch (error) {
       toast.error("حدث خطأ أثناء إرسال الكود", { id });
     }

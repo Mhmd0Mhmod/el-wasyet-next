@@ -51,7 +51,6 @@ function OrderFromProvider({
   });
   function onSubmit(data: OrderFormValues) {
     const id = toast.loading("جاري إنشاء الطلب...");
-    console.log(data);
     createOrder(data)
       .then((res) => {
         if (res.success) {
