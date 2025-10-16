@@ -1,0 +1,122 @@
+import Dialog from "@/components/general/Dialog";
+import Table from "@/components/general/Table";
+import { Button } from "@/components/ui/button";
+import { TableCell, TableRow } from "@/components/ui/table";
+import {
+  formatCurrency,
+  formatDate,
+  getRemainingDaysStyle,
+} from "@/lib/helper";
+import { OrderByStatus } from "@/types/order";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import SendCode from "../actions/send-code";
+import SendCodeButton from "../actions/send-code-button";
+
+const ORDER_TABLE_COLUMNS = [
+  {
+    id: "name",
+    label: "الاسم",
+  },
+  {
+    id: "service",
+    label: "الخدمة",
+  },
+  {
+    id: "date",
+    label: "التاريخ",
+  },
+  {
+    id: "employee",
+    label: "الموظف",
+  },
+  {
+    id: "attachments",
+    label: "المرفقات",
+  },
+  {
+    id: "remainingChanges",
+    label: "المطلوب تغييره",
+  },
+  { id: "cost", label: "المصاريف" },
+  {
+    id: "overheads",
+    label: "الغرامه",
+  },
+  {
+    id: "remainingDays",
+    label: "يتبقى على الانتهاء",
+  },
+  {
+    id: "code_status",
+    label: "حالة الكود",
+  },
+  {
+    id: "notes",
+    label: "ملحوظات",
+  },
+];
+function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
+  return (
+    <>
+      <Table
+        columns={ORDER_TABLE_COLUMNS}
+        renderData={orders.map((order) => (
+          <TableRow key={order.orderId}>
+            <TableCell>{order.clientName}</TableCell>
+            <TableCell>{order.serviceName}</TableCell>
+            <TableCell>{formatDate(order.orderDate, "datetime")}</TableCell>
+            <TableCell>{order.createdBy}</TableCell>
+            <TableCell>-</TableCell>
+            <TableCell>{order.requiredChange_forthName_Husbend}</TableCell>
+            <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
+            {/* should change to be the real overheads value */}
+            <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
+            <TableCell>
+              {(() => {
+                const style = getRemainingDaysStyle(order.remainingDays);
+                const IconComponent = style.icon;
+
+                return (
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium ${style.className}`}
+                  >
+                    <IconComponent size={14} />
+                    <span>{style.text}</span>
+                  </span>
+                );
+              })()}
+            </TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <SendCodeButton order={order} />
+                </Dialog.Trigger>
+                <Dialog.Content title="إرسال الكود">
+                  <div className="max-h-[70vh] space-y-10 overflow-auto">
+                    <SendCode order={order} />
+                  </div>
+                </Dialog.Content>
+              </Dialog>
+            </TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button variant={"link"} disabled={!order.notes}>
+                    {order.notes ? <EyeIcon /> : <EyeOffIcon />}
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content title="الملحوظات">
+                  <div className="max-h-[70vh] space-y-10 overflow-auto">
+                    {/* <ClientDetails clientId={order.clientId} /> */}
+                    محتوى الملحوظات
+                  </div>
+                </Dialog.Content>
+              </Dialog>
+            </TableCell>
+          </TableRow>
+        ))}
+      />
+    </>
+  );
+}
+export default OrderReceiptTable;

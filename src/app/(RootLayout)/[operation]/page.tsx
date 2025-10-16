@@ -3,6 +3,7 @@ import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import ExportButton from "@/components/operation/actions/ExportButton";
 import CertificatesTable from "@/components/operation/tables/CertificatesTable";
+import OrderReceiptTable from "@/components/operation/tables/OrderReceiptTable";
 import OrdersTable from "@/components/operation/tables/OrdersTable";
 import { getOrdersByStatusIds } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
@@ -66,7 +67,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     statusIds: [6, 7, 8, 9],
     title: "استلام الاوامر",
     description: "سجل استلام الاوامر من العملاء",
-    Component: OrdersTable,
+    Component: OrderReceiptTable,
   },
   fulfillment: {
     statusIds: [10],

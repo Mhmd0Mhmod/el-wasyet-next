@@ -15,7 +15,7 @@ import Actions from "../actions/Actions";
 import SelectOrderCheckbox from "./SelectOrderCheckbox";
 import SelectAll from "./SelectAll";
 
-const columns = [
+const ORDER_TABLE_COLUMNS = [
   { id: "actions", label: "إدارة ألاجراءات" },
   { id: "name", label: "الاسم" },
   { id: "service", label: "الخدمة" },
@@ -37,7 +37,7 @@ function OrdersTable({
   return (
     <OperationsProvider orders={orders}>
       <Table
-        columns={columns}
+        columns={ORDER_TABLE_COLUMNS}
         selectAllComponent={SelectAll}
         renderData={
           <>
