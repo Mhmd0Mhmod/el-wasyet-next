@@ -1,4 +1,5 @@
 import { Service, ServiceDocument, ServiceOverhead } from "./service";
+import { OrderAction } from "@/types/order-actions";
 
 // Base entity interface for common fields
 interface BaseEntity {
@@ -133,7 +134,7 @@ interface OrderByStatus
   orderCode: string;
   serviceId: number;
   employeeId: number;
-  orderStatusForAction: string;
+  orderStatusForAction: OrderAction;
   orderDate: string;
   birthDate: string | null;
   remainingDays: number;

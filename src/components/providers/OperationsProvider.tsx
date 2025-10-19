@@ -5,10 +5,11 @@ import { OrderByStatus } from "@/types/order";
 import { submitActions } from "@/actions/[operations]/action";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
+import { OrderAction } from "@/types/order-actions";
 
 export interface Operation {
   orderId: number;
-  action: string;
+  action: OrderAction;
   notes: string;
   amount?: number;
   cashAmount?: number;
@@ -21,7 +22,7 @@ interface OperationsContextType {
   addOperation: (operation: Operation) => void;
   removeOperation: (orderId: number) => void;
   updateOperation: (operation: Operation) => void;
-  selectAllOrderIds: (action: string) => void;
+  selectAllOrderIds: (action: OrderAction) => void;
   unSelectAllOrderIds: () => void;
 }
 const OperationsContext = createContext<OperationsContextType | undefined>(
@@ -62,7 +63,7 @@ function OperationsProvider({
   }, []);
 
   const selectAllOrderIds = useCallback(
-    (action: string) => {
+    (action: OrderAction) => {
       const newOperations = orders.map((order) => ({
         orderId: order.orderId,
         action,
