@@ -91,7 +91,9 @@ function Actions({ order }: { order: OrderByStatus }) {
     <>
       {/* Action Display & Dropdown */}
       <div className="flex min-w-32 items-center justify-between">
-        {translateToArabic(currentAction || "")}
+        {translateToArabic(currentAction || "") ||
+          translateToArabic(order.orderStatusForAction || "") ||
+          order.orderStatusForAction}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="scale-75">
