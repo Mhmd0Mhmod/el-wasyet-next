@@ -43,7 +43,7 @@ function Header() {
                   <NavigationMenuTrigger className="text-base">
                     {link.label}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
+                  <NavigationMenuContent >
                     <div className="grid w-fit gap-1 p-2">
                       {link.children?.map((sublink) => (
                         <NavigationMenuLink key={sublink.href} asChild>
