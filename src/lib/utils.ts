@@ -6,5 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const defaults = {
-  pageSize: parseInt(process.env.NEXT_PUBLIC_API_PAGE_SIZE || "0", 0),
+  pageSize: parseInt(process.env.NEXT_PUBLIC_API_PAGE_SIZE || "10", 10),
 };

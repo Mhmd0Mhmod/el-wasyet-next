@@ -110,12 +110,14 @@ async function page({ params, searchParams }: PageProps) {
   const searchParameters = await searchParams;
   return (
     <PageLayout title={config.title} description={config.description}>
-      <Suspense
-        fallback={<TableSkeleton rows={5} columns={7} />}
-        key={`${JSON.stringify(searchParameters)} - ${Object.values(config).join(",")}`}
-      >
-        <LoadTable config={config} searchParams={searchParameters} />
-      </Suspense>
+      <>
+        <Suspense
+          fallback={<TableSkeleton rows={5} columns={7} />}
+          key={`${JSON.stringify(searchParameters)} - ${Object.values(config).join(",")}`}
+        >
+          <LoadTable config={config} searchParams={searchParameters} />
+        </Suspense>
+      </>
     </PageLayout>
   );
 }
@@ -132,26 +134,35 @@ async function LoadTable({
     page?: string;
   };
 }) {
-  const { Component, statusIds, isCertificate } = config;
-  const { items, pageNumber, totalPages } = await getOrdersByStatusIds({
-    orderStatusIds: statusIds,
-    IsCertificate: isCertificate || false,
-    searchTerm: searchParams.search,
-    pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
-  });
-  return (
-    <>
-      <div className="flex">
-        <div className="mr-auto">
-          <ExportButton orders={items.orders} />
+  try {
+    const { Component, statusIds, isCertificate } = config;
+
+    const result = await getOrdersByStatusIds({
+      orderStatusIds: statusIds,
+      IsCertificate: isCertificate || false,
+      searchTerm: searchParams.search,
+      pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
+    });
+    const { items, pageNumber, totalPages } = result;
+
+    return (
+      <>
+        <div className="flex">
+          <div className="mr-auto">
+            <ExportButton orders={items.orders} />
+          </div>
         </div>
-      </div>
-      <Component orders={items.orders} />
-      <Pagination
-        page={pageNumber}
-        searchParams={searchParams}
-        totalPages={totalPages}
-      />
-    </>
-  );
+        <Component orders={items.orders} />
+        <Pagination
+          page={pageNumber}
+          searchParams={searchParams}
+          totalPages={totalPages}
+        />
+      </>
+    );
+  } catch (error) {
+    throw error;
+  }
 }
+
+export const dynamic = "force-dynamic";
