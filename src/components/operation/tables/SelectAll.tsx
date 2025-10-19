@@ -8,9 +8,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getOrderActions } from "@/data/orders";
-import { translateToArabic } from "@/lib/helper";
 import { OrderAction } from "@/types/order-actions";
 import { usePathname } from "next/navigation";
+import { translateToArabic } from "../helper";
 
 function SelectAll() {
   const pathname = usePathname();

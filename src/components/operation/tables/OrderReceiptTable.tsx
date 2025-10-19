@@ -2,15 +2,12 @@ import Dialog from "@/components/general/Dialog";
 import Table from "@/components/general/Table";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import {
-  formatCurrency,
-  formatDate,
-  getRemainingDaysStyle,
-} from "@/lib/helper";
+import { formatCurrency, formatDate } from "@/lib/helper";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import SendCodeButton from "../actions/send-code-button";
+import { getRemainingDaysStyle } from "../helper";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "order_code", label: "كود الطلب" },

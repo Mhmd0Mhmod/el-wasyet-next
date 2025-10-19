@@ -16,30 +16,38 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getOrderActions } from "@/data/orders";
-import { translateToArabic } from "@/lib/helper";
 import { OrderActionType, OrderActionSchema } from "@/schema/order-actions";
 import { OrderByStatus } from "@/types/order";
 import { OrderAction } from "@/types/order-actions";
 import { MoreVerticalIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { translateToArabic } from "../helper";
 
 function Actions({ order }: { order: OrderByStatus }) {
   const pathname = usePathname();
   const { operations, addOperation } = useOperations();
-  const orderActions = getOrderActions({ pathname });
-
-  const operation = operations.find((op) => op.orderId === order.orderId);
-  const currentAction =
-    (operation?.action as OrderAction) || order.orderStatusForAction;
   const [dialogAction, setDialogAction] = useState<OrderAction | null>(null);
-
+  const orderActions = getOrderActions({ pathname });
+  const operation = operations.find((op) => op.orderId === order.orderId);
+  const [currentAction, setCurrentAction] = useState<OrderAction>(
+    (operation?.action as OrderAction) || order.orderStatusForAction,
+  );
   const form = useForm<OrderActionType>({
     resolver: zodResolver(OrderActionSchema),
     defaultValues: { cashAmount: 0, creditAmount: 0 },
   });
+
+  useLayoutEffect(() => {
+    const operation = operations.find((op) => op.orderId === order.orderId);
+    if (operation) {
+      setCurrentAction(operation.action as OrderAction);
+    } else {
+      setCurrentAction(order.orderStatusForAction as OrderAction);
+    }
+  }, [operations, order.orderId, order.orderStatusForAction]);
 
   const handleAction = (action: OrderAction) => {
     const needsDialog = [OrderAction.REFUND, OrderAction.RETURN].includes(
@@ -83,7 +91,7 @@ function Actions({ order }: { order: OrderByStatus }) {
     <>
       {/* Action Display & Dropdown */}
       <div className="flex min-w-32 items-center justify-between">
-        {translateToArabic(currentAction)}
+        {translateToArabic(currentAction || "")}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="scale-75">

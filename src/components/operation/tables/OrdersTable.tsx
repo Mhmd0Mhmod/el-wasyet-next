@@ -4,11 +4,7 @@ import Table from "@/components/general/Table";
 import { OperationsProvider } from "@/components/providers/OperationsProvider";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import {
-  formatCurrency,
-  formatDate,
-  getRemainingDaysStyle,
-} from "@/lib/helper";
+import { formatCurrency, formatDate } from "@/lib/helper";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Actions from "../actions/Actions";
@@ -16,6 +12,7 @@ import SelectOrderCheckbox from "./SelectOrderCheckbox";
 import SelectAll from "./SelectAll";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { getRemainingDaysStyle } from "../helper";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "actions", label: "إدارة ألاجراءات" },
