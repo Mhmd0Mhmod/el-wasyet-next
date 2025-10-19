@@ -22,13 +22,11 @@ import Dialog from "../general/Dialog";
 import ClientForm from "../clients/ClientsForm";
 interface ClientSelectorProps {
   placeholder?: string;
-  emptyMessage?: string;
   className?: string;
 }
 
 function ClientSelector({
   placeholder = "اختر عميل...",
-  emptyMessage = "لا يوجد عملاء.",
   className,
 }: ClientSelectorProps = {}) {
   const { form } = useOrderForm();

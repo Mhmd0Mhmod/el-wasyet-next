@@ -23,7 +23,7 @@ function SendCodeButton({
       } else {
         toast.error(res.message || "حدث خطأ أثناء إرسال الكود", { id });
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء إرسال الكود", { id });
     }
   }, [order.orderId]);

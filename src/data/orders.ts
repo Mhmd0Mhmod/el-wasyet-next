@@ -196,8 +196,6 @@ export const getServiceById = async (ServiceId: number) => {
 
 export async function getOrderLogs({
   id,
-  search,
-  page,
 }: {
   id: number;
   search: string;
@@ -285,7 +283,10 @@ export function getOrderActions({
   pathname: string;
 }): OrderAction[] {
   const path = pathname.toLowerCase();
-  if (path.includes("pending-orders")) {
+  if (
+    path.includes("pending-orders") ||
+    path.includes("pending-certificates")
+  ) {
     const response = [OrderAction.NEW_ORDER, OrderAction.CANCEL];
     // 1. Pending Orders - for all users
     if (canSelectAll) {

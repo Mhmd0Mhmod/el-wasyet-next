@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useClient } from "@/hooks/useClient";
-import { BranchClientValues } from "@/schema/client";
 import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useRef } from "react";
@@ -88,7 +87,9 @@ function ClientDetails({ clientId }: { clientId: number }) {
       refetch();
     }
   }
-  function onAddBranchClient(formData: BranchClientValues) {}
+  function onAddBranchClient() {
+    // TODO: Implement add branch client functionality
+  }
   const isMainClient = !client.parentClient;
   const isBranchClient = !!client.parentClient;
   return (
@@ -230,7 +231,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
             </Dialog.Trigger>
             <Dialog.Content title="إضافة عميل فرعي">
               <div className="max-h-[70vh] overflow-auto">
-                <AddBranchClient onSubmit={onAddBranchClient} />
+                <AddBranchClient onSubmit={() => onAddBranchClient()} />
               </div>
             </Dialog.Content>
           </Dialog>

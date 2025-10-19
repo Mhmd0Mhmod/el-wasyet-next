@@ -31,7 +31,6 @@ function Actions({ order }: { order: OrderByStatus }) {
   const { operations, addOperation } = useOperations();
   const orderActions = getOrderActions({ pathname });
 
-  // Simplified state - only what we need
   const operation = operations.find((op) => op.orderId === order.orderId);
   const currentAction =
     (operation?.action as OrderAction) || order.orderStatusForAction;
@@ -42,7 +41,6 @@ function Actions({ order }: { order: OrderByStatus }) {
     defaultValues: { cashAmount: 0, creditAmount: 0 },
   });
 
-  // Simplified action handler
   const handleAction = (action: OrderAction) => {
     const needsDialog = [OrderAction.REFUND, OrderAction.RETURN].includes(
       action,
@@ -54,8 +52,6 @@ function Actions({ order }: { order: OrderByStatus }) {
       addOperation({ orderId: order.orderId, action, notes: "" });
     }
   };
-
-  // Simplified form submission
   const onSubmit = (data: OrderActionType) => {
     const { creditAmount = 0, cashAmount = 0 } = data;
     const totalAmount = creditAmount + cashAmount;
@@ -78,8 +74,6 @@ function Actions({ order }: { order: OrderByStatus }) {
 
     closeDialog();
   };
-
-  // Simplified dialog management
   const closeDialog = () => {
     setDialogAction(null);
     form.reset();

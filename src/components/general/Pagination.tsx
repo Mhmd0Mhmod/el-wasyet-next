@@ -14,6 +14,7 @@ interface PaginationProps {
   page: number;
   searchParams: Record<string, string | string[] | undefined>;
   maxVisiblePages?: number;
+  className?: string;
 }
 
 function Pagination({
@@ -21,6 +22,7 @@ function Pagination({
   page,
   searchParams,
   maxVisiblePages = 5,
+  className,
 }: PaginationProps) {
   const canGoPrevious = page > 1;
   const canGoNext = page < totalPages;
@@ -86,7 +88,7 @@ function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <PaginationRoot>
+    <PaginationRoot className={className}>
       <PaginationContent>
         {/* Previous Button */}
         <PaginationItem>

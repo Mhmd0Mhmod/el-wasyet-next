@@ -11,14 +11,15 @@ const ROUTE_ENDPOINTS: Record<string, string> = {
 };
 function getRouteKey(pathname: string): string {
   const route = pathname.toLowerCase();
-  if (route.includes("pending-orders")) return "pending-orders";
-  if (route.includes("new-certificates") && route.includes("certificate"))
-    return "new-orders-certificate";
+  if (
+    route.includes("pending-orders") ||
+    route.includes("pending-certificates")
+  )
+    return "pending-orders";
+  if (route.includes("new-certificates")) return "new-orders-certificate";
   if (route.includes("new-orders")) return "new-orders-non-certificate";
-  if (route.includes("collection-done") || route.includes("collected"))
-    return "collection-done";
-  if (route.includes("under-processing") || route.includes("in-progress"))
-    return "under-processing";
+  if (route.includes("collected")) return "collection-done";
+  if (route.includes("in-progress")) return "under-processing";
   if (route.includes("completed-orders")) return "completed-orders";
   if (route.includes("stefa-sgl")) return "stefa-sgl";
   if (route.includes("stefa-client")) return "stefa-client";

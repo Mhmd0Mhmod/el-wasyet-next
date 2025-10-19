@@ -32,6 +32,14 @@ export const NAVBARLINKS = [
       },
     ],
   },
+  {
+    label: "المصروفات",
+    href: "/expenses",
+  },
+  {
+    label: "تقارير",
+    href: "/reports",
+  }
 ];
 
 export const formatCurrency = (value: number) => {
@@ -116,9 +124,6 @@ export const getOrderStatusColor = (status: string) => {
 };
 
 export const remainingDays = (dueDate: number): string => {
-  // dueDate is a number representing days relative to today
-  // Positive numbers = future days, Negative numbers = past days, 0 = today
-
   if (dueDate === 0) {
     return "اليوم";
   }
@@ -158,35 +163,22 @@ export const getRemainingDaysStyle = (dueDate: number) => {
 
 export const translateToArabic = (text: string): string => {
   const translations: { [key: string]: string } = {
-    // Pending Orders
+    pending: "قيد الانتظار",
     "new order": "أمر جديد ",
     cancel: "إلغاء",
     refund: "استرداد",
-
-    // New Orders
     "ask expenses": "طلب تحصيل",
-
-    // Collection Done
     "under processing": "تحت المعالجة",
     "stefa client": "استيفاء عميل",
     "stefa certificate": "استيفاء شهادة",
     return: "إرجاع",
-
-    // Under Processing
     completed: "مكتمل",
-    "stefa sgl": "استيفاء SGL",
-
-    // Completed Orders
+    "stefa sgl": "استيفاء السجل ",
     contacted: "تم الاتصال",
-
-    // Receiving Orders
     "send code": "إرسال الرمز",
     "write code": "كتابة الرمز",
     "receiving done": "تم الاستلام",
-
-    // SGL
     "collection done": "تحصيل مكتمل",
   };
-
   return translations[text.toLowerCase()] || text;
 };

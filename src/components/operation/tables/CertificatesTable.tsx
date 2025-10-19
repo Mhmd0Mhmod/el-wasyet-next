@@ -15,6 +15,7 @@ import Actions from "../actions/Actions";
 import { OperationsProvider } from "@/components/providers/OperationsProvider";
 import SelectAll from "./SelectAll";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const columns = [
   { id: "actions", label: "إدارة الاجراءات" },
@@ -32,13 +33,7 @@ const columns = [
   { id: "notes", label: "ملحوظات" },
 ];
 
-function CertificatesTable({
-  orders,
-}: {
-  orders: (OrderByStatus & {
-    rowClassName?: string;
-  })[];
-}) {
+function CertificatesTable({ orders }: { orders: OrderByStatus[] }) {
   return (
     <OperationsProvider orders={orders}>
       <Table
@@ -47,7 +42,12 @@ function CertificatesTable({
         renderData={
           <>
             {orders.map((order) => (
-              <TableRow key={order.orderId}>
+              <TableRow
+                key={order.orderId}
+                className={cn({
+                  "bg-yellow-100": order.closeAskExpense,
+                })}
+              >
                 <TableCell className="!px-2">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
@@ -161,6 +161,10 @@ function CertificatesTable({
           </>
         }
       />
+      <div className="flex items-center justify-end-safe gap-4">
+        <div className="h-4 w-4 rounded-full border bg-yellow-100 text-sm font-medium" />
+        <span>الاوامر المُحصَّلة بالفعل</span>
+      </div>
     </OperationsProvider>
   );
 }

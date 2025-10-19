@@ -6,6 +6,7 @@ import { handleErrorResponse } from "@/lib/helper";
 import { getCurrentUser } from "../auth/actions";
 import { getOperationEndpoint } from "./helpler";
 import { AxiosError } from "axios";
+import { revalidatePath } from "next/cache";
 
 // Types for better type safety
 type OperationResult = {
@@ -71,6 +72,7 @@ async function processOperation(
         error: message || "حدث خطأ ما",
       };
     }
+
     return { orderId: operation.orderId, error: "حدث خطأ ما" };
   }
 }
@@ -80,6 +82,7 @@ function generateResultMessage(
 ): APIResponse<null> {
   const successfulOps = results.filter((r) => r.success);
   const failedOps = results.filter((r) => r.error);
+  console.log(failedOps);
 
   if (failedOps.length === 0) {
     return { success: true, data: null };
@@ -88,12 +91,12 @@ function generateResultMessage(
     const failedOrderIds = failedOps.map((f) => `طلب ${f.orderId}`).join(", ");
     return {
       success: false,
-      message: `نجح ${successfulOps.length} من ${totalOperations} عمليات. فشل: ${failedOrderIds}`,
+      message: ` تم تنفيذ ${successfulOps.length} من ${totalOperations} بنجاح. فشل في تنفيذ: ${failedOrderIds} `,
     };
   }
   return {
     success: false,
-    message: "فشل في تنفيذ جميع العمليات",
+    message: failedOps.map((f) => `طلب ${f.orderId}: ${f.error}`).join(" \n"),
   };
 }
 
@@ -118,9 +121,7 @@ export async function submitActions(
         processOperation(operation, endpoint, employeeId),
       ),
     );
-
-    console.log(results);
-
+    revalidatePath(pathname);
     return generateResultMessage(results, operations.length);
   } catch (err) {
     return handleErrorResponse(err);

@@ -91,7 +91,11 @@ function OperationsProvider({
         toast.success("تم حفظ العمليات بنجاح");
         setOperations([]);
       } else {
-        toast.error(result.message || "حدث خطأ أثناء حفظ العمليات");
+        console.log(result.message.toWellFormed());
+
+        toast.error(
+          result.message.toWellFormed() || "حدث خطأ أثناء حفظ العمليات",
+        );
       }
     } catch (error) {
       toast.error("حدث خطأ غير متوقع");

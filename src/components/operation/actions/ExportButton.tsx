@@ -21,7 +21,7 @@ function ExportButton({ orders }: { orders: OrderByStatus[] }) {
       a.click();
       URL.revokeObjectURL(url);
       toast.success("تم التحميل بنجاح", { id });
-    } catch (_error) {
+    } catch {
       toast.error("حدث خطأ أثناء التحميل", { id });
     } finally {
       toast.dismiss(id);

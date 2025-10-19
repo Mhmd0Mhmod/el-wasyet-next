@@ -15,6 +15,7 @@ import Actions from "../actions/Actions";
 import SelectOrderCheckbox from "./SelectOrderCheckbox";
 import SelectAll from "./SelectAll";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "actions", label: "إدارة ألاجراءات" },
@@ -28,13 +29,7 @@ const ORDER_TABLE_COLUMNS = [
   { id: "remainingDays", label: "يتبقى على الانتهاء" },
   { id: "notes", label: "ملحوظات" },
 ];
-function OrdersTable({
-  orders,
-}: {
-  orders: (OrderByStatus & {
-    rowClassName?: string;
-  })[];
-}) {
+function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
   return (
     <OperationsProvider orders={orders}>
       <Table
@@ -43,7 +38,12 @@ function OrdersTable({
         renderData={
           <>
             {orders.map((order) => (
-              <TableRow key={order.orderId} className={order?.rowClassName}>
+              <TableRow
+                key={order.orderId}
+                className={cn({
+                  "bg-yellow-100": order.closeAskExpense,
+                })}
+              >
                 <TableCell className="!px-2">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
@@ -113,6 +113,10 @@ function OrdersTable({
           </>
         }
       />
+      <div className="flex items-center justify-end-safe gap-4">
+        <div className="h-4 w-4 rounded-full border bg-yellow-100 text-sm font-medium" />
+        <span>الاوامر المُحصَّلة بالفعل</span>
+      </div>
     </OperationsProvider>
   );
 }

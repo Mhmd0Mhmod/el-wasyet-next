@@ -12,11 +12,11 @@ import { toast } from "sonner";
 
 function SendCode({ order }: { order: OrderByStatus }) {
   const [code, setCode] = useState("");
-  const [state, setState] = useState<"idle" | "loading" | "error" | "success">(
-    "idle",
-  );
+  // const [state, setState] = useState<"idle" | "loading" | "error" | "success">(
+  //   "idle",
+  // );
 
-  const disabled = code.length < 6 || state !== "success";
+  const disabled = code.length < 6;
   const handleClick = useCallback(async () => {
     const id = toast.loading("جاري إرسال الكود...");
     try {
@@ -26,7 +26,7 @@ function SendCode({ order }: { order: OrderByStatus }) {
       } else {
         toast.error(res.message || "حدث خطأ أثناء إرسال الكود", { id });
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء إرسال الكود", { id });
     }
   }, [order.orderId]);
@@ -50,11 +50,7 @@ function SendCode({ order }: { order: OrderByStatus }) {
       <div>
         <p className="text-muted-foreground text-sm">
           لم تستلم الكود؟{" "}
-          <Button
-            variant="link"
-            onClick={handleClick}
-            disabled={state === "loading"}
-          >
+          <Button variant="link" onClick={handleClick}>
             إعادة إرسال الكود
           </Button>
         </p>
