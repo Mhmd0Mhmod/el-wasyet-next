@@ -75,7 +75,6 @@ function Actions({ order }: { order: OrderByStatus }) {
     form.reset();
   };
   const currentAction = (operation?.action ) || order.orderStatusForAction ;
-  console.log(operation,order);
   return (
     <>
       <div className="flex min-w-32 items-center justify-between">

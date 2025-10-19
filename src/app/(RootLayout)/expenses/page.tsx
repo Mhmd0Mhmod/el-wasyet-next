@@ -7,14 +7,19 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import Pagination from "@/components/general/Pagination";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { formatCurrency, formatDate } from "@/lib/helper";
+import { Edit3Icon } from "lucide-react";
+import Dialog from "@/components/general/Dialog";
+import { Button } from "@/components/ui/button";
 
-function page({
-  searchParams,
-}: {
+interface Props {
   searchParams: Promise<{
-    [key: string]: string;
+    date: string;
+    page: string;
   }>;
-}) {
+}
+
+function page({ searchParams }: Props) {
   return (
     <PageLayout
       title={"المصروفات"}
@@ -35,29 +40,34 @@ const TABLE_COLUMNS = [
   { label: "الموظف", id: "employee" },
   { label: "العمليات", id: "actions " },
 ];
-async function DataTable({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    [key: string]: string;
-  }>;
-}) {
-  const response = await getExpenses();
-  console.log(response);
-  const { items, pageNumber, totalPages } = response;
+async function DataTable({ searchParams }: Props) {
   const params = await searchParams;
+  const response = await getExpenses({
+    date: params.date,
+    page: params.page,
+  });
+  const { items, pageNumber, totalPages } = response;
+  const total = items?.reduce((sum, item) => sum + item.amount, 0) || 0;
   return (
     <>
       <Table
         columns={TABLE_COLUMNS}
         renderData={items?.map((item) => (
           <TableRow key={item.id}>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
+            <TableCell>{formatDate(item.entryDate, "datetime")}</TableCell>
+            <TableCell>{formatCurrency(item.amount)}</TableCell>
+            <TableCell>{item.comments}</TableCell>
+            <TableCell>{item.branchName}</TableCell>
+            <TableCell>{item.employeeName}</TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button variant={"ghost"} size={"icon"}>
+                    <Edit3Icon size={16} />
+                  </Button>
+                </Dialog.Trigger>
+              </Dialog>
+            </TableCell>
           </TableRow>
         ))}
       />
@@ -68,9 +78,14 @@ async function DataTable({
           page={pageNumber}
           searchParams={params}
         />
-        <div className={"flex items-center justify-between gap-4"}>
+        <div className={"mr-auto flex items-center justify-between gap-4"}>
           <Label className={"text-nowrap"}>إجمالي المصروفات: </Label>
-          <Input disabled value={"0.00 ج.م"} type={"text"} />
+          <Input
+            disabled
+            value={formatCurrency(total)}
+            type={"text"}
+            className={"bg-gray-300"}
+          />
         </div>
       </div>
     </>
