@@ -75,12 +75,11 @@ function Actions({ order }: { order: OrderByStatus }) {
     form.reset();
   };
   const currentAction = (operation?.action ) || order.orderStatusForAction ;
-
-  console.log(currentAction);
+  console.log(operation,order);
   return (
     <>
       <div className="flex min-w-32 items-center justify-between">
-        {translateToArabic(currentAction)}
+        {translateToArabic(currentAction || "")}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="scale-75">
