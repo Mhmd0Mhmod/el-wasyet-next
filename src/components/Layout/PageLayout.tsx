@@ -8,16 +8,18 @@ function PageLayout({
   description,
   backButton = false,
   extra,
+  className,
   children,
 }: {
   title: string;
   description?: string;
   backButton?: boolean;
   extra?: React.ReactNode;
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="container space-y-12 pt-6">
+    <section className={cn("container space-y-12 pt-6", className)}>
       <div
         className={cn(
           "flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start",

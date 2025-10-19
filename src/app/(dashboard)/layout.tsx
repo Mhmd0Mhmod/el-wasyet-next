@@ -1,9 +1,4 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import Header from "@/components/Layout/Header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AsideBar from "./aside-bar";
 
 function layout({ children }: { children: React.ReactNode }) {
@@ -11,13 +6,7 @@ function layout({ children }: { children: React.ReactNode }) {
     <main>
       <SidebarProvider>
         <AsideBar />
-        <SidebarInset>
-          <header className="flex h-16 items-center border-b">
-            <Header />
-          </header>
-          <SidebarTrigger />
-          {children}
-        </SidebarInset>
+        <SidebarInset className="px-8">{children}</SidebarInset>
       </SidebarProvider>
     </main>
   );
