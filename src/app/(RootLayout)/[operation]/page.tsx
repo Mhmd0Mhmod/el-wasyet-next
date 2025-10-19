@@ -139,8 +139,6 @@ async function LoadTable({
     searchTerm: searchParams.search,
     pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
   });
-  console.log("Items:", items);
-
   return (
     <>
       <div className="flex">
