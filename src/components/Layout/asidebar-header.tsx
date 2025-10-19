@@ -41,7 +41,7 @@ function ASidebarHeader() {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-      <SidebarMenuItem>
+      <SidebarMenuItem className="hidden md:block">
         <SidebarMenuButton asChild>
           <SidebarTrigger className="h-6 w-6" />
         </SidebarMenuButton>
