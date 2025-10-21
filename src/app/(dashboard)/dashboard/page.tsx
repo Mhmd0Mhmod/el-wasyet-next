@@ -3,6 +3,7 @@ import ClientsByStatus from "@/components/(dashboard)/dashboard/clients-by-statu
 import FilterSection from "@/components/(dashboard)/dashboard/filter";
 import MonthPerformance from "@/components/(dashboard)/dashboard/month-performance";
 import OrdersByStatus from "@/components/(dashboard)/dashboard/orders-by-status";
+import ReportsButton from "@/components/(dashboard)/dashboard/reports-button";
 import RevenueByBranch from "@/components/(dashboard)/dashboard/revenue-by-branch";
 import RevenueByService from "@/components/(dashboard)/dashboard/revenue-by-service";
 import PageLayout from "@/components/Layout/PageLayout";
@@ -30,6 +31,9 @@ async function page({ searchParams }: Props) {
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <OrdersByStatus data={dashboardData.ordersPerStatus} />
         <ClientsByStatus data={dashboardData.clientsPerStatus} />
+      </div>
+      <div className="flex justify-end">
+        <ReportsButton />
       </div>
     </PageLayout>
   );
