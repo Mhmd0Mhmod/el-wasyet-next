@@ -13,7 +13,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
 function AsideBar() {
   return (
     <Sidebar side={"right"} collapsible="icon" variant="inset">

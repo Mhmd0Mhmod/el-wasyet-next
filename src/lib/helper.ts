@@ -41,7 +41,10 @@ export const NAVBARLINKS = [
   },
 ];
 
-export const formatCurrency = (value: number) => {
+export const formatCount = (value: number): string =>
+  Intl.NumberFormat("ar-EG").format(value);
+
+export const formatCurrency = (value: number): string => {
   if (!value) return "0.00 ج.م";
   return Intl.NumberFormat("ar-EG", {
     style: "currency",
@@ -133,4 +136,41 @@ export const remainingDays = (dueDate: number): string => {
   }
 
   return `متبقي ${dueDate} يوم`;
+};
+
+const ENGLISH_TO_ARABIC_MONTH: Record<string, string> = {
+  jan: "يناير",
+  january: "يناير",
+  feb: "فبراير",
+  february: "فبراير",
+  mar: "مارس",
+  march: "مارس",
+  apr: "أبريل",
+  april: "أبريل",
+  may: "مايو",
+  jun: "يونيو",
+  june: "يونيو",
+  jul: "يوليو",
+  july: "يوليو",
+  aug: "أغسطس",
+  august: "أغسطس",
+  sep: "سبتمبر",
+  sept: "سبتمبر",
+  september: "سبتمبر",
+  oct: "اكتوبر",
+  october: "اكتوبر",
+  nov: "نوفمبر",
+  november: "نوفمبر",
+  dec: "ديسمبر",
+  december: "ديسمبر",
+};
+
+export const convertMonthToArabic = (month: string): string => {
+  const normalized = month?.trim().toLowerCase();
+  if (!normalized) return month;
+  return (
+    ENGLISH_TO_ARABIC_MONTH[normalized] ??
+    ENGLISH_TO_ARABIC_MONTH[normalized.slice(0, 3)] ??
+    month
+  );
 };
