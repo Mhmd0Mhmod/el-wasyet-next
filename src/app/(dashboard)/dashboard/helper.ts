@@ -1,4 +1,11 @@
-import { Home, Store, Wallet, Percent, Users, DollarSign } from "lucide-react";
+import {
+  BadgePercent,
+  Boxes,
+  Coins,
+  Handshake,
+  Home,
+  PiggyBank,
+} from "lucide-react";
 
 export const NAVIGATION_LINKS = [
   {
@@ -7,28 +14,28 @@ export const NAVIGATION_LINKS = [
     icon: Home,
   },
   {
-    label: "المخازن",
-    href: "/stores",
-    icon: Store,
+    label: "العهده",
+    href: "/stock",
+    icon: Boxes,
   },
   {
     label: "الخزنه",
     href: "/cashbox",
-    icon: Wallet,
+    icon: PiggyBank,
   },
   {
     label: "الخصومات",
     href: "/discounts",
-    icon: Percent,
+    icon: BadgePercent,
   },
   {
     label: "الوكلاء",
     href: "/agents",
-    icon: Users,
+    icon: Handshake,
   },
   {
     label: "العمولات",
     href: "/commissions",
-    icon: DollarSign,
+    icon: Coins,
   },
 ];
