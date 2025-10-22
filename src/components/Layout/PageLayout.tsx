@@ -19,7 +19,7 @@ function PageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn("container space-y-12 pt-6", className)}>
+    <section className={cn("container space-y-12 py-6", className)}>
       <div
         className={cn(
           "flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start",

@@ -8,7 +8,7 @@ import { Suspense } from "react";
 
 function page() {
   return (
-    <PageLayout title="العهده" description="متابعة الأداء العام">
+    <PageLayout title="المخازن" description="متابعة الأداء العام">
       <Suspense fallback={<TableSkeleton columns={2} rows={5} />}>
         <StockDataTable />
       </Suspense>
