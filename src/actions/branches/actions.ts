@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function createBranch(
   formData: BranchFormData,
-): Promise<APIResponse<Branch | null>> {
+): Promise<APIResponse<Branch>> {
   try {
     const parseResult = await branchSchema.parseAsync(formData);
     const { data } = await authFetch.post<Branch>("Branch/create", parseResult);

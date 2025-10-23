@@ -104,6 +104,7 @@ interface Offer {
 
 interface Agent extends BaseEntity {
   name: string;
+  isActive?: boolean;
   commissionPercentage: nubmer;
 }
 

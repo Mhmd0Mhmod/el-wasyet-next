@@ -1,17 +1,13 @@
 import Table from "@/components/general/Table";
-import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getStockData } from "@/data/stock";
 import Link from "next/link";
-import { Suspense } from "react";
 
 function page() {
   return (
     <PageLayout title="المخازن" description="متابعة الأداء العام">
-      <Suspense fallback={<TableSkeleton columns={2} rows={5} />}>
-        <StockDataTable />
-      </Suspense>
+      <StockDataTable />
     </PageLayout>
   );
 }

@@ -36,7 +36,7 @@ function RevenueByService({ data }: RevenueByServiceProps) {
               ? Math.max((item.revenue / maxRevenue) * 100, 8)
               : 8;
             return (
-              <div key={item.serviceTypeName} className="space-y-2">
+              <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between text-sm font-medium">
                   <span>{item.serviceTypeName}</span>
                   <span className="text-muted-foreground">

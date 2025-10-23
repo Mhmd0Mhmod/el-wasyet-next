@@ -1,3 +1,4 @@
+import { translateToArabic } from "@/components/operation/helper";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCount } from "@/lib/helper";
 import { cn } from "@/lib/utils";
@@ -44,7 +45,7 @@ function OrdersByStatus({ data, className }: OrdersByStatusProps) {
             return (
               <div key={item.statusName} className="space-y-2">
                 <div className="flex items-center justify-between text-sm font-semibold">
-                  <span>{item.statusName}</span>
+                  <span>{translateToArabic(item.statusName)}</span>
                   <span className="text-muted-foreground">
                     {formatCount(item.ordersCount)}
                   </span>

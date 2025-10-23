@@ -25,23 +25,32 @@ export const getRemainingDaysStyle = (dueDate: number) => {
 };
 
 export const translateToArabic = (text: string): string => {
+  // normalize: lowercase and remove spaces
+  const key = (text ?? "").toString().toLowerCase().replace(/\s+/g, "");
   const translations: { [key: string]: string } = {
     pending: "قيد الانتظار",
-    "new order": "أمر جديد ",
+    neworder: "أمر جديد ",
+    new: "جديد",
+    inprogress: "قيد المعالجة",
+    receivedbyclient: "تم الاستلام من العميل",
     cancel: "إلغاء",
+    canceled: "ملغي",
+    returned: "مرتجع",
     refund: "استرداد",
-    "ask expenses": "طلب تحصيل",
-    "under processing": "تحت المعالجة",
-    "stefa client": "استيفاء عميل",
-    "stefa certificate": "استيفاء شهادة",
+    askexpenses: "طلب تحصيل",
+    underprocessing: "تحت المعالجة",
+    stefaclient: "استيفاء عميل",
+    stefacertificate: "استيفاء شهادة",
+    stefacertifacte: "استيفاء شهادة",
     return: "إرجاع",
     completed: "مكتمل",
-    "stefa sgl": "استيفاء السجل ",
+    stefasgl: "استيفاء السجل ",
     contacted: "تم الاتصال",
-    "send code": "إرسال الرمز",
-    "write code": "كتابة الرمز",
-    "receiving done": "تم الاستلام",
-    "collection done": "تحصيل مكتمل",
+    sendcode: "إرسال الرمز",
+    writecode: "كتابة الرمز",
+    receivingdone: "تم الاستلام",
+    collectiondone: "تحصيل مكتمل",
+    expired: "منتهي",
   };
-  return translations[text.toLowerCase()] || text;
+  return translations[key] || text;
 };

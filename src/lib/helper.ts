@@ -75,12 +75,11 @@ export const formatDate = (
   return date.toLocaleString("ar-EG", options);
 };
 
-export const handleErrorResponse = (
+export const handleErrorResponse = <T>(
   error: Error | AuthError | unknown,
-): APIResponse<null> => {
+): APIResponse<T> => {
   const returnError = {
     success: false,
-    data: null,
     message: "An unexpected error occurred while Process",
   };
   if (error instanceof AuthError) {
@@ -96,7 +95,7 @@ export const handleErrorResponse = (
   } else if (error instanceof Error) {
     returnError.message = error.message;
   }
-  return returnError;
+  return returnError as APIResponse<T>;
 };
 
 export const convertOverheadLabel = (overhead: ServiceOverhead): string => {

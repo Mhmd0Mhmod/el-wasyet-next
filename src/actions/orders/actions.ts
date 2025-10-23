@@ -7,7 +7,7 @@ import { Order } from "@/types/order";
 
 export async function createOrder(
   formData: OrderFormValues,
-): Promise<APIResponse<Order | null>> {
+): Promise<APIResponse<Order>> {
   try {
     const hasFiles = formData.CreateFiles && formData.CreateFiles.length > 0;
     const res = await authFetch.post<APIResponse<Order>>(
@@ -30,7 +30,7 @@ export async function createOrder(
 export async function updateOrder(
   id: number,
   formData: OrderFormValues,
-): Promise<APIResponse<Order | null>> {
+): Promise<APIResponse<Order>> {
   try {
     const hasFiles = formData.CreateFiles && formData.CreateFiles.length > 0;
 

@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function createEmployee(
   body: EmployeeFormValues,
-): Promise<APIResponse<Employee | null>> {
+): Promise<APIResponse<Employee>> {
   try {
     const parsedBody = await employeeFormSchema.parseAsync(body);
     const { data } = await authFetch.post(
@@ -25,7 +25,7 @@ export async function createEmployee(
 }
 export async function updateEmployee(
   body: EmployeeFormValues,
-): Promise<APIResponse<Employee | null>> {
+): Promise<APIResponse<Employee>> {
   try {
     const parsedBody = await employeeFormSchema.parseAsync(body);
     const { data } = await authFetch.put(`Auth/edit/employee`, parsedBody);

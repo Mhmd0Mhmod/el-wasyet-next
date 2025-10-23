@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 
 export async function createClient(
   data: ClientFormValues,
-): Promise<APIResponse<Client | null>> {
+): Promise<APIResponse<Client>> {
   try {
     const body = await clientFormSchema.parseAsync(data);
     const res = await authFetch.post("/Auth/register/client", body);
@@ -24,7 +24,7 @@ export async function createClient(
 
 export async function updateClient(
   data: ClientFormValues,
-): Promise<APIResponse<Client | null>> {
+): Promise<APIResponse<Client>> {
   try {
     const body = await clientFormSchema.parseAsync(data);
     const res = await authFetch.put(`/Auth/edit/client`, body);

@@ -75,7 +75,7 @@ async function page({ params }: PageProps) {
             </Button>
           </Dialog.Trigger>
           <Dialog.Content title="إضافة استماره جديده">
-            <NewForm />
+            <NewForm branchId={id} />
           </Dialog.Content>
         </Dialog>
       </div>
@@ -97,7 +97,7 @@ async function page({ params }: PageProps) {
                   </Button>
                 </Dialog.Trigger>
                 <Dialog.Content title="تعديل بيانات الاستماره">
-                  <NewForm />
+                  <NewForm branchId={id} />
                 </Dialog.Content>
               </Dialog>
             </TableCell>

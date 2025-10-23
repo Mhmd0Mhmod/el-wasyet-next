@@ -13,7 +13,7 @@ export async function serverLogin({
   usernameOrEmail: string;
   password: string;
   branchId: string;
-}): Promise<APIResponse<User | null>> {
+}): Promise<APIResponse<User>> {
   try {
     const { data } = await authFetch.post<User>("Auth/login", {
       usernameOrEmail,

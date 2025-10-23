@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 
 export async function createService(
   service: ServiceValues,
-): Promise<APIResponse<Service | null>> {
+): Promise<APIResponse<Service>> {
   try {
     const { data } = await authFetch.post<Service>("Service/create", service);
 
@@ -28,7 +28,7 @@ export async function createService(
 export async function updateService(
   service: ServiceValues,
   id: number,
-): Promise<APIResponse<Service | null>> {
+): Promise<APIResponse<Service>> {
   try {
     const { data } = await authFetch.put<Service>(
       `Service/update/${id}`,
