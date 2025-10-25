@@ -1,3 +1,4 @@
+import DiscountDetials from "@/components/(dashboard)/discounts/detials-dialog";
 import Dialog from "@/components/general/Dialog";
 import Table from "@/components/general/Table";
 import PageLayout from "@/components/Layout/PageLayout";
@@ -8,7 +9,7 @@ import { getDiscounts } from "@/data/discounts";
 import {
   CheckCircle,
   Edit3Icon,
-  Plus,
+  EyeIcon,
   PlusIcon,
   Trash2Icon,
   XCircle,
@@ -71,7 +72,27 @@ async function page() {
             <TableCell>
               <Dialog>
                 <Dialog.Trigger>
-                  <Button variant="link" className="p-0">
+                  <Button
+                    variant={"link"}
+                    size={"icon-sm"}
+                    className="cursor-pointer text-gray-500"
+                  >
+                    <EyeIcon size={12} />
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content
+                  title={`تفاصيل الخصم - ${discount.companyName}`}
+                >
+                  <DiscountDetials discountId={discount.offerId} />
+                </Dialog.Content>
+              </Dialog>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button
+                    variant={"link"}
+                    size={"icon-sm"}
+                    className="cursor-pointer p-0 text-gray-500"
+                  >
                     <Edit3Icon />
                   </Button>
                 </Dialog.Trigger>

@@ -1,4 +1,4 @@
-import AgentDetials from "@/components/(dashboard)/agents/agent-detials";
+import AgentDetials from "@/components/(dashboard)/agents/detials-dialog";
 import AgentForm from "@/components/(dashboard)/agents/agent-form";
 import DeleteAgentButton from "@/components/(dashboard)/agents/delete-agent-button";
 import Dialog from "@/components/general/Dialog";
@@ -121,7 +121,7 @@ async function AgentsTable({
                   <Edit3Icon size={12} />
                 </Button>
               </Dialog.Trigger>
-              <Dialog.Content title="تعديل وكيل">
+              <Dialog.Content title={`تعديل الوكيل - ${agent.name}`}>
                 <AgentForm agent={agent} />
               </Dialog.Content>
             </Dialog>
