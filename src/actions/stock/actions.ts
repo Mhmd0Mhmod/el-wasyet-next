@@ -16,3 +16,17 @@ export async function createNewStockItem(
     return handleErrorResponse(error);
   }
 }
+
+export async function transferConvenant(employeeId: string) {
+  try {
+    const response = await authFetch.post("/RequestStock", undefined, {
+      params: {
+        toEmployeeId: employeeId,
+      },
+    });
+    revalidatePath("/stock");
+    return { success: true, data: response.data };
+  } catch (error) {
+    return handleErrorResponse(error);
+  }
+}

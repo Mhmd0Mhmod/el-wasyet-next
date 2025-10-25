@@ -1,4 +1,5 @@
 import NewForm from "@/components/(dashboard)/stock/new-form";
+import TransferCovenant from "@/components/(dashboard)/stock/transfer-convenant-button";
 import Dialog from "@/components/general/Dialog";
 import Table from "@/components/general/Table";
 import PageLayout from "@/components/Layout/PageLayout";
@@ -65,6 +66,7 @@ async function page({ params }: PageProps) {
     <PageLayout
       title={stockData.branchName || "المخازن"}
       description="حصر ومتابعة مصروفات المخازن"
+      extra={<TransferCovenant />}
     >
       <div className="flex justify-end">
         <Dialog>
