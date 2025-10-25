@@ -75,14 +75,14 @@ async function page({ params }: PageProps) {
             </Button>
           </Dialog.Trigger>
           <Dialog.Content title="إضافة استماره جديده">
-            <NewForm branchId={id} />
+            <NewForm />
           </Dialog.Content>
         </Dialog>
       </div>
       <Table
         columns={COLUMNS}
-        renderData={stockData.forms.map((form) => (
-          <TableRow key={form.formId}>
+        renderData={stockData.forms.map((form, index) => (
+          <TableRow key={`${form.formId}-${index}`}>
             <TableCell>{form.formId}</TableCell>
             <TableCell>{form.formName}</TableCell>
             <TableCell>{form.quantity}</TableCell>
@@ -97,7 +97,7 @@ async function page({ params }: PageProps) {
                   </Button>
                 </Dialog.Trigger>
                 <Dialog.Content title="تعديل بيانات الاستماره">
-                  <NewForm branchId={id} />
+                  <NewForm />
                 </Dialog.Content>
               </Dialog>
             </TableCell>

@@ -19,6 +19,9 @@ function FilterSection() {
   const router = useRouter();
   const onSubmit = useCallback(
     (data: FilterValues) => {
+      if (!data.fromDate || !data.toDate) {
+        return;
+      }
       const query = new URLSearchParams(data).toString();
       router.push(`${pathName}?${query}`);
     },

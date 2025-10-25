@@ -32,3 +32,15 @@ export async function getMonthPerformanceData(params: {
     throw error;
   }
 }
+
+export async function getRequestStatusData(): Promise<BasicEntity[]> {
+  try {
+    const response = await authFetch.get<BasicEntity[]>(
+      "ActivityReport/RequestTypes",
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request status data:", error);
+    throw error;
+  }
+}

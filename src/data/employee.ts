@@ -92,3 +92,22 @@ export async function getEmployeeById(employeeId: number): Promise<Employee> {
     throw new Error("An unexpected error occurred while fetching employee");
   }
 }
+
+export async function getEmployeeBasic(): Promise<BasicEntity[]> {
+  try {
+    const { data } = await authFetch.get<BasicEntity[]>(
+      `Employee/GeTemployeesForOthers`,
+    );
+    return data || null;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    if (error instanceof Error) {
+      throw new Error(error?.message);
+    }
+    throw new Error(
+      "An unexpected error occurred while fetching employee basic data",
+    );
+  }
+}

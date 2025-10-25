@@ -1,5 +1,6 @@
 import Dialog from "@/components/general/Dialog";
 import { Button } from "@/components/ui/button";
+import ReportsForm from "@/components/(dashboard)/dashboard/reports-form";
 
 function ReportsButton() {
   return (
@@ -8,7 +9,7 @@ function ReportsButton() {
         <Button>تقرير الطلبات الداخليه</Button>
       </Dialog.Trigger>
       <Dialog.Content title="تقرير الطلبات الداخليه">
-        <p>محتوى التقرير هنا</p>
+        <ReportsForm />
       </Dialog.Content>
     </Dialog>
   );

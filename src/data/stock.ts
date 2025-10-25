@@ -34,3 +34,31 @@ export async function getStockDataById(id: string): Promise<StockItem | null> {
     throw error;
   }
 }
+type StockForm = {
+  id: string;
+  name: string;
+};
+
+export async function getStockBranches(): Promise<StockForm[]> {
+  try {
+    const response = await authFetch.get<StockForm[]>(
+      "/Stock/BranchesForCreateStock",
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching stock branches:", error);
+    throw error;
+  }
+}
+
+export async function getStockForms(): Promise<StockForm[]> {
+  try {
+    const response = await authFetch.get<StockForm[]>(
+      "/Stock/FormsForCreateStock",
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching stock forms:", error);
+    throw error;
+  }
+}

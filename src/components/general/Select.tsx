@@ -9,9 +9,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Select as SelectRoot,
   SelectContent,
   SelectItem,
-  Select as SelectRoot,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -147,7 +147,11 @@ function Select({
   }
 
   return (
-    <SelectRoot disabled={disabled} onValueChange={handleSingleValueChange}>
+    <SelectRoot
+      disabled={disabled}
+      onValueChange={handleSingleValueChange}
+      dir={"rtl"}
+    >
       <SelectTrigger className={className} size={size}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
