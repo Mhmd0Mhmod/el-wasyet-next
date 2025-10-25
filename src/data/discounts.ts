@@ -1,5 +1,5 @@
 import { authFetch } from "@/lib/axios";
-import { DiscountDetails } from "@/types/discount";
+import { OfferDetails } from "@/types/offer";
 import { Offer } from "@/types/order";
 
 export async function getDiscounts(): Promise<Offer[]> {
@@ -18,17 +18,14 @@ export async function getDiscountById({
   id: number;
   startDate?: string;
   endDate?: string;
-}): Promise<DiscountDetails> {
+}): Promise<OfferDetails> {
   try {
-    const { data } = await authFetch.get<DiscountDetails>(
-      `Offer/details/${id}`,
-      {
-        params: {
-          startDate,
-          endDate,
-        },
+    const { data } = await authFetch.get<OfferDetails>(`Offer/details/${id}`, {
+      params: {
+        startDate,
+        endDate,
       },
-    );
+    });
     return data || null;
   } catch (error) {
     throw error;

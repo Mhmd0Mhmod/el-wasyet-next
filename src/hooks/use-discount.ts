@@ -1,6 +1,6 @@
 "use client";
 import { getDiscountById } from "@/data/discounts";
-import { DiscountDetails } from "@/types/discount";
+import { OfferDetails } from "@/types/offer";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 
@@ -14,7 +14,7 @@ function useDiscount(id: number, startDate?: string, endDate?: string) {
       }),
     [id, startDate, endDate],
   );
-  const queryData = useQuery<DiscountDetails>({
+  const queryData = useQuery<OfferDetails>({
     queryKey: ["discount", id, startDate, endDate],
     queryFn: fetchFn,
     enabled: !!id,

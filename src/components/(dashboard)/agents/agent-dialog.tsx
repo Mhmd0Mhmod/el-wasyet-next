@@ -27,7 +27,7 @@ const COLUMNS = [
     id: "commissionPercentage",
   },
 ];
-function DetialsDialog({ agentId }: { agentId: number }) {
+function AgentDialog({ agentId }: { agentId: number }) {
   const [filters, setFilters] = useState<{
     startDate?: string;
     endDate?: string;
@@ -99,4 +99,4 @@ function DetialsDialog({ agentId }: { agentId: number }) {
     </div>
   );
 }
-export default DetialsDialog;
+export default AgentDialog;

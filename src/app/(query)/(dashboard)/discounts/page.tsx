@@ -1,4 +1,5 @@
-import DiscountDetials from "@/components/(dashboard)/discounts/detials-dialog";
+import DiscountDetials from "@/components/(dashboard)/discounts/discount-dialog";
+import DiscountForm from "@/components/(dashboard)/discounts/discount-form";
 import Dialog from "@/components/general/Dialog";
 import Table from "@/components/general/Table";
 import PageLayout from "@/components/Layout/PageLayout";
@@ -56,7 +57,7 @@ async function page() {
             </Button>
           </Dialog.Trigger>
           <Dialog.Content title="إضافه خصم جديد">
-            <p>نموذج إضافه خصم جديد سيذهب هنا</p>
+            <DiscountForm />
           </Dialog.Content>
         </Dialog>
       }
@@ -96,8 +97,8 @@ async function page() {
                     <Edit3Icon />
                   </Button>
                 </Dialog.Trigger>
-                <Dialog.Content title="تعديل الخصم">
-                  <p>نموذج تعديل الخصم سيذهب هنا</p>
+                <Dialog.Content title={`تعديل الخصم - ${discount.companyName}`}>
+                  <DiscountForm offer={discount} />
                 </Dialog.Content>
               </Dialog>
               <Dialog>

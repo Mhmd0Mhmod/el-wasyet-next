@@ -1,4 +1,4 @@
-import AgentDetials from "@/components/(dashboard)/agents/detials-dialog";
+import AgentDetials from "@/components/(dashboard)/agents/agent-dialog";
 import AgentForm from "@/components/(dashboard)/agents/agent-form";
 import DeleteAgentButton from "@/components/(dashboard)/agents/delete-agent-button";
 import Dialog from "@/components/general/Dialog";

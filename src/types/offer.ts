@@ -1,4 +1,4 @@
-interface DiscountDetails {
+interface OfferDetails {
   transactions: transaction[];
   sumOfDiscounts: number;
 }
@@ -11,4 +11,4 @@ type transaction = {
   transactionDate: string;
 };
 
-export type { DiscountDetails };
+export type { OfferDetails };

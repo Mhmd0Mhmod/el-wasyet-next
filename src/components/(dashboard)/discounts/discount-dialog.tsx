@@ -27,7 +27,7 @@ const COLUMNS = [
     id: "commissionPercentage",
   },
 ];
-function DetialsDialog({ discountId }: { discountId: number }) {
+function DiscountDialog({ discountId }: { discountId: number }) {
   const [filters, setFilters] = useState<{
     startDate?: string;
     endDate?: string;
@@ -97,4 +97,4 @@ function DetialsDialog({ discountId }: { discountId: number }) {
     </div>
   );
 }
-export default DetialsDialog;
+export default DiscountDialog;
