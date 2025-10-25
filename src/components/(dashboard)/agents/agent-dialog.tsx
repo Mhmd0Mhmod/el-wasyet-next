@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
 import useAgent from "@/hooks/use-agent";
-import { formatCount, formatDate } from "@/lib/helper";
+import { formatCount, formatCurrency, formatDate } from "@/lib/helper";
 import { useCallback, useState } from "react";
 const COLUMNS = [
   {
@@ -80,21 +80,36 @@ function AgentDialog({ agentId }: { agentId: number }) {
       </form>
       {isLoading && <TableSkeleton />}
       {!isLoading && data && (
-        <Table
-          columns={COLUMNS}
-          renderData={data.transactions.map((transaction) => (
-            <TableRow key={transaction.id}>
-              <TableCell>{transaction.agentName}</TableCell>
-              <TableCell>{transaction.orderCode}</TableCell>
-              <TableCell>
-                {formatDate(transaction.transactionDate, "datetime")}
-              </TableCell>
-              <TableCell>
-                % {formatCount(transaction.commissionAmount)}
-              </TableCell>
-            </TableRow>
-          ))}
-        />
+        <>
+          <Table
+            columns={COLUMNS}
+            renderData={data.transactions.map((transaction) => (
+              <TableRow key={transaction.id}>
+                <TableCell>{transaction.agentName}</TableCell>
+                <TableCell>{transaction.orderCode}</TableCell>
+                <TableCell>
+                  {formatDate(transaction.transactionDate, "datetime")}
+                </TableCell>
+                <TableCell>
+                  % {formatCount(transaction.commissionAmount)}
+                </TableCell>
+              </TableRow>
+            ))}
+          />
+          <div className="flex items-center justify-end gap-4">
+            <Label htmlFor="totalCommission" className="text-nowrap">
+              مجموع العموله
+            </Label>
+            <Input
+              type="text"
+              id="totalCommission"
+              value={formatCurrency(data.totalCommission)}
+              disabled
+              readOnly
+              className="w-fit disabled:bg-gray-200"
+            />
+          </div>
+        </>
       )}
     </div>
   );
