@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
 import useAgent from "@/hooks/use-agent";
 import { formatCount, formatCurrency, formatDate } from "@/lib/helper";
+import Link from "next/link";
 import { useCallback, useState } from "react";
 const COLUMNS = [
   {
@@ -86,12 +87,18 @@ function AgentDialog({ agentId }: { agentId: number }) {
             renderData={data.transactions.map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell>{transaction.agentName}</TableCell>
-                <TableCell>{transaction.orderCode}</TableCell>
+                <TableCell>
+                  <Button asChild variant={"link"}>
+                    <Link href={`/orders/${transaction.orderId}`}>
+                      {transaction.orderCode}
+                    </Link>
+                  </Button>
+                </TableCell>
                 <TableCell>
                   {formatDate(transaction.transactionDate, "datetime")}
                 </TableCell>
                 <TableCell>
-                  % {formatCount(transaction.commissionAmount)}
+                  {formatCount(transaction.commissionAmount)}
                 </TableCell>
               </TableRow>
             ))}

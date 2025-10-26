@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  createCommission as createCommissionAction,
+  updateCommission as updateCommissionAction,
+} from "@/actions/commissions/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,10 +18,6 @@ import { useRoles } from "@/hooks/useRoles";
 import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {
-  createCommission as createCommissionAction,
-  updateCommission as updateCommissionAction,
-} from "@/actions/commissions/actions";
 function CommissionForm({ commission }: { commission?: Commission }) {
   const form = useForm<Partial<Commission>>({
     defaultValues: commission || {
@@ -25,7 +25,7 @@ function CommissionForm({ commission }: { commission?: Commission }) {
       commissionPercentage: 0,
     },
   });
-  const { roles } = useRoles();
+  const { roles, isLoading: isRolesLoading } = useRoles();
   const updateCommission = useCallback(async (data: Partial<Commission>) => {
     const id = toast.loading("جاري تحديث العموله...");
     try {
@@ -79,7 +79,11 @@ function CommissionForm({ commission }: { commission?: Commission }) {
             control={form.control}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full" dir="rtl">
+                <SelectTrigger
+                  className="w-full disabled:bg-gray-400"
+                  dir="rtl"
+                  disabled={isRolesLoading}
+                >
                   <SelectValue placeholder="اختر المسمي الوظيفي" />
                 </SelectTrigger>
                 <SelectContent>

@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
 import useDiscount from "@/hooks/use-discount";
-import { formatCount, formatDate } from "@/lib/helper";
+import { formatCount, formatCurrency, formatDate } from "@/lib/helper";
+import Link from "next/link";
 import { useCallback, useState } from "react";
 const COLUMNS = [
   {
@@ -80,19 +81,37 @@ function DiscountDialog({ discountId }: { discountId: number }) {
       </form>
       {isLoading && <TableSkeleton />}
       {!isLoading && data && (
-        <Table
-          columns={COLUMNS}
-          renderData={data.transactions.map((transaction) => (
-            <TableRow key={transaction.id}>
-              <TableCell>{transaction.offerId}</TableCell>
-              <TableCell>{transaction.ordercode}</TableCell>
-              <TableCell>
-                {formatDate(transaction.transactionDate, "datetime")}
-              </TableCell>
-              <TableCell>% {formatCount(transaction.discountAmount)}</TableCell>
-            </TableRow>
-          ))}
-        />
+        <>
+          <Table
+            columns={COLUMNS}
+            renderData={data.transactions.map((transaction) => (
+              <TableRow key={transaction.id}>
+                <TableCell>{transaction.offerId}</TableCell>
+                <TableCell>
+                  <Button asChild variant={"link"} size={"sm"}>
+                    <Link href={`/orders/${transaction.orderId}`}>
+                      {transaction.ordercode}
+                    </Link>
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  {formatDate(transaction.transactionDate, "datetime")}
+                </TableCell>
+                <TableCell>{formatCount(transaction.discountAmount)}</TableCell>
+              </TableRow>
+            ))}
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Label htmlFor="sumOfDiscounts">مجموع العموله</Label>
+            <Input
+              readOnly
+              id="sumOfDiscounts"
+              value={formatCurrency(data?.sumOfDiscounts)}
+              disabled
+              className="disabled:bg-gray-400"
+            />
+          </div>
+        </>
       )}
     </div>
   );
