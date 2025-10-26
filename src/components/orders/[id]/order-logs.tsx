@@ -33,7 +33,7 @@ const COLUMNS = [
   { id: "serviceName", label: "الخدمة" },
   { id: "orderStatues", label: "الحاله بعد العملية" },
   { id: "amount", label: "المبلغ" },
-  { id: "requiredChange", label: "ملحوظات/سيستم" },
+  { id: "requiredChange", label: "ملاحظات/سيستم" },
   { id: "comments", label: "التعليقات" },
 ];
 const LoadingSkeleton = memo(function Loading() {

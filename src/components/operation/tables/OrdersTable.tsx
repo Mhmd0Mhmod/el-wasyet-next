@@ -24,7 +24,7 @@ const ORDER_TABLE_COLUMNS = [
   { id: "remainingChanges", label: "المطلوب تغييره" },
   { id: "overheads", label: "الغرامه" },
   { id: "remainingDays", label: "يتبقى على الانتهاء" },
-  { id: "notes", label: "ملحوظات" },
+  { id: "notes", label: "ملاحظات" },
 ];
 function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
   return (
@@ -100,7 +100,7 @@ function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
                         {order.notes ? <EyeIcon /> : <EyeOffIcon />}
                       </Button>
                     </Dialog.Trigger>
-                    <Dialog.Content title="ملحوظات الامر">
+                    <Dialog.Content title="ملاحظات الامر">
                       <p>{order.notes}</p>
                     </Dialog.Content>
                   </Dialog>

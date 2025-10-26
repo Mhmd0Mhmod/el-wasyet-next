@@ -14,3 +14,17 @@ interface Report {
   operationType: string;
   status: string;
 }
+
+interface ExecutiveReport {
+  id: number;
+  actionType: string;
+  clientName: string;
+  branchName: string;
+  amount: number;
+  orderCode: string;
+  orderId: number;
+  actionDate: string;
+  createdbyEmployeeName: string;
+  orderstatus: string;
+  notes: string;
+}

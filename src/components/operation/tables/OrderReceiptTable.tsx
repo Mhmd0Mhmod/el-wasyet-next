@@ -50,7 +50,7 @@ const ORDER_TABLE_COLUMNS = [
   },
   {
     id: "notes",
-    label: "ملحوظات",
+    label: "ملاحظات",
   },
 ];
 function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
@@ -122,10 +122,10 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
                     {order.notes ? <EyeIcon /> : <EyeOffIcon />}
                   </Button>
                 </Dialog.Trigger>
-                <Dialog.Content title="الملحوظات">
+                <Dialog.Content title="الملاحظات">
                   <div className="max-h-[70vh] space-y-10 overflow-auto">
                     {/* <ClientDetails clientId={order.clientId} /> */}
-                    محتوى الملحوظات
+                    محتوى الملاحظات
                   </div>
                 </Dialog.Content>
               </Dialog>

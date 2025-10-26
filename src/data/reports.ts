@@ -26,16 +26,25 @@ export async function getDailyReports(params: {
     throw error;
   }
 }
+type ExecutiveReportPage = PaginatedResponse<{
+  records: ExecutiveReport[];
+  totalExpenses: number;
+  totalAmount: number;
+  totalNetAmount: number;
+}>;
 export async function getExcutiveReport(params: {
   page?: string;
-}): Promise<ReportPage> {
+}): Promise<ExecutiveReportPage> {
   try {
-    const { data } = await authFetch.get<ReportPage>("/Report/ExcutiveReport", {
-      params: {
-        pageNumber: params.page,
-        pageSize: defaults.pageSize,
+    const { data } = await authFetch.get<ExecutiveReportPage>(
+      "/Report/ExcutiveReport",
+      {
+        params: {
+          pageNumber: params.page,
+          pageSize: defaults.pageSize,
+        },
       },
-    });
+    );
     return data;
   } catch (error) {
     throw error;

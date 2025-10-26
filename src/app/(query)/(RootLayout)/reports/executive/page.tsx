@@ -2,13 +2,12 @@ import Pagination from "@/components/general/Pagination";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
-import { Button } from "@/components/ui/button";
+import ExportExecutiveReportButton from "@/components/reports/executive/export-executive-report-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getExcutiveReport } from "@/data/reports";
 import { formatCurrency, formatDate } from "@/lib/helper";
-import Link from "next/link";
 import { Suspense } from "react";
 
 interface PageProps {
@@ -22,6 +21,7 @@ function page({ searchParams }: PageProps) {
     <PageLayout
       title={"تقرير تنفيذي "}
       description={"تقارير تنفيذية لمتابعة الأداء والعمليات اليومية "}
+      extra={<ExportExecutiveReportButton />}
     >
       <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>
         <DataTable searchParams={searchParams} />
@@ -30,16 +30,17 @@ function page({ searchParams }: PageProps) {
   );
 }
 const TABLE_COLUMNS = [
+  { label: "رقم الامر", id: "order-number" },
   { id: "operationCode", label: "كود العملية" },
-  { id: "operationType", label: "نوع العملية" },
-  { id: "service", label: "اسم الخدمة" },
+  { id: "orderCode", label: "كود الامر" },
   { id: "client", label: "اسم العميل" },
-  { id: "phone", label: "رقم العميل" },
-  { id: "price", label: "السعر" },
+  { id: "service", label: "اسم الخدمة" },
   { id: "operationTime", label: "وقت العملية" },
-  { id: "orderCode", label: "كود الأوردر" },
-  { id: "branch", label: "الفرع" },
   { id: "employee", label: "الموظف" },
+  { label: "المطلوب تغييره", id: "toBeChanged" },
+  { label: "ملاحظات", id: "notes" },
+  { id: "operationType", label: "نوع العملية" },
+  { id: "branch", label: "الفرع" },
   { id: "orderStatus", label: "حالة الأوردر" },
 ];
 async function DataTable({ searchParams }: PageProps) {
@@ -60,21 +61,18 @@ async function DataTable({ searchParams }: PageProps) {
         columns={TABLE_COLUMNS}
         renderData={records?.map((item) => (
           <TableRow key={item.id}>
-            <TableCell>{item.id}</TableCell>
-            <TableCell>{item.operationType}</TableCell>
-            <TableCell>{item.serviceName}</TableCell>
+            <TableCell>{item.orderId}</TableCell>
+            <TableCell>{item.actionType}</TableCell>
+            <TableCell>{item.orderCode}</TableCell>
             <TableCell>{item.clientName}</TableCell>
-            <TableCell>{item.clientPhoneNumber}</TableCell>
-            <TableCell>{formatCurrency(item.amount)}</TableCell>
+            <TableCell>{item.actionType}</TableCell>
             <TableCell>{formatDate(item.actionDate, "datetime")}</TableCell>
-            <TableCell>
-              <Button variant="link" size="sm" asChild>
-                <Link href={`/orders/${item.orderId}`}>{item.orderCode}</Link>
-              </Button>
-            </TableCell>
+            <TableCell>{item.createdbyEmployeeName}</TableCell>
+            <TableCell>{item.amount}</TableCell>
+            <TableCell>{item.notes}</TableCell>
+            <TableCell>{item.orderstatus}</TableCell>
             <TableCell>{item.branchName}</TableCell>
-            <TableCell>{item.employeeName || "---"}</TableCell>
-            <TableCell>{item.status}</TableCell>
+            <TableCell>{item.orderstatus}</TableCell>
           </TableRow>
         ))}
       />

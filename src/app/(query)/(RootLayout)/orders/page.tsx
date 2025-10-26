@@ -31,7 +31,7 @@ const ORDER_TABLE_COLUMNS = [
   { id: "orderStatus", label: "حاله الامر" },
   { id: "requiredChange", label: "المطلوب تغيير" },
   { id: "amount", label: "قيمة الامر" },
-  { id: "notes", label: "ملحوظات" },
+  { id: "notes", label: "ملاحظات" },
   { id: "operations", label: "العمليات" },
 ];
 

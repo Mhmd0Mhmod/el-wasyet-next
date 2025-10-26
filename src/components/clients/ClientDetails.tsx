@@ -44,7 +44,7 @@ const orderColumns = [
   { id: "orderStatue", label: "حالة الأمر" },
   { id: "requiredChange", label: "المطلوب" },
   { id: "amount", label: "قيمة الأمر" },
-  { id: "note", label: "ملحوظات" },
+  { id: "note", label: "ملاحظات" },
   { id: "actions", label: "العمليات" },
 ];
 

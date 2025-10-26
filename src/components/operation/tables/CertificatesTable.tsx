@@ -27,7 +27,7 @@ const columns = [
   { id: "fines", label: "الغرامات" },
   { id: "remaining", label: "يتبقى على الانتهاء" },
   { id: "count", label: "العدد" },
-  { id: "notes", label: "ملحوظات" },
+  { id: "notes", label: "ملاحظات" },
 ];
 
 function CertificatesTable({ orders }: { orders: OrderByStatus[] }) {
@@ -147,7 +147,7 @@ function CertificatesTable({ orders }: { orders: OrderByStatus[] }) {
                         )}
                       </Button>
                     </Dialog.Trigger>
-                    <Dialog.Content title="ملحوظات">
+                    <Dialog.Content title="ملاحظات">
                       {order.comments_id_Wife_Mother ||
                         order.requiredChange_forthName_Husbend}
                     </Dialog.Content>
