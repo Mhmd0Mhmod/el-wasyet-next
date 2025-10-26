@@ -37,13 +37,29 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     title: "الشهادات الجديدة",
     isCertificate: true,
     description: "سجل الشهادات الجديدة ومتابعة حالتها",
-    Component: CertificatesTable,
+    Component: ({ orders }) => (
+      <>
+        <CertificatesTable orders={orders} />
+        <div className="flex items-center justify-end-safe gap-4">
+          <div className="h-4 w-4 rounded-full border bg-yellow-100 text-sm font-medium" />
+          <span>الاوامر لها طلب تحصيل بالفعل</span>
+        </div>
+      </>
+    ),
   },
   "new-orders": {
     statusIds: [2],
     title: "الاوامر الجديده",
     description: "سجل الاوامر االجديده ومتابعة حالة الاوامر",
-    Component: OrdersTable,
+    Component: ({ orders }) => (
+      <>
+        <OrdersTable orders={orders} />
+        <div className="flex items-center justify-end-safe gap-4">
+          <div className="h-4 w-4 rounded-full border bg-yellow-100 text-sm font-medium" />
+          <span>الاوامر لها طلب تحصيل بالفعل</span>
+        </div>
+      </>
+    ),
   },
   collected: {
     statusIds: [3],

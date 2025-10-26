@@ -27,7 +27,13 @@ const ORDER_TABLE_COLUMNS = [
   { id: "branch", label: "الفرع" },
   { id: "notes", label: "ملاحظات" },
 ];
-function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
+function OrdersTable({
+  orders,
+  children,
+}: {
+  orders: OrderByStatus[];
+  children?: React.ReactNode;
+}) {
   return (
     <OperationsProvider orders={orders}>
       <Table
@@ -112,10 +118,7 @@ function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
           </>
         }
       />
-      <div className="flex items-center justify-end-safe gap-4">
-        <div className="h-4 w-4 rounded-full border bg-yellow-100 text-sm font-medium" />
-        <span>الاوامر المُحصَّلة بالفعل</span>
-      </div>
+      {children}
     </OperationsProvider>
   );
 }
