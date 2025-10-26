@@ -10,6 +10,10 @@ export const NAVBARLINKS = [
   { label: "الأوامر", href: "/orders" },
   { label: "أمر جديد", href: "/orders/new" },
   {
+    label: "المصروفات",
+    href: "/expenses",
+  },
+  {
     label: "العمليات",
     children: [
       { label: "سجل الاوامر المعلقة", href: "/pending-orders" },
@@ -32,12 +36,12 @@ export const NAVBARLINKS = [
     ],
   },
   {
-    label: "المصروفات",
-    href: "/expenses",
-  },
-  {
     label: "تقارير",
-    href: "/reports",
+    children: [
+      { label: "تقارير يومي", href: "/reports/daily" },
+      { label: "تقارير يومي تفصيلي", href: "/reports/daily/details" },
+      { label: "تقرير تنفيذي", href: "/reports/executive" },
+    ],
   },
 ];
 

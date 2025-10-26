@@ -1,12 +1,13 @@
 import { authFetch } from "@/lib/axios";
 import { defaults } from "@/lib/utils";
 
-type ReportPage = PaginatedResponse<Report> & {
+type ReportPage = PaginatedResponse<{
+  records: Report[];
   totalExpenses: number;
   totalAmount: number;
   totalNetAmount: number;
-};
-export async function getReports(params: {
+}>;
+export async function getDailyReports(params: {
   startDate?: string;
   endDate?: string;
   page?: string;
@@ -18,6 +19,44 @@ export async function getReports(params: {
         endDate: params.endDate,
         pageNumber: params.page,
         pageSize: defaults.pageSize,
+      },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function getExcutiveReport(params: {
+  page?: string;
+}): Promise<ReportPage> {
+  try {
+    const { data } = await authFetch.get<ReportPage>("/Report/ExcutiveReport", {
+      params: {
+        pageNumber: params.page,
+        pageSize: defaults.pageSize,
+      },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function getAdvancedDailyReport(params: {
+  startDate?: string;
+  endDate?: string;
+  page?: string;
+  branchId?: string;
+  employeeId?: string;
+}): Promise<ReportPage> {
+  try {
+    const { data } = await authFetch.get<ReportPage>("/Report/AdvancedReport", {
+      params: {
+        startDate: params.startDate,
+        endDate: params.endDate,
+        pageNumber: params.page,
+        pageSize: defaults.pageSize,
+        branchId: params.branchId,
+        employeeId: params.employeeId,
       },
     });
     return data;

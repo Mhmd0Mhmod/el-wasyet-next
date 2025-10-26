@@ -1,17 +1,16 @@
 interface Report {
   id: number;
+  orderId: number;
+  orderCode: string;
   serviceName: string;
   clientName: string;
   clientPhoneNumber: string;
   amount: number;
-  cash: number;
-  credit: number;
-  orderDateTime: string;
-  branchName: string;
   employeeName: string;
-  expenses: number;
-  netAmount: number;
-}
-interface ReportDetails extends Report {
-  clientId: string;
+  orderDateTime: string;
+  actionDate: string;
+  branchName: string;
+  isCreatedByEmployeeName: string;
+  operationType: string;
+  status: string;
 }
