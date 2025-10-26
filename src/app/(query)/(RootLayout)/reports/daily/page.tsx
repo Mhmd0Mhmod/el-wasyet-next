@@ -77,7 +77,7 @@ async function DataTable({ searchParams }: PageProps) {
               </Button>
             </TableCell>
             <TableCell>{item.branchName}</TableCell>
-            <TableCell>{item.employeeName || "---"}</TableCell>
+            <TableCell>{item.isCreatedByEmployeeName || "---"}</TableCell>
             <TableCell>{item.status}</TableCell>
           </TableRow>
         ))}

@@ -18,6 +18,7 @@ interface Report {
 interface ExecutiveReport {
   id: number;
   actionType: string;
+  serviceName: string;
   clientName: string;
   branchName: string;
   amount: number;

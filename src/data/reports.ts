@@ -13,7 +13,7 @@ export async function getDailyReports(params: {
   page?: string;
 }): Promise<ReportPage> {
   try {
-    const { data } = await authFetch.get<ReportPage>("/Report/DailyReport", {
+    const { data } = await authFetch.get<ReportPage>("/Report/AdvancedReport", {
       params: {
         startDate: params.startDate,
         endDate: params.endDate,
@@ -58,7 +58,7 @@ export async function getAdvancedDailyReport(params: {
   employeeId?: string;
 }): Promise<ReportPage> {
   try {
-    const { data } = await authFetch.get<ReportPage>("/Report/AdvancedReport", {
+    const { data } = await authFetch.get<ReportPage>("/Report/DailyReport", {
       params: {
         startDate: params.startDate,
         endDate: params.endDate,

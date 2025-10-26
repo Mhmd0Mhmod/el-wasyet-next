@@ -44,6 +44,7 @@ const TABLE_COLUMNS = [
   { id: "orderCode", label: "كود الأوردر" },
   { id: "branch", label: "الفرع" },
   { id: "employee", label: "الموظف" },
+  { id: "orderEmployeeCreator", label: "منشئ الطلب" },
   { id: "orderStatus", label: "حالة الأوردر" },
 ];
 async function DataTable({ searchParams }: PageProps) {
@@ -78,6 +79,7 @@ async function DataTable({ searchParams }: PageProps) {
             </TableCell>
             <TableCell>{item.branchName}</TableCell>
             <TableCell>{item.employeeName || "---"}</TableCell>
+            <TableCell>{item.isCreatedByEmployeeName || "---"}</TableCell>
             <TableCell>{item.status}</TableCell>
           </TableRow>
         ))}
