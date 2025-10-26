@@ -82,10 +82,13 @@ export const handleErrorResponse = <T>(
     success: false,
     message: "An unexpected error occurred while Process",
   };
+
   if (error instanceof AuthError) {
     returnError.message = error.message;
   }
   if (error instanceof AxiosError) {
+    console.log(error);
+
     const errors = Object.values(error.response?.data.errors || {});
     if (errors.length > 0) {
       returnError.message = errors.join(" ");

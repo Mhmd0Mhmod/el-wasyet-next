@@ -1,7 +1,23 @@
+import CommissionForm from "@/components/(dashboard)/commissions/commission-form";
+import DeleteCommissionsAction from "@/components/(dashboard)/commissions/delete-commision-button";
 import Dialog from "@/components/general/Dialog";
+import Table from "@/components/general/Table";
 import PageLayout from "@/components/Layout/PageLayout";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { getCommissions } from "@/data/commissions";
+import { formatCount } from "@/lib/helper";
+import { Edit3Icon, PlusIcon, Trash2Icon } from "lucide-react";
 
 function page() {
   return (
@@ -17,7 +33,7 @@ function page() {
             </Button>
           </Dialog.Trigger>
           <Dialog.Content title="إضافه عموله جديده">
-            محتوى الاضافه
+            <CommissionForm />
           </Dialog.Content>
         </Dialog>
       }
@@ -26,8 +42,68 @@ function page() {
     </PageLayout>
   );
 }
-
+const COLUMNS = [
+  {
+    label: "المسمي الوظيفي",
+    id: "roleName",
+  },
+  {
+    label: "نسبه العموله",
+    id: "commissionPercentage",
+  },
+  {
+    label: "العمليات",
+    id: "actions",
+  },
+];
 async function CommissionsTable() {
-  return <></>;
+  const commissions = await getCommissions();
+  return (
+    <>
+      <Table
+        columns={COLUMNS}
+        renderData={commissions.map((commission) => (
+          <TableRow key={commission.roleId}>
+            <TableCell>{commission.roleName}</TableCell>
+            <TableCell>
+              % {formatCount(commission.commissionPercentage)}
+            </TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button variant={"link"} className="text-gray-500">
+                    <Edit3Icon size={14} />
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content title="تعديل نسبه العموله">
+                  <CommissionForm commission={commission} />
+                </Dialog.Content>
+              </Dialog>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant={"link"} className="text-red-500">
+                    <Trash2Icon size={14} />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="sm:text-right">
+                      هل انت متأكد من حذف نسبه العموله لهذا المسمي
+                    </AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <AlertDialogAction asChild>
+                      <DeleteCommissionsAction roleId={commission.roleId} />
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </TableCell>
+          </TableRow>
+        ))}
+      />
+    </>
+  );
 }
 export default page;
