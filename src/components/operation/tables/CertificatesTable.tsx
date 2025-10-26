@@ -27,6 +27,7 @@ const columns = [
   { id: "fines", label: "الغرامات" },
   { id: "remaining", label: "يتبقى على الانتهاء" },
   { id: "count", label: "العدد" },
+  { id: "branch", label: "الفرع" },
   { id: "notes", label: "ملاحظات" },
 ];
 
@@ -128,6 +129,7 @@ function CertificatesTable({ orders }: { orders: OrderByStatus[] }) {
                   })()}
                 </TableCell>
                 <TableCell>{order.quantity || "1"}</TableCell>
+                <TableCell>{order.branchName}</TableCell>
                 <TableCell>
                   <Dialog>
                     <Dialog.Trigger>

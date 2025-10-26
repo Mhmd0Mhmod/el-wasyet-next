@@ -48,6 +48,8 @@ const ORDER_TABLE_COLUMNS = [
     id: "code_status",
     label: "حالة الكود",
   },
+  { id: "branch", label: "الفرع" },
+
   {
     id: "notes",
     label: "ملاحظات",
@@ -115,6 +117,7 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
             <TableCell>
               <SendCodeButton order={order}>إرسال كود</SendCodeButton>
             </TableCell>
+            <TableCell>{order.branchName}</TableCell>
             <TableCell>
               <Dialog>
                 <Dialog.Trigger>

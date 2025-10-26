@@ -24,6 +24,7 @@ const ORDER_TABLE_COLUMNS = [
   { id: "remainingChanges", label: "المطلوب تغييره" },
   { id: "overheads", label: "الغرامه" },
   { id: "remainingDays", label: "يتبقى على الانتهاء" },
+  { id: "branch", label: "الفرع" },
   { id: "notes", label: "ملاحظات" },
 ];
 function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
@@ -93,6 +94,7 @@ function OrdersTable({ orders }: { orders: OrderByStatus[] }) {
                     );
                   })()}
                 </TableCell>
+                <TableCell>{order.branchName}</TableCell>
                 <TableCell>
                   <Dialog>
                     <Dialog.Trigger>
