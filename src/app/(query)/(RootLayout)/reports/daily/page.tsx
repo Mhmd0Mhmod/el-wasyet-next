@@ -3,6 +3,7 @@ import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import DailyReportsFilter from "@/components/reports/daily/daily-reports-filter";
+import ExportDailyReportsButton from "@/components/reports/daily/export-daily-report-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,7 @@ function page({ searchParams }: PageProps) {
     <PageLayout
       title={"تقارير يومي "}
       description={"تقارير يومية للمصروفات ومتابعة حالتها"}
+      extra={<ExportDailyReportsButton />}
     >
       <DailyReportsFilter />
       <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>

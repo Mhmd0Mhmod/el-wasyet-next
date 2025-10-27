@@ -2,6 +2,7 @@ import Pagination from "@/components/general/Pagination";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
+import ExportDailyReportsButton from "@/components/reports/daily/export-daily-report-button";
 import AdvancedDailyReportsFilter from "@/components/reports/detials-daily/advanced-daily-reports-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ function page({ searchParams }: PageProps) {
     <PageLayout
       title="تقارير يومي تفصيلي"
       description="تقارير يومية للمصروفات ومتابعة حالتها"
+      extra={<ExportDailyReportsButton />}
     >
       <AdvancedDailyReportsFilter />
       <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>

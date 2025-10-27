@@ -18,7 +18,6 @@ import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { PlusIcon, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createNewStockItem } from "@/actions/stock/actions";
-import { useRouter } from "next/navigation";
 
 function NewForm({ form: initialForm }: { form?: StockItem }) {
   const form = useForm<StockItemFormSchema>({
