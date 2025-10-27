@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { getBranchesAuth } from "@/data/branches";
+import { getEmployeeBasic } from "@/data/employee";
 import { getAdvancedDailyReport } from "@/data/reports";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import Link from "next/link";
@@ -21,14 +23,16 @@ interface PageProps {
   }>;
 }
 
-function page({ searchParams }: PageProps) {
+async function page({ searchParams }: PageProps) {
+  const branchs = await getBranchesAuth();
+  const employees = await getEmployeeBasic();
   return (
     <PageLayout
       title="تقارير يومي تفصيلي"
       description="تقارير يومية للمصروفات ومتابعة حالتها"
       extra={<ExportDailyReportsButton />}
     >
-      <AdvancedDailyReportsFilter />
+      <AdvancedDailyReportsFilter branchs={branchs} employees={employees} />
       <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>
         <DataTable searchParams={searchParams} />
       </Suspense>
