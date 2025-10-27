@@ -6,26 +6,26 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 interface FilterFormValues {
-  fromDate?: string;
-  toDate?: string;
+  startDate?: string;
+  endDate?: string;
 }
 function DailyReportsFilter() {
   const pathName = usePathname();
   const router = useRouter();
   const form = useForm<FilterFormValues>({
     defaultValues: {
-      fromDate: "",
-      toDate: "",
+      startDate: "",
+      endDate: "",
     },
   });
   const onSubmit = useCallback(
     (data: FilterFormValues) => {
       const queryParams = new URLSearchParams();
-      if (data.fromDate) {
-        queryParams.append("fromDate", data.fromDate);
+      if (data.startDate) {
+        queryParams.append("startDate", data.startDate);
       }
-      if (data.toDate) {
-        queryParams.append("toDate", data.toDate);
+      if (data.endDate) {
+        queryParams.append("endDate", data.endDate);
       }
       router.push(`${pathName}?${queryParams.toString()}`);
     },
@@ -38,12 +38,12 @@ function DailyReportsFilter() {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="space-y-4">
-          <Label htmlFor="fromDate">من تاريخ</Label>
-          <Input id="fromDate" type="date" {...form.register("fromDate")} />
+          <Label htmlFor="startDate">من تاريخ</Label>
+          <Input id="startDate" type="date" {...form.register("startDate")} />
         </div>
         <div className="space-y-4">
-          <Label htmlFor="toDate">إلى تاريخ</Label>
-          <Input id="toDate" type="date" {...form.register("toDate")} />
+          <Label htmlFor="endDate">إلى تاريخ</Label>
+          <Input id="endDate" type="date" {...form.register("endDate")} />
         </div>
         <div className="flex items-center gap-2 pt-6">
           <Button type="submit" size={"lg"}>

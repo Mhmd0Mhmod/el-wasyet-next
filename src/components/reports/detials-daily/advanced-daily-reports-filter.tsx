@@ -14,8 +14,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 interface FilterFormValues {
-  fromDate?: string;
-  toDate?: string;
+  startDate?: string;
+  endDate?: string;
   branchId?: string;
   employeeId?: string;
 }
@@ -30,8 +30,8 @@ function AdvancedDailyReportsFilter({
   const router = useRouter();
   const form = useForm<FilterFormValues>({
     defaultValues: {
-      fromDate: "",
-      toDate: "",
+      startDate: "",
+      endDate: "",
       branchId: "",
       employeeId: "",
     },
@@ -39,11 +39,11 @@ function AdvancedDailyReportsFilter({
   const onSubmit = useCallback(
     async (data: FilterFormValues) => {
       const queryParams = new URLSearchParams();
-      if (data.fromDate) {
-        queryParams.append("fromDate", data.fromDate);
+      if (data.startDate) {
+        queryParams.append("startDate", data.startDate);
       }
-      if (data.toDate) {
-        queryParams.append("toDate", data.toDate);
+      if (data.endDate) {
+        queryParams.append("endDate", data.endDate);
       }
       if (data.branchId) {
         queryParams.append("branchId", data.branchId);
@@ -62,12 +62,12 @@ function AdvancedDailyReportsFilter({
         className="grid grid-cols-1 gap-4 md:grid-cols-3"
       >
         <div className={"space-y-4"}>
-          <Label htmlFor="fromDate">من تاريخ</Label>
-          <Input id="fromDate" type="date" {...form.register("fromDate")} />
+          <Label htmlFor="startDate">من تاريخ</Label>
+          <Input id="startDate" type="date" {...form.register("startDate")} />
         </div>
         <div className={"space-y-4"}>
-          <Label htmlFor="toDate">إلى تاريخ</Label>
-          <Input id="toDate" type="date" {...form.register("toDate")} />
+          <Label htmlFor="endDate">إلى تاريخ</Label>
+          <Input id="endDate" type="date" {...form.register("endDate")} />
         </div>
         <div className="flex items-center gap-2 pt-6">
           <Button type="submit" size={"lg"}>

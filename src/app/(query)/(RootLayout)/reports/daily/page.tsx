@@ -21,7 +21,8 @@ interface PageProps {
   }>;
 }
 
-function page({ searchParams }: PageProps) {
+async function page({ searchParams }: PageProps) {
+  const params = await searchParams;
   return (
     <PageLayout
       title={"تقارير يومي "}
@@ -29,7 +30,10 @@ function page({ searchParams }: PageProps) {
       extra={<ExportDailyReportsButton />}
     >
       <DailyReportsFilter />
-      <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>
+      <Suspense
+        fallback={<TableSkeleton columns={11} rows={11} />}
+        key={JSON.stringify(params)}
+      >
         <DataTable searchParams={searchParams} />
       </Suspense>
     </PageLayout>

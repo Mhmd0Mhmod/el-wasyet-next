@@ -33,6 +33,8 @@ type ExecutiveReportPage = PaginatedResponse<{
   totalNetAmount: number;
 }>;
 export async function getExcutiveReport(params: {
+  startDate?: string;
+  endDate?: string;
   page?: string;
 }): Promise<ExecutiveReportPage> {
   try {
@@ -40,6 +42,8 @@ export async function getExcutiveReport(params: {
       "/Report/ExcutiveReport",
       {
         params: {
+          startDate: params.startDate,
+          endDate: params.endDate,
           pageNumber: params.page,
           pageSize: defaults.pageSize,
         },

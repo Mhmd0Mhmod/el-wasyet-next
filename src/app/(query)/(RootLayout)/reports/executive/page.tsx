@@ -15,11 +15,14 @@ import { Suspense } from "react";
 
 interface PageProps {
   searchParams: Promise<{
+    startDate: string;
+    endDate: string;
     page: string;
   }>;
 }
 
-function page({ searchParams }: PageProps) {
+async function page({ searchParams }: PageProps) {
+  const params = await searchParams;
   return (
     <PageLayout
       title={"تقرير تنفيذي "}
@@ -27,7 +30,10 @@ function page({ searchParams }: PageProps) {
       extra={<ExportExecutiveReportButton />}
     >
       <DailyReportsFilter />
-      <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>
+      <Suspense
+        fallback={<TableSkeleton columns={11} rows={11} />}
+        key={JSON.stringify(params)}
+      >
         <DataTable searchParams={searchParams} />
       </Suspense>
     </PageLayout>

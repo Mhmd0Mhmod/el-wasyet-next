@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getBranchesAuth } from "@/data/branches";
 import { getEmployeeBasic } from "@/data/employee";
 import { getAdvancedDailyReport } from "@/data/reports";
+import { authFetch } from "@/lib/axios";
 import { formatCurrency, formatDate } from "@/lib/helper";
+import { ShortBranch } from "@/types/branch";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -19,13 +20,16 @@ interface PageProps {
   searchParams: Promise<{
     startDate: string;
     endDate: string;
+    branchId?: string;
+    employeeId?: string;
     page: string;
   }>;
 }
 
 async function page({ searchParams }: PageProps) {
-  const branchs = await getBranchesAuth();
+  const { data: branchs } = await authFetch.get<ShortBranch[]>("Auth/branches");
   const employees = await getEmployeeBasic();
+  const params = await searchParams;
   return (
     <PageLayout
       title="تقارير يومي تفصيلي"
@@ -33,7 +37,10 @@ async function page({ searchParams }: PageProps) {
       extra={<ExportDailyReportsButton />}
     >
       <AdvancedDailyReportsFilter branchs={branchs} employees={employees} />
-      <Suspense fallback={<TableSkeleton columns={11} rows={11} />}>
+      <Suspense
+        fallback={<TableSkeleton columns={11} rows={11} />}
+        key={JSON.stringify(params)}
+      >
         <DataTable searchParams={searchParams} />
       </Suspense>
     </PageLayout>
