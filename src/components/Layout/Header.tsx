@@ -2,7 +2,7 @@ import { NAVBARLINKS } from "@/lib/helper";
 import { ChevronDownIcon, PanelLeftClose } from "lucide-react";
 import LogoutButton from "../auth/LogoutButton";
 import Link from "../general/Link";
-import NotificationButton from "../general/NotificationButton";
+import NotificationButton from "../notificaitons/NotificationButton";
 import { Button } from "../ui/button";
 import {
   Collapsible,
@@ -43,7 +43,7 @@ function Header() {
                   <NavigationMenuTrigger className="text-base">
                     {link.label}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent >
+                  <NavigationMenuContent>
                     <div className="grid w-fit gap-1 p-2">
                       {link.children?.map((sublink) => (
                         <NavigationMenuLink key={sublink.href} asChild>
