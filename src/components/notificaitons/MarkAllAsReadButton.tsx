@@ -1,10 +1,9 @@
+"use client";
+import { useCallback } from "react";
 import { Button } from "../ui/button";
 
-interface MarkAllAsReadButtonProps {
-  onClick: () => void;
-}
-
-export function MarkAllAsReadButton({ onClick }: MarkAllAsReadButtonProps) {
+export function MarkAllAsReadButton() {
+  const onClick = useCallback(() => {}, []);
   return (
     <div className="pt-4">
       <Button className="w-full" size="lg" onClick={onClick}>

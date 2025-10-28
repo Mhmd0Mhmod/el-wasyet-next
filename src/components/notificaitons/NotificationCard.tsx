@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -8,19 +9,23 @@ import {
 } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Notification } from "@/types/notification";
+import { formatDate } from "@/lib/helper";
+import { useCallback } from "react";
+import { markNotificationAsRead } from "@/actions/notifications/actions";
 
 interface NotificationCardProps {
   notification: Notification;
-  onToggle: (notification: Notification) => void;
 }
 
-export function NotificationCard({
-  notification,
-  onToggle,
-}: NotificationCardProps) {
+export function NotificationCard({ notification }: NotificationCardProps) {
+  const updateReadStatus = useCallback(async () => {
+    await markNotificationAsRead(notification.notificationId);
+  }, [notification.notificationId]);
+
   return (
     <Card
       className={notification.isRead ? "" : "border-purple-200 bg-purple-50"}
+      dir="rtl"
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
@@ -36,16 +41,21 @@ export function NotificationCard({
         </CardDescription>
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground text-xs">
-            {notification.date}
+            {formatDate(notification.date, "datetime")}
           </span>
-          <Button
-            variant="link"
-            size="sm"
-            className="h-auto p-0 text-purple-600"
-            onClick={() => onToggle(notification)}
-          >
-            {notification.isRead ? "تحت الفراعة" : "تحديد كمقروء"}
-          </Button>
+          {notification.isRead && (
+            <span className="text-sm text-green-600">مقروء</span>
+          )}
+          {!notification.isRead && (
+            <Button
+              onClick={updateReadStatus}
+              variant="link"
+              size="sm"
+              className="h-auto p-0 text-purple-600"
+            >
+              تحديد كمقروء
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

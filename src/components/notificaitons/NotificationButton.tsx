@@ -1,5 +1,8 @@
+import { getNotifications } from "@/data/notifications";
 import { BellIcon } from "lucide-react";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Sheet,
   SheetClose,
@@ -9,42 +12,15 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Badge } from "../ui/badge";
-import { ScrollArea } from "../ui/scroll-area";
-import { Notification } from "@/types/notification";
-import { NotificationCard } from "./NotificationCard";
 import { EmptyState } from "./EmptyState";
 import { MarkAllAsReadButton } from "./MarkAllAsReadButton";
+import { NotificationCard } from "./NotificationCard";
 
-interface NotificationButtonProps {
-  notifications?: Notification[];
-}
-
-function NotificationButton({ notifications = [] }: NotificationButtonProps) {
+async function NotificationButton() {
+  const notifications = await getNotifications();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const unreadNotifications = notifications.filter((n) => !n.isRead);
-
-  const handleReadNotification = (notificationId: number) => {
-    console.log(notificationId);
-  };
-
-  const handleUnreadNotification = (notificationId: number) => {
-    console.log(notificationId);
-  };
-
-  const handleMarkAllAsRead = () => {
-    unreadNotifications.forEach((n) =>
-      handleReadNotification(n.notificationId),
-    );
-  };
-
-  const toggleNotificationStatus = (notification: Notification) => {
-    if (notification.isRead) {
-      handleUnreadNotification(notification.notificationId);
-    } else {
-      handleReadNotification(notification.notificationId);
-    }
-  };
+  console.log(unreadCount);
 
   return (
     <Sheet modal>
@@ -69,14 +45,14 @@ function NotificationButton({ notifications = [] }: NotificationButtonProps) {
               غير مقروء
               {unreadCount > 0 && (
                 <Badge variant="secondary" className="mr-2">
-                  {unreadCount}
+                  ({unreadCount})
                 </Badge>
               )}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="all" className="mt-4 space-y-4">
-            <ScrollArea className="h-[calc(100vh-250px)]">
+            <ScrollArea className="h-[calc(100vh-325px)]">
               <div className="space-y-3 pr-4">
                 {notifications.length === 0 ? (
                   <EmptyState message="لا توجد إشعارات" />
@@ -85,16 +61,13 @@ function NotificationButton({ notifications = [] }: NotificationButtonProps) {
                     <NotificationCard
                       key={notification.notificationId}
                       notification={notification}
-                      onToggle={toggleNotificationStatus}
                     />
                   ))
                 )}
               </div>
             </ScrollArea>
 
-            {unreadCount > 0 && (
-              <MarkAllAsReadButton onClick={handleMarkAllAsRead} />
-            )}
+            {unreadCount > 0 && <MarkAllAsReadButton />}
           </TabsContent>
           <TabsContent value="unread" className="mt-4 space-y-4">
             <ScrollArea className="h-[calc(100vh-250px)]">
@@ -106,16 +79,13 @@ function NotificationButton({ notifications = [] }: NotificationButtonProps) {
                     <NotificationCard
                       key={notification.notificationId}
                       notification={notification}
-                      onToggle={toggleNotificationStatus}
                     />
                   ))
                 )}
               </div>
             </ScrollArea>
 
-            {unreadCount > 0 && (
-              <MarkAllAsReadButton onClick={handleMarkAllAsRead} />
-            )}
+            {unreadCount > 0 && <MarkAllAsReadButton />}
           </TabsContent>
         </Tabs>
       </SheetContent>
