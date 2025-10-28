@@ -127,3 +127,21 @@ export async function submitActions(
     return handleErrorResponse(err);
   }
 }
+
+export async function addNote(data: {
+  orderId: number;
+  notes: string;
+}): Promise<APIResponse<null>> {
+  try {
+    console.log(data);
+
+    const { data: response } = await authFetch.put(
+      `OperationLog/AddNewNotes/${data.orderId}`,
+      data.notes,
+    );
+
+    return { success: true, message: response, data: null };
+  } catch (err) {
+    return handleErrorResponse(err);
+  }
+}

@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { OrderByStatus } from "@/types/order";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
 import Actions from "../actions/Actions";
 import SelectOrderCheckbox from "./SelectOrderCheckbox";
 import SelectAll from "./SelectAll";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getRemainingDaysStyle } from "../helper";
+import AddNote from "../actions/add-note";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "actions", label: "إدارة ألاجراءات" },
@@ -110,6 +111,16 @@ function OrdersTable({
                     </Dialog.Trigger>
                     <Dialog.Content title="ملاحظات الامر">
                       <p>{order.notes}</p>
+                    </Dialog.Content>
+                  </Dialog>
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant={"ghost"}>
+                        <Plus size={16} />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content title="إضافة ملاحظة">
+                      <AddNote orderId={order.orderId} />
                     </Dialog.Content>
                   </Dialog>
                 </TableCell>

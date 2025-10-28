@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { OrderByStatus } from "@/types/order";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import SendCodeButton from "../actions/send-code-button";
 import { getRemainingDaysStyle } from "../helper";
+import AddNote from "../actions/add-note";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "order_code", label: "كود الطلب" },
@@ -131,6 +132,16 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
                     محتوى الملاحظات
                   </div>
                 </Dialog.Content>
+                <Dialog>
+                  <Dialog.Trigger>
+                    <Button variant={"ghost"}>
+                      <Plus size={16} />
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content title="إضافة ملاحظة">
+                    <AddNote orderId={order.orderId} />
+                  </Dialog.Content>
+                </Dialog>
               </Dialog>
             </TableCell>
           </TableRow>
