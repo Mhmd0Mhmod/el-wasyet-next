@@ -35,8 +35,6 @@ export async function sendCode(orderId: number): Promise<APIResponse<null>> {
       orderId,
       employeeId: user.user.id,
     });
-    console.log(data);
-
     return data.success
       ? { success: true, data: null }
       : { success: false, message: data.message || "حدث خطأ ما" };
@@ -82,8 +80,6 @@ function generateResultMessage(
 ): APIResponse<null> {
   const successfulOps = results.filter((r) => r.success);
   const failedOps = results.filter((r) => r.error);
-  console.log(failedOps);
-
   if (failedOps.length === 0) {
     return { success: true, data: null };
   }
@@ -133,8 +129,6 @@ export async function addNote(data: {
   notes: string;
 }): Promise<APIResponse<null>> {
   try {
-    console.log(data);
-
     const { data: response } = await authFetch.put(
       `OperationLog/AddNewNotes/${data.orderId}`,
       data.notes,

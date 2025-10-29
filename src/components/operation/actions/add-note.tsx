@@ -21,8 +21,6 @@ function AddNote({ orderId }: { orderId: number }) {
     async (data: FormValues) => {
       const id = toast.loading("جاري الحفظ...");
       try {
-        console.log(data);
-
         const response = await addNote(data);
         if (response.success) {
           toast.success("تم الحفظ بنجاح", { id });

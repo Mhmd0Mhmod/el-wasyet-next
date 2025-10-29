@@ -91,8 +91,6 @@ export const handleErrorResponse = <T>(
     returnError.message = error.message;
   }
   if (error instanceof AxiosError) {
-    console.log(error);
-
     const errors = Object.values(error.response?.data.errors || {});
     if (errors.length > 0) {
       returnError.message = errors.join(" ");

@@ -159,8 +159,6 @@ async function LoadTable({
       searchTerm: searchParams.search,
       pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
     });
-    console.log(result);
-
     const { items, pageNumber, totalPages } = result;
 
     return (

@@ -20,8 +20,6 @@ async function NotificationButton() {
   const notifications = await getNotifications();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const unreadNotifications = notifications.filter((n) => !n.isRead);
-  console.log(unreadCount);
-
   return (
     <Sheet modal>
       <SheetTrigger asChild>

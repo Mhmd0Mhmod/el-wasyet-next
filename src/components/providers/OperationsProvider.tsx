@@ -80,8 +80,6 @@ function OperationsProvider({
   const onSubmit = useCallback(async () => {
     if (operations.length === 0) return;
     setIsSubmitting(true);
-    console.log(operations);
-
     try {
       const result = await submitActions({
         operations,
@@ -92,8 +90,6 @@ function OperationsProvider({
         toast.success("تم حفظ العمليات بنجاح");
         setOperations([]);
       } else {
-        console.log(result.message.toWellFormed());
-
         toast.error(
           result.message.toWellFormed() || "حدث خطأ أثناء حفظ العمليات",
         );
