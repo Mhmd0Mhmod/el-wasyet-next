@@ -73,7 +73,7 @@ const employeeFormSchema = z.object({
   abilityIds: z
     .array(z.number())
     .min(1, { message: VALIDATION_MESSAGES.abilities.min }),
-  hasViewCashBoxAbility: z.boolean().optional(),
+  hasViewCashBoxAbility: z.boolean(),
 });
 
 type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
