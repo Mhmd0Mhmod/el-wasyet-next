@@ -152,5 +152,5 @@ interface OrderByStatus
   isStefaClient: boolean;
   isStefaSGL: boolean;
   isStefaCertifacte: boolean;
-  notes: string | null;
+  color: string | null;
 }

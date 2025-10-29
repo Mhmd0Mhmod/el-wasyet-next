@@ -3,6 +3,7 @@
 import { addNote } from "@/actions/[operations]/action";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { usePathname } from "next/navigation";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,6 +12,7 @@ interface FormValues {
   notes: string;
 }
 function AddNote({ orderId }: { orderId: number }) {
+  const pathName = usePathname();
   const form = useForm<FormValues>({
     defaultValues: {
       orderId,
@@ -21,7 +23,9 @@ function AddNote({ orderId }: { orderId: number }) {
     async (data: FormValues) => {
       const id = toast.loading("جاري الحفظ...");
       try {
-        const response = await addNote(data);
+        const response = await addNote(data, {
+          revalidatePath: pathName,
+        });
         if (response.success) {
           toast.success("تم الحفظ بنجاح", { id });
           form.reset();

@@ -340,6 +340,10 @@ export function getOrderActions({
       OrderAction.RECEIVING_DONE,
     ];
   }
+  if (path.includes("client-fulfillment") || path.includes("sgl-fulfillment")) {
+    const response = [OrderAction.COLLECTION_DONE];
+    return response;
+  }
 
   if (path.includes("fulfillment")) {
     const response = [OrderAction.COLLECTION_DONE];

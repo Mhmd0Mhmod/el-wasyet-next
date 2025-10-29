@@ -9,6 +9,7 @@ import Link from "next/link";
 import SendCodeButton from "../actions/send-code-button";
 import { getRemainingDaysStyle } from "../helper";
 import AddNote from "../actions/add-note";
+import { cn } from "@/lib/utils";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "order_code", label: "كود الطلب" },
@@ -62,7 +63,7 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
       <Table
         columns={ORDER_TABLE_COLUMNS}
         renderData={orders.map((order) => (
-          <TableRow key={order.orderId}>
+          <TableRow key={order.orderId} className={cn(`bg-${order.color}`)}>
             <TableCell>
               <Button asChild variant={"link"}>
                 <Link href={`/orders/${order.orderId}`}>{order.orderCode}</Link>
@@ -122,15 +123,19 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
             <TableCell>
               <Dialog>
                 <Dialog.Trigger>
-                  <Button variant={"link"} disabled={!order.notes}>
-                    {order.notes ? <EyeIcon /> : <EyeOffIcon />}
+                  <Button
+                    variant={"link"}
+                    disabled={!order.comments_id_Wife_Mother}
+                  >
+                    {order.comments_id_Wife_Mother ? (
+                      <EyeIcon />
+                    ) : (
+                      <EyeOffIcon />
+                    )}
                   </Button>
                 </Dialog.Trigger>
                 <Dialog.Content title="الملاحظات">
-                  <div className="max-h-[70vh] space-y-10 overflow-auto">
-                    {/* <ClientDetails clientId={order.clientId} /> */}
-                    محتوى الملاحظات
-                  </div>
+                  <p>{order.comments_id_Wife_Mother}</p>
                 </Dialog.Content>
                 <Dialog>
                   <Dialog.Trigger>

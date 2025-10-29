@@ -47,12 +47,7 @@ function CertificatesTable({
         renderData={
           <>
             {orders.map((order) => (
-              <TableRow
-                key={order.orderId}
-                className={cn({
-                  "bg-yellow-100": order.closeAskExpense,
-                })}
-              >
+              <TableRow key={order.orderId} className={cn(`bg-${order.color}`)}>
                 <TableCell className="!px-2">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
@@ -143,13 +138,9 @@ function CertificatesTable({
                       <Button
                         variant={"ghost"}
                         className="p-0"
-                        disabled={
-                          !order.comments_id_Wife_Mother &&
-                          !order.requiredChange_forthName_Husbend
-                        }
+                        disabled={!order.comments_id_Wife_Mother}
                       >
-                        {order.comments_id_Wife_Mother ||
-                        order.requiredChange_forthName_Husbend ? (
+                        {order.comments_id_Wife_Mother ? (
                           <EyeIcon />
                         ) : (
                           <EyeOffIcon />
@@ -157,8 +148,7 @@ function CertificatesTable({
                       </Button>
                     </Dialog.Trigger>
                     <Dialog.Content title="ملاحظات">
-                      {order.comments_id_Wife_Mother ||
-                        order.requiredChange_forthName_Husbend}
+                      <p>{order.comments_id_Wife_Mother}</p>
                     </Dialog.Content>
                   </Dialog>
                   <Dialog>

@@ -43,12 +43,7 @@ function OrdersTable({
         renderData={
           <>
             {orders.map((order) => (
-              <TableRow
-                key={order.orderId}
-                className={cn({
-                  "bg-yellow-100": order.closeAskExpense,
-                })}
-              >
+              <TableRow key={order.orderId} className={cn(`bg-${order.color}`)}>
                 <TableCell className="!px-2">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
@@ -105,12 +100,19 @@ function OrdersTable({
                 <TableCell>
                   <Dialog>
                     <Dialog.Trigger>
-                      <Button variant={"ghost"} disabled={!order.notes}>
-                        {order.notes ? <EyeIcon /> : <EyeOffIcon />}
+                      <Button
+                        variant={"ghost"}
+                        disabled={!order.comments_id_Wife_Mother}
+                      >
+                        {order.comments_id_Wife_Mother ? (
+                          <EyeIcon />
+                        ) : (
+                          <EyeOffIcon />
+                        )}
                       </Button>
                     </Dialog.Trigger>
                     <Dialog.Content title="ملاحظات الامر">
-                      <p>{order.notes}</p>
+                      <p>{order.comments_id_Wife_Mother}</p>
                     </Dialog.Content>
                   </Dialog>
                   <Dialog>

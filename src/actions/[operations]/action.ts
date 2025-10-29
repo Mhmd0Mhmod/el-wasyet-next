@@ -124,16 +124,21 @@ export async function submitActions(
   }
 }
 
-export async function addNote(data: {
-  orderId: number;
-  notes: string;
-}): Promise<APIResponse<null>> {
+export async function addNote(
+  data: {
+    orderId: number;
+    notes: string;
+  },
+  options: { revalidatePath: string },
+): Promise<APIResponse<null>> {
   try {
     const { data: response } = await authFetch.put(
       `OperationLog/AddNewNotes/${data.orderId}`,
       data.notes,
     );
-
+    if (options.revalidatePath) {
+      revalidatePath(options.revalidatePath);
+    }
     return { success: true, message: response, data: null };
   } catch (err) {
     return handleErrorResponse(err);
