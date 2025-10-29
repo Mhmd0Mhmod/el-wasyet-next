@@ -9,6 +9,7 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
@@ -74,6 +75,32 @@ function FinancialDetailsForm() {
           />
         )}
       </div>
+      {form.watch("OfferId") && (
+        <div>
+          <FormField
+            control={form.control}
+            name="ImageUrlForOffer"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      field.onChange(file);
+                    }}
+                  />
+                </FormControl>
+                <FormDescription>
+                  يرجى تحميل صورة عرض السعر المرتبط بالخصم
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      )}
       <div>
         {isLoadingAgents ? (
           <Skeleton className="h-10 w-full animate-pulse rounded-md bg-gray-200" />

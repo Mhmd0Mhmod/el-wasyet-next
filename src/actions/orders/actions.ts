@@ -9,18 +9,12 @@ export async function createOrder(
   formData: OrderFormValues,
 ): Promise<APIResponse<Order>> {
   try {
-    const hasFiles = formData.CreateFiles && formData.CreateFiles.length > 0;
-    const res = await authFetch.post<APIResponse<Order>>(
-      "Order/create",
-      hasFiles ? generateFormData(formData) : formData,
-      hasFiles
-        ? {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        : undefined,
-    );
+    const form = generateFormData(formData);
+    const res = await authFetch.post<APIResponse<Order>>("Order/create", form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   } catch (err) {
     return handleErrorResponse(err);
@@ -32,20 +26,16 @@ export async function updateOrder(
   formData: OrderFormValues,
 ): Promise<APIResponse<Order>> {
   try {
-    const hasFiles = formData.CreateFiles && formData.CreateFiles.length > 0;
-
-    const res = await authFetch.put<APIResponse<Order>>(
-      `Order/update/${id}`,
-      formData,
-      hasFiles
-        ? {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        : undefined,
-    );
-    return res.data;
+    const form = generateFormData(formData);
+    const res = await authFetch.put<Order>(`Order/update/${id}`, form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return {
+      success: true,
+      data: res.data,
+    };
   } catch (err) {
     return handleErrorResponse(err);
   }
@@ -53,8 +43,6 @@ export async function updateOrder(
 
 function generateFormData(formData: OrderFormValues): FormData {
   const form = new FormData();
-
-  // Add basic form fields
   form.append("ClientId", formData.ClientId.toString());
   form.append("RequiredChange", formData.RequiredChange);
   form.append("ServiceId", formData.ServiceId.toString());
@@ -74,13 +62,14 @@ function generateFormData(formData: OrderFormValues): FormData {
   if (formData.BirthDate) {
     form.append("BirthDate", formData.BirthDate);
   }
-  if (formData.Quantity !== undefined) {
+  if (formData.Quantity) {
     form.append("Quantity", formData.Quantity.toString());
   }
-  if (formData.OfferId !== undefined) {
+  if (formData.OfferId) {
     form.append("OfferId", formData.OfferId.toString());
+    form.append("ImageUrlForOffer", formData.ImageUrlForOffer as Blob);
   }
-  if (formData.AgentId !== undefined) {
+  if (formData.AgentId) {
     form.append("AgentId", formData.AgentId.toString());
   }
 
@@ -113,43 +102,43 @@ function generateFormData(formData: OrderFormValues): FormData {
         overhead.description,
       );
       form.append(`CustomOverheads[${index}].value`, overhead.value.toString());
-      if (overhead.penalty !== undefined) {
+      if (overhead.penalty) {
         form.append(
           `CustomOverheads[${index}].penalty`,
           overhead.penalty.toString(),
         );
       }
-      if (overhead.forms !== undefined) {
+      if (overhead.forms) {
         form.append(
           `CustomOverheads[${index}].forms`,
           overhead.forms.toString(),
         );
       }
-      if (overhead.adminFees !== undefined) {
+      if (overhead.adminFees) {
         form.append(
           `CustomOverheads[${index}].adminFees`,
           overhead.adminFees.toString(),
         );
       }
-      if (overhead.penaltyBankFeePrecentage !== undefined) {
+      if (overhead.penaltyBankFeePrecentage) {
         form.append(
           `CustomOverheads[${index}].penaltyBankFeePrecentage`,
           overhead.penaltyBankFeePrecentage.toString(),
         );
       }
-      if (overhead.penaltyExtraFee !== undefined) {
+      if (overhead.penaltyExtraFee) {
         form.append(
           `CustomOverheads[${index}].penaltyExtraFee`,
           overhead.penaltyExtraFee.toString(),
         );
       }
-      if (overhead.relatedAgent !== undefined) {
+      if (overhead.relatedAgent) {
         form.append(
           `CustomOverheads[${index}].relatedAgent`,
           overhead.relatedAgent.toString(),
         );
       }
-      if (overhead.formTypeID !== undefined && overhead.formTypeID !== null) {
+      if (overhead.formTypeID && overhead.formTypeID !== null) {
         form.append(
           `CustomOverheads[${index}].formTypeID`,
           overhead.formTypeID.toString(),

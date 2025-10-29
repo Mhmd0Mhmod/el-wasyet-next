@@ -55,6 +55,7 @@ export const orderFormSchema = z.object({
   CreateFiles: z.array(createFileSchema).optional(),
   IsPending: z.boolean(),
   OfferId: z.number().min(1, { message: "يجب اختيار عرض سعر" }).optional(),
+  ImageUrlForOffer: z.file().optional(),
   AgentId: z.number().min(1, { message: "يجب اختيار وكيل" }).optional(),
 });
 

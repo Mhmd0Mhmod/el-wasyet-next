@@ -341,7 +341,7 @@ export function getOrderActions({
     ];
   }
 
-  if (path.includes("stefa-sgl")) {
+  if (path.includes("fulfillment")) {
     const response = [OrderAction.COLLECTION_DONE];
     if (canSelectAll) {
       return response;

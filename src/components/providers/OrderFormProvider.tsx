@@ -11,7 +11,7 @@ import {
 } from "@/schema/order";
 import { OrderDetails } from "@/types/order";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Form } from "../ui/form";
@@ -49,23 +49,29 @@ function OrderFromProvider({
     resolver: zodResolver(orderFormSchema),
     defaultValues: generateOrderDefaultValues(orderDetails),
   });
-  function onSubmit(data: OrderFormValues) {
-    const id = toast.loading("جاري إنشاء الطلب...");
-    createOrder(data)
-      .then((res) => {
-        if (res.success) {
-          toast.success("تم إنشاء الطلب بنجاح", { id });
+  const onSubmit = useCallback(
+    async (data: OrderFormValues) => {
+      const toastId = toast.loading("جاري إنشاء الأمر...");
+      try {
+        const response = await createOrder(data);
+        if (response.success) {
+          toast.success("تم إنشاء الأمر بنجاح!", { id: toastId });
           form.reset();
         } else {
-          toast.error(res.message || "حدث خطأ أثناء إنشاء الطلب", {
-            id,
-          });
+          toast.error(
+            response.message || "حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.",
+            { id: toastId },
+          );
         }
-      })
-      .catch(() => {
-        toast.error("حدث خطأ أثناء إنشاء الطلب", { id });
-      });
-  }
+      } catch (error) {
+        toast.error("حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.", {
+          id: toastId,
+        });
+        console.error(error);
+      }
+    },
+    [form],
+  );
   const selectedService = form.watch("ServiceId");
   const { service, isLoading: isLoadingService } = useService(selectedService);
   const { offers, isLoadingOffers } = useOffers();
