@@ -45,7 +45,7 @@ function Actions({ order }: { order: OrderByStatus }) {
     if (needsDialog) {
       setDialogAction(action);
     } else {
-      addOperation({ orderId: order.orderId, action, notes: "" });
+      addOperation({ orderId: order.orderId, action });
     }
   };
   const onSubmit = (data: OrderActionType) => {
@@ -65,7 +65,6 @@ function Actions({ order }: { order: OrderByStatus }) {
       amount: totalAmount,
       cashAmount,
       creditAmount,
-      notes: "",
     });
 
     closeDialog();
@@ -74,7 +73,7 @@ function Actions({ order }: { order: OrderByStatus }) {
     setDialogAction(null);
     form.reset();
   };
-  const currentAction = (operation?.action ) || order.orderStatusForAction ;
+  const currentAction = operation?.action || order.orderStatusForAction;
   return (
     <>
       <div className="flex min-w-32 items-center justify-between">

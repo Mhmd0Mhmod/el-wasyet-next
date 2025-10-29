@@ -1,16 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { OrderDetails } from "@/types/order";
 import { FileText, User } from "lucide-react";
-import DownloadPDF from "./DownloadPDF";
-import ExportReceiptButton from "./ExportReceiptButton";
 
 interface UploadedFilesCardProps {
   files: OrderDetails["files"];
-  orderId?: number;
 }
 
-function UploadedFilesCard({ files, orderId }: UploadedFilesCardProps) {
+function UploadedFilesCard({ files }: UploadedFilesCardProps) {
   const uploadedFiles = files.filter((file) => file.fileTypeID === 1);
   const outputFiles = files.filter((file) => file.fileTypeID === 2);
 

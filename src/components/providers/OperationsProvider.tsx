@@ -10,7 +10,6 @@ import { OrderAction } from "@/types/order-actions";
 export interface Operation {
   orderId: number;
   action: OrderAction;
-  notes: string;
   amount?: number;
   cashAmount?: number;
   creditAmount?: number;
@@ -67,7 +66,6 @@ function OperationsProvider({
       const newOperations = orders.map((order) => ({
         orderId: order.orderId,
         action,
-        notes: order.notes || "",
       }));
       setOperations(newOperations);
     },

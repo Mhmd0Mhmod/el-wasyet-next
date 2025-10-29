@@ -106,10 +106,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Uploaded Files Card */}
-          <UploadedFilesCard
-            files={orderDetails.files || []}
-            orderId={orderDetails.id}
-          />
+          <UploadedFilesCard files={orderDetails.files || []} />
           <Separator />
           {/* Action Buttons */}
           <div className="flex justify-center gap-4">
