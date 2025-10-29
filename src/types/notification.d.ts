@@ -4,4 +4,6 @@ export interface Notification {
   type: string;
   date: string;
   isRead: boolean;
+  isRequestStock: boolean;
+  isRequest: boolean;
 }
