@@ -70,7 +70,7 @@ async function NotificationButton() {
             {unreadCount > 0 && <MarkAllAsReadButton />}
           </TabsContent>
           <TabsContent value="unread" className="mt-4 space-y-4">
-            <ScrollArea className="h-[calc(100vh-250px)]">
+            <ScrollArea className="h-[calc(100vh-325px)]">
               <div className="space-y-3 pr-4">
                 {unreadNotifications.length === 0 ? (
                   <EmptyState message="لا توجد إشعارات غير مقروءة" />

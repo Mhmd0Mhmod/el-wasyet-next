@@ -86,13 +86,13 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     Component: OrderReceiptTable,
   },
   fulfillment: {
-    statusIds: [10],
+    statusIds: [11],
     title: "استيفاء",
     description: "سجل الاستيفاء ومتابعة حالة الاوامر",
     Component: OrdersTable,
   },
   "client-fulfillment": {
-    statusIds: [11],
+    statusIds: [10],
     title: "استيفاء عميل",
     description: "سجل استيفاء العملاء ومتابعة حالة الاوامر",
     Component: OrdersTable,
