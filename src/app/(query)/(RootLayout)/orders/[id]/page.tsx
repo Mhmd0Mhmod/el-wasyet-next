@@ -1,6 +1,9 @@
 import PageLayout from "@/components/Layout/PageLayout";
+import WhatsAppShareButton from "@/components/orders/[id]/whatsapp-share-button";
 import DetailedExpensesCard from "@/components/orders/DetailedExpensesCard";
 import DocumentsCard from "@/components/orders/DocumentsCard";
+import DownloadPDF from "@/components/orders/DownloadPDF";
+import ExportReceiptButton from "@/components/orders/ExportReceiptButton";
 import NotesCard from "@/components/orders/NotesCard";
 import OrderDetailsCard from "@/components/orders/OrderDetailsCard";
 import OrderSummaryCard from "@/components/orders/OrderSummaryCard";
@@ -8,6 +11,7 @@ import RequiredChangesCard from "@/components/orders/RequiredChangesCard";
 import UploadedFilesCard from "@/components/orders/UploadedFilesCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { getOrderById } from "@/data/orders";
 import { Edit3, TrendingDown, TrendingUp } from "lucide-react";
 import Link from "next/link";
@@ -94,12 +98,27 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
           orderDetails.requiredChange || "لا توجد تغييرات مطلوبة"
         }
       />
-
-      {/* Uploaded Files Card */}
-      <UploadedFilesCard
-        files={orderDetails.files || []}
-        orderId={orderDetails.id}
-      />
+      <Card className="shadow-sm" dir="rtl">
+        <CardHeader>
+          <CardTitle className="text-center text-lg font-bold">
+            الملفات المحملة
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Uploaded Files Card */}
+          <UploadedFilesCard
+            files={orderDetails.files || []}
+            orderId={orderDetails.id}
+          />
+          <Separator />
+          {/* Action Buttons */}
+          <div className="flex justify-center gap-4">
+            <ExportReceiptButton orderId={orderDetails.id} />
+            <DownloadPDF orderId={orderDetails.id} />
+            <WhatsAppShareButton orderId={orderDetails.id} />
+          </div>
+        </CardContent>
+      </Card>
     </PageLayout>
   );
 }
