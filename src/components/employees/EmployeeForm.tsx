@@ -42,8 +42,6 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
     isLoading: isLoadingEmployee,
     error: employeeError,
   } = useEmployee(employeeId!);
-  console.log(employee);
-
   const { data: managers } = useManagers();
   const { roles, isLoading: isLoadingRoles, error: rolesError } = useRoles();
 
@@ -94,25 +92,22 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
   }
   const handleSubmit = async (data: EmployeeFormValues) => {
     if (disabled) return;
+    const id = toast.loading("جاري الحفظ...");
     if (employee?.id) {
-      console.log(data);
-
       updateEmployee(data)
         .then((res) => {
-          if (res.success) toast.success("تم تحديث الموظف بنجاح");
-          else toast.error(res.message);
-          console.log(res.message);
+          if (res.success) toast.success("تم تحديث الموظف بنجاح", { id });
+          else toast.error(res.message, { id });
         })
         .catch((error) => {
-          console.log(error);
-          toast.error("حدث خطأ أثناء تحديث الموظف");
+          toast.error("حدث خطأ أثناء تحديث الموظف", { id });
         });
     } else {
       createEmployee(data).then((res) => {
         if (res.success) {
-          toast.success("تم إضافة الموظف بنجاح");
+          toast.success("تم إضافة الموظف بنجاح", { id });
         } else {
-          toast.error(res.message);
+          toast.error(res.message, { id });
         }
       });
     }
