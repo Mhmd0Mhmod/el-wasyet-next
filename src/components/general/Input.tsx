@@ -7,6 +7,7 @@ function Input({
   className,
   container,
   Icon,
+  IconProps,
   props,
 }: {
   className?: ClassNameValue;
@@ -24,9 +25,13 @@ function Input({
       <InputComponent className={cn(className)} {...inputProps} />
       {Icon && (
         <Icon
-          className="absolute top-1/2 left-2 -translate-y-1/2 transform"
           color="gray"
           size={20}
+          {...IconProps}
+          className={cn(
+            "absolute top-1/2 left-2 -translate-y-1/2 transform",
+            IconProps?.className,
+          )}
         />
       )}
     </div>

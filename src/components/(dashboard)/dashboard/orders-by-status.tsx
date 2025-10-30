@@ -46,42 +46,44 @@ function OrdersByStatus({ data, className }: OrdersByStatusProps) {
               ? Math.round((item.ordersCount / total) * 100)
               : 0;
             return (
-              <div key={item.statusName} className="space-y-2">
-                <div className="flex items-center justify-between text-sm font-semibold">
-                  <span>{translateToArabic(item.statusName)}</span>
-                  <span className="text-muted-foreground">
-                    {formatCount(item.ordersCount)}
-                  </span>
-                  <Dialog>
-                    <Dialog.Trigger>
-                      <Button variant="link" size="sm">
-                        عرض التفاصيل
-                      </Button>
-                    </Dialog.Trigger>
-                    <Dialog.Content
-                      title={`تفاصيل الطلبات - ${translateToArabic(
-                        item.statusName,
-                      )}`}
-                    >
-                      <OrdersByStatusDetails statusId={item.statusId} />
-                    </Dialog.Content>
-                  </Dialog>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold">
-                  <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
-                    {percentage}%
-                  </span>
-                  <div className="bg-muted flex-1 overflow-hidden rounded-full">
-                    <div
-                      className={cn(
-                        "h-2 rounded-full transition-all",
-                        STATUS_BAR_COLORS[index % STATUS_BAR_COLORS.length],
-                      )}
-                      style={{ width: `${percentage}%` }}
-                    />
+              <Dialog key={item.statusName}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm font-semibold">
+                    <span>{translateToArabic(item.statusName)}</span>
+                    <div>
+                      <span className="text-muted-foreground">
+                        {formatCount(item.ordersCount)}
+                      </span>
+                      <Dialog.Trigger>
+                        <Button variant="link" size="sm">
+                          عرض التفاصيل
+                        </Button>
+                      </Dialog.Trigger>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold">
+                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
+                      {percentage}%
+                    </span>
+                    <div className="bg-muted flex-1 overflow-hidden rounded-full">
+                      <div
+                        className={cn(
+                          "h-2 rounded-full transition-all",
+                          STATUS_BAR_COLORS[index % STATUS_BAR_COLORS.length],
+                        )}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+                <Dialog.Content
+                  title={`تفاصيل الطلبات - ${translateToArabic(
+                    item.statusName,
+                  )}`}
+                >
+                  <OrdersByStatusDetails statusId={item.statusId} />
+                </Dialog.Content>
+              </Dialog>
             );
           })
         )}

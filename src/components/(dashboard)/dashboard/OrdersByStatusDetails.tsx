@@ -1,7 +1,9 @@
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getOrdersByStatusDetails } from "@/data/dashboard";
+import Link from "next/link";
 import { Suspense } from "react";
 function OrdersByStatusDetails({ statusId }: { statusId: number }) {
   return (
@@ -40,7 +42,11 @@ async function OrdersByStatusDetailsContent({
       columns={COLUMNS}
       renderData={items.map((item) => (
         <TableRow key={item.id}>
-          <TableCell>{item.orderCode}</TableCell>
+          <TableCell>
+            <Button asChild variant="link" size="sm" className="text-primary">
+              <Link href={`/orders/${item.id}`}>{item.orderCode}</Link>
+            </Button>
+          </TableCell>
           <TableCell>{item.customerName}</TableCell>
           <TableCell>{item.serviceName}</TableCell>
           <TableCell>{item.remainingDays}</TableCell>

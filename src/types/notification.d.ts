@@ -6,4 +6,6 @@ export interface Notification {
   isRead: boolean;
   isRequestStock: boolean;
   isRequest: boolean;
+  requestId: number | null;
+  requestStockId: number | null;
 }

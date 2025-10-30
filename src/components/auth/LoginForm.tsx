@@ -2,7 +2,7 @@
 import { Login } from "@/actions/auth/actions";
 import { LoginFormValues } from "@/schema/login";
 import { ShortBranch } from "@/types/branch";
-import { EyeClosed, User } from "lucide-react";
+import { EyeClosed, EyeIcon, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import Input from "../general/Input";
 import { Button } from "../ui/button";
@@ -22,31 +22,35 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const form = useForm<LoginFormValues>();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  function onSubmit(data: LoginFormValues) {
-    const branchId = data.branchId;
-    if (!branchId) {
-      form.setError("branchId", { message: "يجب اختيار فرع" });
-      return;
-    }
-    setIsLoading(true);
-    Login(data)
-      .then((res) => {
-        if (!res.success) {
-          form.setError("root", { message: res.message });
-        } else {
-          toast.success("تم تسجيل الدخول بنجاح");
-          router.push("/");
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }
+  const onSubmit = useCallback(
+    (data: LoginFormValues) => {
+      const branchId = data.branchId;
+      if (!branchId) {
+        form.setError("branchId", { message: "يجب اختيار فرع" });
+        return;
+      }
+      setIsLoading(true);
+      Login(data)
+        .then((res) => {
+          if (!res.success) {
+            form.setError("root", { message: res.message });
+          } else {
+            toast.success("تم تسجيل الدخول بنجاح");
+            router.push("/");
+          }
+        })
+        .finally(() => setIsLoading(false));
+    },
+    [form, router],
+  );
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -109,10 +113,14 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
                 <Input
                   props={{
                     placeholder: "كلمة المرور",
-                    type: "password",
+                    type: showPassword ? "text" : "password",
                     ...field,
                   }}
-                  Icon={EyeClosed}
+                  Icon={showPassword ? EyeIcon : EyeClosed}
+                  IconProps={{
+                    className: "cursor-pointer",
+                    onClick: () => setShowPassword((prev) => !prev),
+                  }}
                 />
               </FormControl>
               <FormDescription />
