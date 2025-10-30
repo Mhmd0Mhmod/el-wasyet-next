@@ -1,5 +1,6 @@
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
+import { getRemainingDaysStyle } from "@/components/operation/helper";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getOrdersByStatusDetails } from "@/data/dashboard";
@@ -37,6 +38,8 @@ async function OrdersByStatusDetailsContent({
   statusId: number;
 }) {
   const { items } = await getOrdersByStatusDetails(statusId);
+  console.log(items);
+
   return (
     <Table
       columns={COLUMNS}
@@ -49,7 +52,20 @@ async function OrdersByStatusDetailsContent({
           </TableCell>
           <TableCell>{item.customerName}</TableCell>
           <TableCell>{item.serviceName}</TableCell>
-          <TableCell>{item.remainingDays}</TableCell>
+          <TableCell>
+            {(() => {
+              const style = getRemainingDaysStyle(item.remainingDays);
+              const IconComponent = style.icon;
+              return (
+                <span
+                  className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium ${style.className}`}
+                >
+                  <IconComponent size={14} />
+                  <span>{style.text}</span>
+                </span>
+              );
+            })()}
+          </TableCell>
         </TableRow>
       ))}
     />

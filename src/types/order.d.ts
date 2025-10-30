@@ -158,5 +158,5 @@ interface OrderByStatus
 export interface OrderByStatusDetail extends BaseEntity, OrderIdentification {
   customerName: string;
   serviceName: string;
-  remainingDays: string;
+  remainingDays: number;
 }

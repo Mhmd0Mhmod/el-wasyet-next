@@ -50,7 +50,7 @@ export const translateToArabic = (text: string): string => {
     writecode: "كتابة الرمز",
     receivingdone: "تم الاستلام",
     collectiondone: "تحصيل مكتمل",
-    expired: "تغطي الموعد",
+    expired: "تخطي الموعد",
   };
   return translations[key] || text;
 };
