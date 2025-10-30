@@ -21,9 +21,9 @@ function getRouteKey(pathname: string): string {
   if (route.includes("collected")) return "collection-done";
   if (route.includes("in-progress")) return "under-processing";
   if (route.includes("completed-orders")) return "completed-orders";
-  if (route.includes("stefa-sgl")) return "stefa-sgl";
-  if (route.includes("stefa-client")) return "stefa-client";
-  if (route.includes("stefa-certificate")) return "stefa-certificate";
+  if (route.includes("client-fulfillment")) return "stefa-client";
+  if (route.includes("certificate-fulfillment")) return "stefa-certificate";
+  if (route.includes("fulfillment")) return "stefa-sgl";
 
   throw new Error(`لا يوجد endpoint محدد للصفحة: ${pathname}`);
 }

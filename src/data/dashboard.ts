@@ -1,5 +1,6 @@
 import { authFetch } from "@/lib/axios";
 import { DashboardData, MonthlyPerformancePoint } from "@/types/dashboard";
+import { OrderByStatusDetail } from "@/types/order";
 
 export async function getDashboardData(params: {
   fromDate?: string;
@@ -41,6 +42,20 @@ export async function getRequestStatusData(): Promise<BasicEntity[]> {
     return response.data;
   } catch (error) {
     console.error("Error fetching request status data:", error);
+    throw error;
+  }
+}
+
+export async function getOrdersByStatusDetails(
+  statusId: number,
+): Promise<PaginatedResponse<OrderByStatusDetail>> {
+  try {
+    const response = await authFetch.get<
+      PaginatedResponse<OrderByStatusDetail>
+    >(`CompanyDashboard/orders-by-status/${statusId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders by status details:", error);
     throw error;
   }
 }

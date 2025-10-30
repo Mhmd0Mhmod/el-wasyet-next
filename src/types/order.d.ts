@@ -154,3 +154,9 @@ interface OrderByStatus
   isStefaCertifacte: boolean;
   color: string | null;
 }
+
+export interface OrderByStatusDetail extends BaseEntity, OrderIdentification {
+  customerName: string;
+  serviceName: string;
+  remainingDays: string;
+}

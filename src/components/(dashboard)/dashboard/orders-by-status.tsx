@@ -1,8 +1,11 @@
+import Dialog from "@/components/general/Dialog";
 import { translateToArabic } from "@/components/operation/helper";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCount } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import type { ordersPerStatus } from "@/types/dashboard";
+import OrdersByStatusDetails from "./OrdersByStatusDetails";
 
 const STATUS_BAR_COLORS = [
   "bg-primary",
@@ -49,6 +52,20 @@ function OrdersByStatus({ data, className }: OrdersByStatusProps) {
                   <span className="text-muted-foreground">
                     {formatCount(item.ordersCount)}
                   </span>
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant="link" size="sm">
+                        عرض التفاصيل
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content
+                      title={`تفاصيل الطلبات - ${translateToArabic(
+                        item.statusName,
+                      )}`}
+                    >
+                      <OrdersByStatusDetails statusId={item.statusId} />
+                    </Dialog.Content>
+                  </Dialog>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-semibold">
                   <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">

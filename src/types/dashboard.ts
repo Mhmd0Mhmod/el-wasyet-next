@@ -32,6 +32,7 @@ type branchRevenues = {
   revenue: number;
 };
 type ordersPerStatus = {
+  statusId: number;
   statusName: string;
   ordersCount: number;
 };
@@ -50,6 +51,7 @@ interface MonthlyPerformancePoint {
   netProfit: number;
   completedOrders: number;
 }
+
 export type {
   DashboardData,
   performanceCard,
