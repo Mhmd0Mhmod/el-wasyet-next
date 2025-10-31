@@ -99,7 +99,17 @@ async function page({ params }: PageProps) {
                   </Button>
                 </Dialog.Trigger>
                 <Dialog.Content title="تعديل بيانات الاستماره">
-                  <NewForm />
+                  <NewForm
+                    form={{
+                      formTypeId: form.formId,
+                      branchId: stockData.branchId,
+                      stockId: parseInt(id),
+                      threshold: form.minimumThreshold,
+                      quantity: form.quantity,
+                      price: form.price,
+                      minimumThreshold: form.minimumThreshold,
+                    }}
+                  />
                 </Dialog.Content>
               </Dialog>
             </TableCell>

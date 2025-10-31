@@ -8,14 +8,8 @@ interface StockItemForm {
   formName: string;
   quantity: number;
   isLowStock: boolean;
+  price: number;
+  minimumThreshold: number;
 }
-interface StockItemFormSchema {
-  branchId: number;
-  forms: {
-    formTypeId?: number;
-    quantity: number;
-    minimumThreshold: number;
-    price: number;
-  }[];
-}
-export type { StockItem, StockItemForm, StockItemFormSchema };
+
+export type { StockItem };
