@@ -11,6 +11,7 @@ export interface Operation {
   orderId: number;
   action: OrderAction;
   amount?: number;
+  notes: string;
   cashAmount?: number;
   creditAmount?: number;
   employeeId?: number;
@@ -66,6 +67,7 @@ function OperationsProvider({
       const newOperations = orders.map((order) => ({
         orderId: order.orderId,
         action,
+        notes: "",
       }));
       setOperations(newOperations);
     },

@@ -45,7 +45,7 @@ function Actions({ order }: { order: OrderByStatus }) {
     if (needsDialog) {
       setDialogAction(action);
     } else {
-      addOperation({ orderId: order.orderId, action });
+      addOperation({ orderId: order.orderId, action, notes: "" });
     }
   };
   const onSubmit = (data: OrderActionType) => {
@@ -65,6 +65,7 @@ function Actions({ order }: { order: OrderByStatus }) {
       amount: totalAmount,
       cashAmount,
       creditAmount,
+      notes: "",
     });
 
     closeDialog();
