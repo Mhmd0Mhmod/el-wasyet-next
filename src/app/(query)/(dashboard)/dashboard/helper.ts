@@ -14,7 +14,7 @@ export const NAVIGATION_LINKS = [
     icon: Home,
   },
   {
-    label: "المخازن",
+    label: "عهده الاستمارات",
     href: "/stock",
     icon: Boxes,
   },
