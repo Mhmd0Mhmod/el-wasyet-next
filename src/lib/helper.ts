@@ -43,6 +43,35 @@ export const NAVBARLINKS = [
       { label: "تقرير تنفيذي", href: "/reports/executive" },
     ],
   },
+  {
+    label: "لوحه التحكم",
+    children: [
+      {
+        label: "الصفحة الرئيسية",
+        href: "/dashboard",
+      },
+      {
+        label: "عهده الاستمارات",
+        href: "/stock",
+      },
+      {
+        label: "الخزنه",
+        href: "/cashbox",
+      },
+      {
+        label: "الخصومات",
+        href: "/discounts",
+      },
+      {
+        label: "الوكلاء",
+        href: "/agents",
+      },
+      {
+        label: "العمولات",
+        href: "/commissions",
+      },
+    ],
+  },
 ];
 
 export const formatCount = (value: number): string =>
