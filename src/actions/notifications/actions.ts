@@ -22,9 +22,11 @@ export async function markNotificationAsRead(
   }
 }
 export async function approveRequestNotification({
+  notificationId,
   requestId,
   Remainingvalue = null,
 }: {
+  notificationId: number;
   requestId: number;
   Remainingvalue?: number | null;
 }): Promise<APIResponse<void>> {
@@ -37,6 +39,7 @@ export async function approveRequestNotification({
       `/Request/approve/${requestId}`,
       Remainingvalue,
     );
+    await markNotificationAsRead(notificationId);
     revalidateTag("notifications");
     return {
       success: true,
@@ -47,12 +50,15 @@ export async function approveRequestNotification({
   }
 }
 export async function rejectRequestNotification({
+  notificationId,
   requestId,
 }: {
+  notificationId: number;
   requestId: number;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.post(`/Request/reject/${requestId}`);
+    await markNotificationAsRead(notificationId);
     revalidateTag("notifications");
     return {
       success: true,
@@ -64,13 +70,17 @@ export async function rejectRequestNotification({
 }
 export async function approveRequestStockNotification({
   requestStockId,
+  notificationId,
 }: {
+  notificationId: number;
   requestStockId: number;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.patch(
       `RequestStock/ApproveTheRequest/${requestStockId}`,
     );
+    await markNotificationAsRead(notificationId);
+
     revalidateTag("notifications");
     return {
       success: true,
@@ -81,14 +91,18 @@ export async function approveRequestStockNotification({
   }
 }
 export async function rejectRequestStockNotification({
+  notificationId,
   requestStockId,
 }: {
+  notificationId: number;
   requestStockId: number;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.patch(
       `RequestStock/RejectTheRequest/${requestStockId}`,
     );
+    await markNotificationAsRead(notificationId);
+
     revalidateTag("notifications");
     return {
       success: true,

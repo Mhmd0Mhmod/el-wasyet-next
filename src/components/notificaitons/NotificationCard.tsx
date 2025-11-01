@@ -8,7 +8,7 @@ import {
 } from "@/actions/notifications/actions";
 import { formatDate } from "@/lib/helper";
 import { Notification } from "@/types/notification";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useTransition } from "react";
 import Dialog from "../general/Dialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -29,6 +29,8 @@ interface NotificationCardProps {
 
 export function NotificationCard({ notification }: NotificationCardProps) {
   const [open, setOpen] = useState(false);
+  const [notificationState, setNotificationState] = useState(notification);
+
   const updateReadStatus = useCallback(async () => {
     await markNotificationAsRead(notification.notificationId);
   }, [notification.notificationId]);
@@ -41,7 +43,7 @@ export function NotificationCard({ notification }: NotificationCardProps) {
     <Dialog open={open} setOpen={setOpen}>
       <Card
         className={cn({
-          "border-purple-200 bg-purple-50": !notification.isRead,
+          "border-purple-200 bg-purple-50": !notificationState.isRead,
           "cursor-pointer hover:bg-gray-50": isClickable,
         })}
         dir="rtl"
@@ -49,24 +51,24 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       >
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-sm">{notification.type}</CardTitle>
-            {!notification.isRead && (
+            <CardTitle className="text-sm">{notificationState.type}</CardTitle>
+            {!notificationState.isRead && (
               <Badge variant="default" className="h-2 w-2 rounded-full p-0" />
             )}
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
           <CardDescription className="text-sm">
-            {notification.message}
+            {notificationState.message}
           </CardDescription>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground text-xs">
-              {formatDate(notification.date, "datetime")}
+              {formatDate(notificationState.date, "datetime")}
             </span>
-            {notification.isRead && (
+            {notificationState.isRead && (
               <span className="text-sm text-green-600">مقروء</span>
             )}
-            {!notification.isRead && (
+            {!notificationState.isRead && (
               <Button
                 onClick={updateReadStatus}
                 variant="link"
@@ -80,16 +82,18 @@ export function NotificationCard({ notification }: NotificationCardProps) {
         </CardContent>
       </Card>
       <Dialog.Content title="هل انت موافق">
-        {notification.isRequest && (
+        {notificationState.isRequest && (
           <RequestConfirmDialogContent
-            notification={notification}
+            notification={notificationState}
             setOpen={setOpen}
+            setNotificationState={setNotificationState}
           />
         )}
-        {notification.isRequestStock && (
+        {notificationState.isRequestStock && (
           <RequestStockConfirmDialogContent
-            notification={notification}
+            notification={notificationState}
             setOpen={setOpen}
+            setNotificationState={setNotificationState}
           />
         )}
       </Dialog.Content>
@@ -97,36 +101,54 @@ export function NotificationCard({ notification }: NotificationCardProps) {
   );
 }
 function RequestConfirmDialogContent({
-  notification,
+  notification: notificationState,
   setOpen,
+  setNotificationState,
 }: {
   notification: Notification;
   setOpen: (open: boolean) => void;
+  setNotificationState: React.Dispatch<React.SetStateAction<Notification>>;
 }) {
+  const notification = notificationState;
+  const [, startTransition] = useTransition();
   const [showPartialInput, setShowPartialInput] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
 
-  const handleFullAcceptance = useCallback(async () => {
+  const handleFullAcceptance = useCallback(() => {
     if (!notification.requestId) return;
     const id = toast.loading("جاري المعالجة...");
-    try {
-      const response = await approveRequestNotification({
-        requestId: notification.requestId,
-      });
 
-      if (response?.success) {
-        toast.success("تمت الموافقة بنجاح.", { id });
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, { id });
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-    }
-  }, [notification, setOpen]);
+    // Optimistically mark as read
+    setNotificationState((prev) => ({ ...prev, isRead: true }));
 
-  const handlePartialAcceptance = useCallback(async () => {
+    startTransition(() => {
+      approveRequestNotification({
+        requestId: notification.requestId!,
+        notificationId: notification.notificationId,
+      })
+        .then((response) => {
+          if (response?.success) {
+            toast.success("تمت الموافقة بنجاح.", { id });
+          } else {
+            toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, {
+              id,
+            });
+            // Revert to unread if failed
+            setNotificationState((prev) => ({ ...prev, isRead: false }));
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+          // Revert to unread if failed
+          setNotificationState((prev) => ({ ...prev, isRead: false }));
+        })
+        .finally(() => {
+          setOpen(false);
+        });
+    });
+  }, [notification, setOpen, setNotificationState]);
+
+  const handlePartialAcceptance = useCallback(() => {
     if (!showPartialInput) {
       setShowPartialInput(true);
       return;
@@ -134,46 +156,72 @@ function RequestConfirmDialogContent({
 
     if (!notification.requestId) return;
     const id = toast.loading("جاري المعالجة...");
-    try {
-      const remainingValue = parseInt(ref?.current?.value || "0");
-      const response = await approveRequestNotification({
-        requestId: notification.requestId,
+    const remainingValue = parseInt(ref?.current?.value || "0");
+
+    // Optimistically mark as read
+    setNotificationState((prev) => ({ ...prev, isRead: true }));
+
+    startTransition(() => {
+      approveRequestNotification({
+        requestId: notification.requestId!,
         Remainingvalue: remainingValue,
-      });
+        notificationId: notification.notificationId,
+      })
+        .then((response) => {
+          if (response?.success) {
+            toast.success("تمت الموافقة بنجاح.", { id });
+          } else {
+            toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, {
+              id,
+            });
+            // Revert to unread if failed
+            setNotificationState((prev) => ({ ...prev, isRead: false }));
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+          // Revert to unread if failed
+          setNotificationState((prev) => ({ ...prev, isRead: false }));
+        })
+        .finally(() => {
+          setOpen(false);
+          setShowPartialInput(false);
+        });
+    });
+  }, [notification, setOpen, showPartialInput, setNotificationState]);
 
-      if (response?.success) {
-        toast.success("تمت الموافقة بنجاح.", { id });
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, { id });
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-      setShowPartialInput(false);
-    }
-  }, [notification, setOpen, showPartialInput]);
-
-  const rejectRequest = useCallback(async () => {
+  const rejectRequest = useCallback(() => {
     if (!notification.requestId) return;
     const id = toast.loading("جاري المعالجة...");
-    try {
-      const response = await rejectRequestNotification({
-        requestId: notification.requestId,
-      });
 
-      if (response?.success) {
-        toast.success("تم الرفض بنجاح.", { id });
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-      setShowPartialInput(false);
-    }
-  }, [notification, setOpen]);
+    // Optimistically mark as read
+    setNotificationState((prev) => ({ ...prev, isRead: true }));
+
+    startTransition(() => {
+      rejectRequestNotification({
+        requestId: notification.requestId!,
+        notificationId: notification.notificationId,
+      })
+        .then((response) => {
+          if (response?.success) {
+            toast.success("تم الرفض بنجاح.", { id });
+          } else {
+            toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+            // Revert to unread if failed
+            setNotificationState((prev) => ({ ...prev, isRead: false }));
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+          // Revert to unread if failed
+          setNotificationState((prev) => ({ ...prev, isRead: false }));
+        })
+        .finally(() => {
+          setOpen(false);
+          setShowPartialInput(false);
+        });
+    });
+  }, [notification, setOpen, setNotificationState]);
 
   return (
     <div className="grid gap-4 pt-4">
@@ -203,50 +251,81 @@ function RequestConfirmDialogContent({
 }
 
 function RequestStockConfirmDialogContent({
-  notification,
+  notification: notificationState,
   setOpen,
+  setNotificationState,
 }: {
   notification: Notification;
   setOpen: (open: boolean) => void;
+  setNotificationState: React.Dispatch<React.SetStateAction<Notification>>;
 }) {
-  const approveRequest = useCallback(async () => {
+  const notification = notificationState;
+  const [, startTransition] = useTransition();
+
+  const approveRequest = useCallback(() => {
     if (!notification.requestStockId) return;
     const id = toast.loading("جاري المعالجة...");
-    try {
-      const response = await approveRequestStockNotification({
-        requestStockId: notification.requestStockId,
-      });
 
-      if (response?.success) {
-        toast.success("تمت الموافقة بنجاح.", { id });
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, { id });
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-    }
-  }, [notification, setOpen]);
-  const rejectRequest = useCallback(async () => {
-    const id = toast.loading("جاري المعالجة...");
+    // Optimistically mark as read
+    setNotificationState((prev) => ({ ...prev, isRead: true }));
+
+    startTransition(() => {
+      approveRequestStockNotification({
+        requestStockId: notification.requestStockId!,
+        notificationId: notification.notificationId,
+      })
+        .then((response) => {
+          if (response?.success) {
+            toast.success("تمت الموافقة بنجاح.", { id });
+          } else {
+            toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, {
+              id,
+            });
+            // Revert to unread if failed
+            setNotificationState((prev) => ({ ...prev, isRead: false }));
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+          // Revert to unread if failed
+          setNotificationState((prev) => ({ ...prev, isRead: false }));
+        })
+        .finally(() => {
+          setOpen(false);
+        });
+    });
+  }, [notification, setOpen, setNotificationState]);
+  const rejectRequest = useCallback(() => {
     if (!notification.requestStockId) return;
-    try {
-      const response = await rejectRequestStockNotification({
-        requestStockId: notification.requestStockId,
-      });
+    const id = toast.loading("جاري المعالجة...");
 
-      if (response?.success) {
-        toast.success("تمت الموافقة بنجاح.", { id });
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-    }
-  }, [notification, setOpen]);
+    // Optimistically mark as read
+    setNotificationState((prev) => ({ ...prev, isRead: true }));
+
+    startTransition(() => {
+      rejectRequestStockNotification({
+        requestStockId: notification.requestStockId!,
+        notificationId: notification.notificationId,
+      })
+        .then((response) => {
+          if (response?.success) {
+            toast.success("تمت الموافقة بنجاح.", { id });
+          } else {
+            toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+            // Revert to unread if failed
+            setNotificationState((prev) => ({ ...prev, isRead: false }));
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+          // Revert to unread if failed
+          setNotificationState((prev) => ({ ...prev, isRead: false }));
+        })
+        .finally(() => {
+          setOpen(false);
+        });
+    });
+  }, [notification, setOpen, setNotificationState]);
   return (
     <div className="grid gap-4 pt-4 md:grid-cols-2">
       <Button variant="outline" onClick={rejectRequest}>
