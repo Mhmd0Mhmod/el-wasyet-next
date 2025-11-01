@@ -49,13 +49,19 @@ export async function getRequestStatusData(): Promise<BasicEntity[]> {
 export async function getOrdersByStatusDetails(
   statusId: number,
   dates: { fromDate?: string; toDate?: string },
+  pageNumber?: number,
 ): Promise<PaginatedResponse<OrderByStatusDetail>> {
   try {
     const response = await authFetch.get<
       PaginatedResponse<OrderByStatusDetail>
     >(`CompanyDashboard/orders-by-status/${statusId}`, {
-      params: dates,
+      params: {
+        ...dates,
+        pageNumber: pageNumber,
+      },
     });
+    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error fetching orders by status details:", error);
