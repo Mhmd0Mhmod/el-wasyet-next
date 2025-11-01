@@ -65,7 +65,25 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     statusIds: [3],
     title: "تم التحصيل",
     description: "سجل تم التحصيل ومتابعة حالة الاوامر",
-    Component: OrdersTable,
+    Component: ({ orders }) => (
+      <>
+        <OrdersTable orders={orders} />
+        <div className="flex items-center justify-end gap-5">
+          <div className="flex items-center justify-end-safe gap-4">
+            <div className="h-4 w-4 rounded-full border bg-gray-400 text-sm font-medium" />
+            <span>استيفاء عميل</span>
+          </div>
+          <div className="flex items-center justify-end-safe gap-4">
+            <div className="h-4 w-4 rounded-full border bg-purple-500 text-sm font-medium" />
+            <span>استيفاء</span>
+          </div>
+          <div className="flex items-center justify-end-safe gap-4">
+            <div className="h-4 w-4 rounded-full border bg-orange-700 text-sm font-medium" />
+            <span>استيفاء شهادة</span>
+          </div>
+        </div>
+      </>
+    ),
   },
   "in-progress": {
     statusIds: [4],

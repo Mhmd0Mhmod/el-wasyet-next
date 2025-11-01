@@ -287,49 +287,33 @@ export function getOrderActions({
     path.includes("pending-orders") ||
     path.includes("pending-certificates")
   ) {
-    const response = [OrderAction.NEW_ORDER, OrderAction.CANCEL];
-    // 1. Pending Orders - for all users
-    if (canSelectAll) {
-      return response;
-    }
-    response.push(OrderAction.REFUND); // [cash, credit dialog]
+    const response = [OrderAction.NEW_ORDER];
     return response;
   }
-
   if (path.includes("new-orders") || path.includes("new-certificates")) {
-    // 2 & 3. New Orders - for all users (condition: not asked before)
-    return [
-      OrderAction.ASK_EXPENSES, // Only if !closeAskExpense
-    ];
+    return [OrderAction.ASK_EXPENSES];
   }
-
   if (path.includes("collected")) {
-    // 4. Collection Done - for executives
     const response = [
       OrderAction.UNDER_PROCESSING,
-      OrderAction.STEFA_CLIENT, // Only if isStefaClient
+      OrderAction.STEFA_CLIENT,
       OrderAction.STEFA_CERTIFICATE,
     ];
     if (canSelectAll) {
       return response;
     }
-    response.push(OrderAction.RETURN); // [cash, credit dialog]
+    response.push(OrderAction.RETURN);
     return response;
   }
-
   if (path.includes("in-progress")) {
-    // 5. Under Processing - for executives
     const response = [OrderAction.COMPLETED, OrderAction.STEFA_SGL];
-
     if (canSelectAll) {
       return response;
     }
-    response.push(OrderAction.RETURN); // [cash, credit dialog]
+    response.push(OrderAction.RETURN);
     return response;
   }
-
   if (path.includes("completed-orders")) {
-    // 6. Completed Orders - for call center
     return [OrderAction.CONTACTED];
   }
 
@@ -340,17 +324,8 @@ export function getOrderActions({
       OrderAction.RECEIVING_DONE,
     ];
   }
-  if (path.includes("client-fulfillment") || path.includes("sgl-fulfillment")) {
-    const response = [OrderAction.UNDER_PROCESSING];
-    return response;
-  }
-
   if (path.includes("fulfillment")) {
-    const response = [OrderAction.UNDER_PROCESSING];
-    if (canSelectAll) {
-      return response;
-    }
-    response.push(OrderAction.RETURN); // [cash, credit dialog]
+    const response = [OrderAction.COLLECTION_DONE];
     return response;
   }
 
