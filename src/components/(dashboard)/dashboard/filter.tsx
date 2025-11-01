@@ -7,11 +7,11 @@ import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-const filterSchem = z.object({
+const filterSchema = z.object({
   fromDate: z.string().optional(),
   toDate: z.string().optional(),
 });
-type FilterValues = z.infer<typeof filterSchem>;
+type FilterValues = z.infer<typeof filterSchema>;
 
 function FilterSection() {
   const form = useForm();
@@ -19,11 +19,19 @@ function FilterSection() {
   const router = useRouter();
   const onSubmit = useCallback(
     (data: FilterValues) => {
+      if (!data.fromDate && !data.toDate) {
+        router.push(`${pathName}`, {
+          scroll: false,
+        });
+        return;
+      }
       if (!data.fromDate || !data.toDate) {
         return;
       }
       const query = new URLSearchParams(data).toString();
-      router.push(`${pathName}?${query}`);
+      router.push(`${pathName}?${query}`, {
+        scroll: false,
+      });
     },
     [pathName, router],
   );

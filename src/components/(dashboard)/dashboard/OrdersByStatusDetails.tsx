@@ -6,10 +6,16 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { getOrdersByStatusDetails } from "@/data/dashboard";
 import Link from "next/link";
 import { Suspense } from "react";
-function OrdersByStatusDetails({ statusId }: { statusId: number }) {
+function OrdersByStatusDetails({
+  statusId,
+  dates,
+}: {
+  statusId: number;
+  dates: { fromDate?: string; toDate?: string };
+}) {
   return (
     <Suspense fallback={<TableSkeleton columns={4} rows={5} />}>
-      <OrdersByStatusDetailsContent statusId={statusId} />
+      <OrdersByStatusDetailsContent statusId={statusId} dates={dates} />
     </Suspense>
   );
 }
@@ -34,12 +40,12 @@ const COLUMNS = [
 ];
 async function OrdersByStatusDetailsContent({
   statusId,
+  dates,
 }: {
   statusId: number;
+  dates: { fromDate?: string; toDate?: string };
 }) {
-  const { items } = await getOrdersByStatusDetails(statusId);
-  console.log(items);
-
+  const { items } = await getOrdersByStatusDetails(statusId, dates);
   return (
     <Table
       columns={COLUMNS}
@@ -71,4 +77,5 @@ async function OrdersByStatusDetailsContent({
     />
   );
 }
+
 export default OrdersByStatusDetails;

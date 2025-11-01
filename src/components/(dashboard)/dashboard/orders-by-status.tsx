@@ -18,9 +18,10 @@ const STATUS_BAR_COLORS = [
 type OrdersByStatusProps = {
   data: ordersPerStatus[];
   className?: string;
+  dates: { fromDate?: string; toDate?: string };
 };
 
-function OrdersByStatus({ data, className }: OrdersByStatusProps) {
+function OrdersByStatus({ data, className, dates }: OrdersByStatusProps) {
   const total = data.reduce((sum, item) => sum + item.ordersCount, 0);
 
   return (
@@ -81,7 +82,10 @@ function OrdersByStatus({ data, className }: OrdersByStatusProps) {
                     item.statusName,
                   )}`}
                 >
-                  <OrdersByStatusDetails statusId={item.statusId} />
+                  <OrdersByStatusDetails
+                    statusId={item.statusId}
+                    dates={dates}
+                  />
                 </Dialog.Content>
               </Dialog>
             );

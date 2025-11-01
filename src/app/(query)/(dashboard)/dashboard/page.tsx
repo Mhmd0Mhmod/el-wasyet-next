@@ -29,7 +29,7 @@ async function page({ searchParams }: Props) {
       <RevenueByService data={dashboardData.revenueByServiceTypes} />
       <RevenueByBranch data={dashboardData.branchRevenues} />
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <OrdersByStatus data={dashboardData.ordersPerStatus} />
+        <OrdersByStatus data={dashboardData.ordersPerStatus} dates={params} />
         <ClientsByStatus data={dashboardData.clientsPerStatus} />
       </div>
       <div className="flex justify-end">
