@@ -124,11 +124,15 @@ export const handleErrorResponse = <T>(
     if (errors.length > 0) {
       returnError.message = errors.join(" ");
     } else {
-      returnError.message = error.response?.data.message || error.message;
+      returnError.message =
+        error.response?.data.message ||
+        error.response?.statusText ||
+        error.message;
     }
   } else if (error instanceof Error) {
     returnError.message = error.message;
   }
+
   return returnError as APIResponse<T>;
 };
 

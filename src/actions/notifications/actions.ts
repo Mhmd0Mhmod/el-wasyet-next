@@ -23,21 +23,24 @@ export async function markNotificationAsRead(
 }
 export async function approveRequestNotification({
   requestId,
+  Remainingvalue = null,
 }: {
   requestId: number;
+  Remainingvalue?: number | null;
 }): Promise<APIResponse<void>> {
   try {
     const employeeId = (await getCurrentUser())?.user.userId;
     if (!employeeId) {
       throw new Error("User not authenticated");
     }
-    const response = await authFetch.patch(
-      `Request/approve/${requestId}/by/${employeeId}`,
+    const response = await authFetch.post(
+      `/Request/approve/${requestId}`,
+      Remainingvalue,
     );
     revalidateTag("notifications");
     return {
       success: true,
-      data: response.data,
+      data: response.data.message,
     };
   } catch (error) {
     return handleErrorResponse(error);
@@ -49,13 +52,7 @@ export async function rejectRequestNotification({
   requestId: number;
 }): Promise<APIResponse<void>> {
   try {
-    const employeeId = (await getCurrentUser())?.user.userId;
-    if (!employeeId) {
-      throw new Error("User not authenticated");
-    }
-    const response = await authFetch.patch(
-      `Request/reject/${requestId}/by/${employeeId}`,
-    );
+    const response = await authFetch.post(`/Request/reject/${requestId}`);
     revalidateTag("notifications");
     return {
       success: true,
@@ -77,7 +74,7 @@ export async function approveRequestStockNotification({
     revalidateTag("notifications");
     return {
       success: true,
-      data: response.data,
+      data: response.data.message,
     };
   } catch (error) {
     return handleErrorResponse(error);

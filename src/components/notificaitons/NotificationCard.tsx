@@ -8,7 +8,7 @@ import {
 } from "@/actions/notifications/actions";
 import { formatDate } from "@/lib/helper";
 import { Notification } from "@/types/notification";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Dialog from "../general/Dialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -21,6 +21,7 @@ import {
 } from "../ui/card";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Input } from "../ui/input";
 
 interface NotificationCardProps {
   notification: Notification;
@@ -34,55 +35,6 @@ export function NotificationCard({ notification }: NotificationCardProps) {
 
   const openDialog = useCallback(() => {
     if (notification.isRequestStock || notification.isRequest) setOpen(true);
-  }, [notification]);
-  const approveRequest = useCallback(async () => {
-    const id = toast.loading("جاري المعالجة...");
-    try {
-      let response;
-      if (notification.requestId && notification.isRequest) {
-        response = await approveRequestNotification({
-          requestId: notification.requestId,
-        });
-      } else if (notification.requestStockId && notification.isRequestStock) {
-        response = await approveRequestStockNotification({
-          requestStockId: notification.requestStockId,
-        });
-      }
-      if (response?.success) {
-        toast.success("تمت الموافقة بنجاح.", { id });
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-    }
-  }, [notification]);
-  const rejectRequest = useCallback(async () => {
-    const id = toast.loading("جاري المعالجة...");
-    try {
-      let response;
-      if (notification.requestId && notification.isRequest) {
-        response = await rejectRequestNotification({
-          requestId: notification.requestId,
-        });
-      } else if (notification.requestStockId && notification.isRequestStock) {
-        response = await rejectRequestStockNotification({
-          requestStockId: notification.requestStockId,
-        });
-
-        if (response?.success) {
-          toast.success("تمت الموافقة بنجاح.", { id });
-        } else {
-          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-        }
-      }
-    } catch (error) {
-      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-    } finally {
-      setOpen(false);
-    }
   }, [notification]);
   const isClickable = notification.isRequestStock || notification.isRequest;
   return (
@@ -128,13 +80,179 @@ export function NotificationCard({ notification }: NotificationCardProps) {
         </CardContent>
       </Card>
       <Dialog.Content title="هل انت موافق">
-        <div className="grid gap-4 pt-4 md:grid-cols-2">
-          <Button variant="outline" onClick={rejectRequest}>
-            لا
-          </Button>
-          <Button onClick={approveRequest}>نعم</Button>
-        </div>
+        {notification.isRequest && (
+          <RequestConfirmDialogContent
+            notification={notification}
+            setOpen={setOpen}
+          />
+        )}
+        {notification.isRequestStock && (
+          <RequestStockConfirmDialogContent
+            notification={notification}
+            setOpen={setOpen}
+          />
+        )}
       </Dialog.Content>
     </Dialog>
+  );
+}
+function RequestConfirmDialogContent({
+  notification,
+  setOpen,
+}: {
+  notification: Notification;
+  setOpen: (open: boolean) => void;
+}) {
+  const [showPartialInput, setShowPartialInput] = useState(false);
+  const ref = useRef<HTMLInputElement>(null);
+
+  const handleFullAcceptance = useCallback(async () => {
+    if (!notification.requestId) return;
+    const id = toast.loading("جاري المعالجة...");
+    try {
+      const response = await approveRequestNotification({
+        requestId: notification.requestId,
+      });
+
+      if (response?.success) {
+        toast.success("تمت الموافقة بنجاح.", { id });
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, { id });
+      }
+    } catch (error) {
+      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+    } finally {
+      setOpen(false);
+    }
+  }, [notification, setOpen]);
+
+  const handlePartialAcceptance = useCallback(async () => {
+    if (!showPartialInput) {
+      setShowPartialInput(true);
+      return;
+    }
+
+    if (!notification.requestId) return;
+    const id = toast.loading("جاري المعالجة...");
+    try {
+      const remainingValue = parseInt(ref?.current?.value || "0");
+      const response = await approveRequestNotification({
+        requestId: notification.requestId,
+        Remainingvalue: remainingValue,
+      });
+
+      if (response?.success) {
+        toast.success("تمت الموافقة بنجاح.", { id });
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, { id });
+      }
+    } catch (error) {
+      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+    } finally {
+      setOpen(false);
+      setShowPartialInput(false);
+    }
+  }, [notification, setOpen, showPartialInput]);
+
+  const rejectRequest = useCallback(async () => {
+    if (!notification.requestId) return;
+    const id = toast.loading("جاري المعالجة...");
+    try {
+      const response = await rejectRequestNotification({
+        requestId: notification.requestId,
+      });
+
+      if (response?.success) {
+        toast.success("تم الرفض بنجاح.", { id });
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+      }
+    } catch (error) {
+      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+    } finally {
+      setOpen(false);
+      setShowPartialInput(false);
+    }
+  }, [notification, setOpen]);
+
+  return (
+    <div className="grid gap-4 pt-4">
+      {showPartialInput && (
+        <Input
+          ref={ref}
+          type="number"
+          placeholder="أدخل القيمة المتبقية"
+          className="rounded border p-2"
+          min="0"
+          autoFocus
+        />
+      )}
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Button onClick={handleFullAcceptance}>قبول كلي</Button>
+        <Button onClick={handlePartialAcceptance}>
+          {showPartialInput ? "تأكيد القبول الجزئي" : "قبول جزئي"}
+        </Button>
+      </div>
+
+      <Button variant="outline" onClick={rejectRequest}>
+        رفض
+      </Button>
+    </div>
+  );
+}
+
+function RequestStockConfirmDialogContent({
+  notification,
+  setOpen,
+}: {
+  notification: Notification;
+  setOpen: (open: boolean) => void;
+}) {
+  const approveRequest = useCallback(async () => {
+    if (!notification.requestStockId) return;
+    const id = toast.loading("جاري المعالجة...");
+    try {
+      const response = await approveRequestStockNotification({
+        requestStockId: notification.requestStockId,
+      });
+
+      if (response?.success) {
+        toast.success("تمت الموافقة بنجاح.", { id });
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, { id });
+      }
+    } catch (error) {
+      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+    } finally {
+      setOpen(false);
+    }
+  }, [notification, setOpen]);
+  const rejectRequest = useCallback(async () => {
+    const id = toast.loading("جاري المعالجة...");
+    if (!notification.requestStockId) return;
+    try {
+      const response = await rejectRequestStockNotification({
+        requestStockId: notification.requestStockId,
+      });
+
+      if (response?.success) {
+        toast.success("تمت الموافقة بنجاح.", { id });
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+      }
+    } catch (error) {
+      toast.error("حدث خطأ ما أثناء المعالجة.", { id });
+    } finally {
+      setOpen(false);
+    }
+  }, [notification, setOpen]);
+  return (
+    <div className="grid gap-4 pt-4 md:grid-cols-2">
+      <Button variant="outline" onClick={rejectRequest}>
+        لا
+      </Button>
+      <Button onClick={approveRequest}>نعم</Button>
+    </div>
   );
 }
