@@ -2,14 +2,18 @@ import Pagination from "@/components/general/Pagination";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
-import DailyReportsFilter from "@/components/reports/daily/daily-reports-filter";
 import ExportDailyReportsButton from "@/components/reports/daily/export-daily-report-button";
+import AdvancedDailyReportsFilter from "@/components/reports/detials-daily/advanced-daily-reports-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getDailyReports } from "@/data/reports";
+import { getEmployeeBasic } from "@/data/employee";
+import { getAdvancedDailyReport } from "@/data/reports";
+import { authFetch } from "@/lib/axios";
 import { formatCurrency, formatDate } from "@/lib/helper";
+import { ShortBranch } from "@/types/branch";
+import { CloudDownloadIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -17,19 +21,23 @@ interface PageProps {
   searchParams: Promise<{
     startDate: string;
     endDate: string;
+    branchId?: string;
+    employeeId?: string;
     page: string;
   }>;
 }
 
 async function page({ searchParams }: PageProps) {
+  const { data: branchs } = await authFetch.get<ShortBranch[]>("Auth/branches");
+  const employees = await getEmployeeBasic();
   const params = await searchParams;
   return (
     <PageLayout
-      title={"تقارير يومي "}
-      description={"تقارير يومية للمصروفات ومتابعة حالتها"}
+      title="تقارير يومي تفصيلي"
+      description="تقارير يومية للمصروفات ومتابعة حالتها"
       extra={<ExportDailyReportsButton />}
     >
-      <DailyReportsFilter />
+      <AdvancedDailyReportsFilter branchs={branchs} employees={employees} />
       <Suspense
         fallback={<TableSkeleton columns={11} rows={11} />}
         key={JSON.stringify(params)}
@@ -45,24 +53,34 @@ const TABLE_COLUMNS = [
   { id: "service", label: "اسم الخدمة" },
   { id: "client", label: "اسم العميل" },
   { id: "phone", label: "رقم العميل" },
+  { id: "cash", label: "كاش" },
+  { id: "credit", label: "كريديت" },
   { id: "price", label: "السعر" },
   { id: "operationTime", label: "وقت العملية" },
   { id: "orderCode", label: "كود الأوردر" },
   { id: "branch", label: "الفرع" },
   { id: "employee", label: "الموظف" },
+  { id: "orderEmployeeCreator", label: "منشئ الطلب" },
   { id: "orderStatus", label: "حالة الأوردر" },
 ];
 async function DataTable({ searchParams }: PageProps) {
   const params = await searchParams;
-  const response = await getDailyReports(params);
+  const response = await getAdvancedDailyReport(params);
   const { items, pageNumber, totalPages } = response;
-  const { records, totalAmount, totalExpenses, totalNetAmount } = items.at(
-    0,
-  ) || {
+  const {
+    records,
+    totalAmount,
+    totalExpenses,
+    totalNetAmount,
+    totalCash,
+    totalCredit,
+  } = items.at(0) || {
     records: [],
     totalAmount: 0,
     totalExpenses: 0,
     totalNetAmount: 0,
+    totalCash: 0,
+    totalCredit: 0,
   };
   return (
     <>
@@ -83,6 +101,7 @@ async function DataTable({ searchParams }: PageProps) {
               </Button>
             </TableCell>
             <TableCell>{item.branchName}</TableCell>
+            <TableCell>{item.employeeName || "---"}</TableCell>
             <TableCell>{item.isCreatedByEmployeeName || "---"}</TableCell>
             <TableCell>{item.status}</TableCell>
           </TableRow>
@@ -93,6 +112,24 @@ async function DataTable({ searchParams }: PageProps) {
         page={pageNumber}
         searchParams={params}
       />
+      <div className={"mt-4 grid grid-cols-1 gap-4 md:grid-cols-2"}>
+        <div className={"flex space-x-2 whitespace-nowrap"}>
+          <Label>مجموع الكاش</Label>
+          <Input
+            disabled
+            className={"disabled:bg-gray-300"}
+            value={formatCurrency(totalCash)}
+          />
+        </div>
+        <div className={"flex space-x-2 whitespace-nowrap"}>
+          <Label>مجموع الكريديت</Label>
+          <Input
+            disabled
+            className={"disabled:bg-gray-300"}
+            value={formatCurrency(totalCredit)}
+          />
+        </div>
+      </div>
       <div className={"mt-4 grid grid-cols-1 gap-4 md:grid-cols-3"}>
         <div className={"space-y-2"}>
           <Label>إجمالي المصروفات</Label>

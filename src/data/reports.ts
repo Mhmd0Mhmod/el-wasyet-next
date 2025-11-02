@@ -6,6 +6,8 @@ type ReportPage = PaginatedResponse<{
   totalExpenses: number;
   totalAmount: number;
   totalNetAmount: number;
+  totalCredit: number;
+  totalCash: number;
 }>;
 export async function getDailyReports(params: {
   startDate?: string;

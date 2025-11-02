@@ -48,7 +48,7 @@ function Table({
             </TableHead>
           )}
           {columns.map((column) => (
-            <TableHead key={column.id} className="text-right">
+            <TableHead key={column.id} className="text-primary text-right">
               {column.label}
             </TableHead>
           ))}
