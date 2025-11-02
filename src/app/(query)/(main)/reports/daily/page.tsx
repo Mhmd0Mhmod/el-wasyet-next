@@ -84,6 +84,8 @@ async function DataTable({ searchParams }: PageProps) {
             <TableCell>{item.serviceName}</TableCell>
             <TableCell>{item.clientName}</TableCell>
             <TableCell>{item.clientPhoneNumber}</TableCell>
+            <TableCell>{formatCurrency(item.cash)}</TableCell>
+            <TableCell>{formatCurrency(item.credit)}</TableCell>
             <TableCell>{formatCurrency(item.amount)}</TableCell>
             <TableCell>{formatDate(item.actionDate, "datetime")}</TableCell>
             <TableCell>

@@ -5,6 +5,8 @@ interface Report {
   serviceName: string;
   clientName: string;
   clientPhoneNumber: string;
+  cash: number;
+  credit: number;
   amount: number;
   employeeName: string;
   orderDateTime: string;

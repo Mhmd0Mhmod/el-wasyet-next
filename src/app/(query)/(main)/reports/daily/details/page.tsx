@@ -13,7 +13,6 @@ import { getAdvancedDailyReport } from "@/data/reports";
 import { authFetch } from "@/lib/axios";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { ShortBranch } from "@/types/branch";
-import { CloudDownloadIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -93,6 +92,8 @@ async function DataTable({ searchParams }: PageProps) {
             <TableCell>{item.serviceName}</TableCell>
             <TableCell>{item.clientName}</TableCell>
             <TableCell>{item.clientPhoneNumber}</TableCell>
+            <TableCell>{formatCurrency(item.cash)}</TableCell>
+            <TableCell>{formatCurrency(item.credit)}</TableCell>
             <TableCell>{formatCurrency(item.amount)}</TableCell>
             <TableCell>{formatDate(item.actionDate, "datetime")}</TableCell>
             <TableCell>
