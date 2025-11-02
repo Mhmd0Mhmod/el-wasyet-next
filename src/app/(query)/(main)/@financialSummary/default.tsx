@@ -2,45 +2,75 @@ import { getCashierSummary } from "@/data/cashbox";
 import { formatCurrency } from "@/lib/helper";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Wallet, CreditCard, TrendingUp } from "lucide-react";
 
 async function Default() {
   return (
-    <div className={"flex justify-end gap-4"}>
+    <div className="flex justify-end gap-4">
       <Suspense fallback={<Loading />}>
         <FinancialSummary />
       </Suspense>
     </div>
   );
 }
+
 async function FinancialSummary() {
   const summary = await getCashierSummary();
 
   return (
     <>
-      <div className="w-48 rounded-xl bg-green-500 px-4 py-2 text-sm text-white shadow-lg">
-        <p className="flex items-center justify-between">
-          كاش :
-          <span className="font-bold">
-            {" "}
-            {formatCurrency(summary.cashBalance)}
-          </span>
-        </p>
-        <p className="flex items-center justify-between">
-          كريديت :
-          <span className="font-bold">
-            {" "}
-            {formatCurrency(summary.creditBalance)}
-          </span>
-        </p>
+      {/* Cash & Credit Card */}
+      <div className="group relative w-52 overflow-hidden rounded-lg border border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
+        <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
+
+        <div className="relative z-10 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="rounded-full bg-white/20 p-1.5 backdrop-blur-sm">
+                <Wallet className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-sm font-semibold">كاش</span>
+            </div>
+            <span className="text-lg font-bold tabular-nums">
+              {formatCurrency(summary.cashBalance)}
+            </span>
+          </div>
+
+          <div className="h-px bg-white/30" />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="rounded-full bg-white/20 p-1.5 backdrop-blur-sm">
+                <CreditCard className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-sm font-semibold">كريديت</span>
+            </div>
+            <span className="text-lg font-bold tabular-nums">
+              {formatCurrency(summary.creditBalance)}
+            </span>
+          </div>
+        </div>
       </div>
-      <div className="w-48 rounded-xl bg-red-500 px-4 py-2 text-sm text-white shadow-lg">
-        <p className="flex items-center justify-between">
-          عموله :
-          <span className="font-bold">
-            {" "}
-            {formatCurrency(summary.comessionAmount)}
-          </span>
-        </p>
+
+      {/* Commission Card */}
+      <div className="group relative w-52 overflow-hidden rounded-lg border border-rose-600 bg-gradient-to-br from-rose-500 to-rose-600 p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
+        <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
+
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="rounded-full bg-white/20 p-1.5 backdrop-blur-sm">
+                <TrendingUp className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-sm font-semibold">عمولة</span>
+            </div>
+            <span className="text-lg font-bold tabular-nums">
+              {formatCurrency(summary.comessionAmount)}
+            </span>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -48,15 +78,42 @@ async function FinancialSummary() {
 
 function Loading() {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="w-48 rounded-xl bg-green-500 px-4 py-2 text-sm text-white shadow-lg">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="mt-2 h-4 w-full" />
+    <>
+      {/* Cash & Credit Loading Skeleton */}
+      <div className="w-52 overflow-hidden rounded-lg border border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 shadow-lg">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Skeleton className="h-7 w-7 rounded-full bg-white/30" />
+              <Skeleton className="h-4 w-12 bg-white/30" />
+            </div>
+            <Skeleton className="h-5 w-20 bg-white/30" />
+          </div>
+
+          <div className="h-px bg-white/30" />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Skeleton className="h-7 w-7 rounded-full bg-white/30" />
+              <Skeleton className="h-4 w-12 bg-white/30" />
+            </div>
+            <Skeleton className="h-5 w-20 bg-white/30" />
+          </div>
+        </div>
       </div>
-      <div className="w-48 rounded-xl bg-red-500 px-4 py-2 text-sm text-white shadow-lg">
-        <Skeleton className="h-4 w-full" />
+
+      {/* Commission Loading Skeleton */}
+      <div className="w-52 overflow-hidden rounded-lg border border-rose-600 bg-gradient-to-br from-rose-500 to-rose-600 p-3 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="h-7 w-7 rounded-full bg-white/30" />
+            <Skeleton className="h-4 w-12 bg-white/30" />
+          </div>
+          <Skeleton className="h-5 w-20 bg-white/30" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+
 export default Default;

@@ -13,8 +13,8 @@ function layout({
         <Header />
       </header>
       <div className="relative">
-        <div className="sticky top-4 p-2">{financialSummary}</div>
-        <div className="container mx-auto mb-10 max-w-full flex-grow pt-14 md:max-w-10/12">
+        <div className="sticky top-4 z-10 p-2">{financialSummary}</div>
+        <div className="container mx-auto mb-10 max-w-full flex-grow md:max-w-10/12">
           {children}
         </div>
       </div>
