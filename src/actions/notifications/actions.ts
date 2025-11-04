@@ -59,9 +59,10 @@ export async function rejectRequestNotification({
   reason?: string;
 }): Promise<APIResponse<void>> {
   try {
-    const response = await authFetch.post(`/Request/reject/${requestId}`, {
-      reason: reason || "",
-    });
+    const response = await authFetch.post(
+      `/Request/reject/${requestId}`,
+      reason,
+    );
     await markNotificationAsRead(notificationId);
     revalidateTag("notifications");
     return {
@@ -106,9 +107,7 @@ export async function rejectRequestStockNotification({
   try {
     const response = await authFetch.patch(
       `RequestStock/RejectTheRequest/${requestStockId}`,
-      {
-        reason: reason || "",
-      },
+      reason,
     );
     await markNotificationAsRead(notificationId);
 
