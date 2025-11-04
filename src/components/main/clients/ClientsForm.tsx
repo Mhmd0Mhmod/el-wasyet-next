@@ -1,7 +1,10 @@
 "use client";
 
 import { createClient, updateClient } from "@/actions/clients/actions";
+import Loading from "@/app/loading";
+import Dialog from "@/components/general/Dialog";
 import { Button } from "@/components/ui/button";
+import { DialogClose } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -26,9 +29,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import AddBranchClient from "./AddBranchClient";
 import BranchClientCard from "./BranchClientCard";
-import Loading from "@/app/loading";
-import Dialog from "@/components/general/Dialog";
-import { DialogClose } from "@/components/ui/dialog";
 
 interface ClientFormProps {
   clientId?: number;
@@ -51,24 +51,33 @@ function ClientForm({ clientId }: ClientFormProps) {
     return <Loading />;
   }
 
-  const handleSubmit = async (data: ClientFormValues) => {
+  const handleSubmit = (data: ClientFormValues) => {
+    const id = toast.loading("جاري حفظ بيانات العميل...");
     if (client?.id) {
-      updateClient(data).then((res) => {
-        if (res.success) {
-          toast.success("تم تحديث بيانات العميل بنجاح");
-        } else {
-          toast.error(res.message);
-        }
-      });
+      updateClient(data)
+        .then((res) => {
+          if (res.success) {
+            toast.success("تم تحديث بيانات العميل بنجاح", { id });
+          } else {
+            toast.error(res.message, { id });
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ أثناء تحديث بيانات العميل", { id });
+        });
     } else {
-      createClient(data).then((res) => {
-        if (res.success) {
-          toast.success("تم إضافة العميل بنجاح");
-          form.reset();
-        } else {
-          toast.error(res.message);
-        }
-      });
+      createClient(data)
+        .then((res) => {
+          if (res.success) {
+            toast.success("تم إضافة العميل بنجاح");
+            form.reset();
+          } else {
+            toast.error(res.message);
+          }
+        })
+        .catch(() => {
+          toast.error("حدث خطأ أثناء إضافة العميل", { id });
+        });
     }
   };
 

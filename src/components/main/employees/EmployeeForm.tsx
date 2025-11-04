@@ -145,7 +145,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
     form.watch("roleId") === "" ||
     form.watch("roleId") === roles[0]?.id.toString();
   return (
-    <div dir="rtl" className="mx-auto max-w-4xl">
+    <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* Personal Information Grid */}
@@ -404,7 +404,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
           )}
         </form>
       </Form>
-    </div>
+    </>
   );
 }
 

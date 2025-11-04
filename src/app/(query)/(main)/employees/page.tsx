@@ -22,10 +22,11 @@ function NewEmployeeButton() {
           إضافة موظف جديد
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content title="إضافة موظف جديد">
-        <div className="max-h-[80vh] overflow-y-auto">
-          <EmployeeForm />
-        </div>
+      <Dialog.Content
+        title="إضافة موظف جديد"
+        className="mx-auto max-h-[80vh] max-w-4xl overflow-y-auto"
+      >
+        <EmployeeForm />
       </Dialog.Content>
     </Dialog>
   );
@@ -98,10 +99,11 @@ async function EmployeesTable({
                       <Edit className="h-4 w-4" />
                     </Button>
                   </Dialog.Trigger>
-                  <Dialog.Content title="تعديل موظف">
-                    <div className="max-h-[80vh] overflow-y-auto">
-                      <EmployeeForm employeeId={employee.id} />
-                    </div>
+                  <Dialog.Content
+                    title="تعديل موظف"
+                    className="mx-auto max-h-[80vh] max-w-4xl overflow-y-auto"
+                  >
+                    <EmployeeForm employeeId={employee.id} />
                   </Dialog.Content>
                 </Dialog>
               </div>
