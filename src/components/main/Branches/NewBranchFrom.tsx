@@ -40,7 +40,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
     },
   });
   const onSubmit = useCallback(
-    async (data: BranchFormData) => {
+    (data: BranchFormData) => {
       const id = toast.loading("جاري الحفظ...");
       if (branch) {
         updateBranch(branch.id, data)

@@ -18,6 +18,7 @@ import { generateServiceSchema, ServiceValues } from "@/schema/service";
 import { Service, ShortWorkFlow } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
+import { useCallback } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -42,26 +43,38 @@ function ServiceForm({
     name: "documents",
   });
 
-  const onSubmit = (data: ServiceValues) => {
-    if (service) {
-      updateService(data, service.id).then((res) => {
-        if (res.success) {
-          toast.success("تم تعديل الخدمة بنجاح");
-        } else {
-          toast.error(res.message);
-        }
-      });
-    } else {
-      createService(data).then((res) => {
-        if (res.success) {
-          toast.success("تم إضافة الخدمة بنجاح");
-          form.reset();
-        } else {
-          toast.error(res.message);
-        }
-      });
-    }
-  };
+  const onSubmit = useCallback(
+    (data: ServiceValues) => {
+      const id = toast.loading("جاري الحفظ...");
+      if (service) {
+        updateService(data, service.id)
+          .then((res) => {
+            if (res.success) {
+              toast.success("تم تعديل الخدمة بنجاح", { id });
+            } else {
+              toast.error(res.message, { id });
+            }
+          })
+          .catch((error) => {
+            toast.error(`حدث خطأ: ${error}`, { id });
+          });
+      } else {
+        createService(data)
+          .then((res) => {
+            if (res.success) {
+              toast.success("تم إضافة الخدمة بنجاح", { id });
+              form.reset();
+            } else {
+              toast.error(res.message, { id });
+            }
+          })
+          .catch((error) => {
+            toast.error(`حدث خطأ: ${error}`, { id });
+          });
+      }
+    },
+    [service, form],
+  );
 
   return (
     <Form {...form}>
@@ -93,7 +106,14 @@ function ServiceForm({
                   <FormItem>
                     <FormLabel>الرسوم الافتراضية</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value.toString()}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -107,7 +127,14 @@ function ServiceForm({
                   <FormItem>
                     <FormLabel>فترة الصلاحية (بالأيام)</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value.toString()}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -120,7 +147,14 @@ function ServiceForm({
                   <FormItem>
                     <FormLabel>فترة الصلاحية (بالسنوات)</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value.toString()}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -163,12 +197,15 @@ function ServiceForm({
             <CardContent>
               <div className="space-y-4">
                 {documentFields.map((field, index) => (
-                  <div key={field.id} className="flex gap-2">
+                  <div
+                    key={field.id}
+                    className="flex w-full items-center gap-2"
+                  >
                     <FormField
                       name={`documents.${index}.description`}
                       control={form.control}
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="w-full">
                           <FormLabel>اسم الوثيقة</FormLabel>
                           <FormControl>
                             <Input
@@ -185,6 +222,7 @@ function ServiceForm({
                       type="button"
                       variant="destructive"
                       size="sm"
+                      className="mt-auto"
                       onClick={() => removeDocument(index)}
                     >
                       <Trash2 className="h-4 w-4" />

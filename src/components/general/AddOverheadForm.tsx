@@ -161,7 +161,7 @@ function Overhead({
             <Label htmlFor={`${name}.${index}.value`}> الرسوم</Label>
             <Input
               id={`${name}.${index}.value`}
-              type="number"
+              type="text"
               disabled={isFormType}
               {...form.register(`${name}.${index}.value`, {
                 setValueAs: (value) => (value === "" ? 0 : Number(value)),
@@ -256,7 +256,7 @@ function PenaltyComponent({
 
           <Input
             id={`${name}.${index}.penaltyExtraFee`}
-            type="number"
+            type="text"
             placeholder="الرسوم الإضافية"
             min="0"
             {...form.register(`${name}.${index}.penaltyExtraFee`, {
@@ -272,7 +272,7 @@ function PenaltyComponent({
           </Label>
           <Input
             id={`${name}.${index}.penaltyBankFeePrecentage`}
-            type="number"
+            type="text"
             placeholder="نسبة الرسوم البنكيه%"
             min="0"
             max="100"
