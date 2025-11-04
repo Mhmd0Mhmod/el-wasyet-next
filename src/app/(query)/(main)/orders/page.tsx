@@ -9,6 +9,13 @@ import OrderLogs from "@/components/main/orders/[id]/order-logs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -18,9 +25,10 @@ import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import { Order } from "@/types/order";
-import { ClipboardIcon, Edit3Icon, Plus } from "lucide-react";
+import { ClipboardIcon, MoreVerticalIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import RefundOrderForm from "@/components/main/orders/RefundOrderForm";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -93,11 +101,6 @@ async function OrdersTable({
         </Popover>
       </TableCell>
       <TableCell className="space-x-2">
-        <Button variant="ghost" size="icon">
-          <Link href={`/orders/${order.id}/edit`}>
-            <Edit3Icon className="inline-block" size={16} />
-          </Link>
-        </Button>
         <Dialog>
           <Dialog.Trigger>
             <Button variant="ghost" size="icon">
@@ -106,6 +109,25 @@ async function OrdersTable({
           </Dialog.Trigger>
           <Dialog.Content title="سجل الامر" className="sm:max-w-fit">
             <OrderLogs order={order} />
+          </Dialog.Content>
+        </Dialog>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVerticalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuGroup dir="rtl">
+                <Dialog.Trigger>
+                  <DropdownMenuItem>مرتجع</DropdownMenuItem>
+                </Dialog.Trigger>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Dialog.Content title="مرتجع" className="sm:max-w-fit">
+            <RefundOrderForm orderId={order.id} />
           </Dialog.Content>
         </Dialog>
       </TableCell>
