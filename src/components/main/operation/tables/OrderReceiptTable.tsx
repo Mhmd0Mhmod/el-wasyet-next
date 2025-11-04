@@ -63,7 +63,12 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
       <Table
         columns={ORDER_TABLE_COLUMNS}
         renderData={orders.map((order) => (
-          <TableRow key={order.orderId} className={cn(`bg-${order.color}`)}>
+          <TableRow
+            key={order.orderId}
+            className={cn(`bg-${order.color}`, {
+              "bg-yellow-200": order.closeAskExpense,
+            })}
+          >
             <TableCell>
               <Button asChild variant={"link"}>
                 <Link href={`/orders/${order.orderId}`}>{order.orderCode}</Link>
@@ -76,7 +81,6 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
             <TableCell>-</TableCell>
             <TableCell>{order.requiredChange_forthName_Husbend}</TableCell>
             <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
-            {/* should change to be the real overheads value */}
             <TableCell>
               <Dialog>
                 <Dialog.Trigger>

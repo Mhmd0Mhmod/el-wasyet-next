@@ -43,7 +43,12 @@ function OrdersTable({
         renderData={
           <>
             {orders.map((order) => (
-              <TableRow key={order.orderId} className={cn(`bg-${order.color}`)}>
+              <TableRow
+                key={order.orderId}
+                className={cn(`bg-${order.color}`, {
+                  "bg-yellow-200": order.closeAskExpense,
+                })}
+              >
                 <TableCell className="!px-2">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
