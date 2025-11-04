@@ -52,12 +52,16 @@ export async function approveRequestNotification({
 export async function rejectRequestNotification({
   notificationId,
   requestId,
+  reason,
 }: {
   notificationId: number;
   requestId: number;
+  reason?: string;
 }): Promise<APIResponse<void>> {
   try {
-    const response = await authFetch.post(`/Request/reject/${requestId}`);
+    const response = await authFetch.post(`/Request/reject/${requestId}`, {
+      reason: reason || "",
+    });
     await markNotificationAsRead(notificationId);
     revalidateTag("notifications");
     return {
@@ -93,13 +97,18 @@ export async function approveRequestStockNotification({
 export async function rejectRequestStockNotification({
   notificationId,
   requestStockId,
+  reason,
 }: {
   notificationId: number;
   requestStockId: number;
+  reason?: string;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.patch(
       `RequestStock/RejectTheRequest/${requestStockId}`,
+      {
+        reason: reason || "",
+      },
     );
     await markNotificationAsRead(notificationId);
 

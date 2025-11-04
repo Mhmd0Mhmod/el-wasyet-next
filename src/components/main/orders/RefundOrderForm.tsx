@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RefundOrderInput, refundOrderSchema } from "@/schema/refund-order";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -114,7 +114,7 @@ function RefundOrderForm({ orderId }: { orderId: number }) {
         />
 
         <Button type="submit">ارسال</Button>
-        <Button variant="outline" onClick={() => form.reset()}>
+        <Button variant="outline" type="button" onClick={() => form.reset()}>
           الغاء
         </Button>
       </form>

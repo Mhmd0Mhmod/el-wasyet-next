@@ -11,7 +11,7 @@ export async function refundOrder(
 
   try {
     const response = await authFetch.post<APIResponse>(
-      "OperationLog/cancellation-with-forms",
+      "OperationLog/refund-order-process",
       data,
     );
     return {

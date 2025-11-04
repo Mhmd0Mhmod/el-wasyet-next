@@ -12,10 +12,6 @@ import { toast } from "sonner";
 
 function SendCode({ order }: { order: OrderByStatus }) {
   const [code, setCode] = useState("");
-  // const [state, setState] = useState<"idle" | "loading" | "error" | "success">(
-  //   "idle",
-  // );
-
   const disabled = code.length < 6;
   const handleClick = useCallback(async () => {
     const id = toast.loading("جاري إرسال الكود...");
@@ -44,17 +40,9 @@ function SendCode({ order }: { order: OrderByStatus }) {
         </InputOTPGroup>
       </InputOTP>
       <p>الرجاء إدخال رمز التحقق أدناه:</p>
-      <Button className="w-3/4" disabled={disabled}>
+      <Button className="w-3/4" onClick={handleClick} disabled={disabled}>
         تأكيد
       </Button>
-      <div>
-        <p className="text-muted-foreground text-sm">
-          لم تستلم الكود؟{" "}
-          <Button variant="link" onClick={handleClick}>
-            إعادة إرسال الكود
-          </Button>
-        </p>
-      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ServicesTableHeaders } from "@/data/branch-services";
 import { getServices, getWorkFlows } from "@/data/services";
+import { formatCurrency } from "@/lib/helper";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 
@@ -36,20 +37,10 @@ async function ServicesTable({
         renderData={data?.items.map((service) => (
           <TableRow key={service.id}>
             <TableCell>{service.name}</TableCell>
-            <TableCell>
-              {Intl.NumberFormat("ar-EG", {
-                style: "currency",
-                currency: "EGP",
-              }).format(service.defaultFees)}
-            </TableCell>
+            <TableCell>{formatCurrency(service.defaultFees)}</TableCell>
             <TableCell>{service.documents.length} مستندات</TableCell>
             <TableCell>{service.workflows.length} خطوات</TableCell>
-            <TableCell>
-              {Intl.NumberFormat("ar-EG", {
-                style: "currency",
-                currency: "EGP",
-              }).format(service.bankFees)}
-            </TableCell>
+            <TableCell>{formatCurrency(service.bankFees)}</TableCell>
             <TableCell>{service.validityPeriodDays} ايام</TableCell>
             <TableCell>{service.expiryPeriodYears} سنوات</TableCell>
             <TableCell className="flex gap-2 text-gray-500">

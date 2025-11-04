@@ -37,6 +37,14 @@ function SendCodeButton({
       <Dialog.Content title="إرسال الكود">
         <div className="max-h-[70vh] space-y-10 overflow-auto">
           <SendCode order={order} />
+          <div>
+            <p className="text-muted-foreground text-sm">
+              لم تستلم الكود؟{" "}
+              <Button variant="link" onClick={handleClick}>
+                إعادة إرسال الكود
+              </Button>
+            </p>
+          </div>
         </div>
       </Dialog.Content>
     </Dialog>
