@@ -11,6 +11,7 @@ import { formatCurrency, formatDate } from "@/lib/helper";
 import { Edit3Icon } from "lucide-react";
 import Dialog from "@/components/general/Dialog";
 import { Button } from "@/components/ui/button";
+import AddNewExpense from "@/components/main/expenses/add-new-expense";
 
 interface Props {
   searchParams: Promise<{
@@ -28,6 +29,7 @@ function page({ searchParams }: Props) {
       <Suspense fallback={<TableSkeleton columns={6} rows={10} />}>
         <DataTable searchParams={searchParams} />
       </Suspense>
+      <AddNewExpense />
     </PageLayout>
   );
 }

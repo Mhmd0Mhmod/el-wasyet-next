@@ -60,3 +60,6 @@ export async function getCurrentUser() {
 export async function getToken() {
   return (await auth())?.user.token;
 }
+export async function getCurrentEmployeeId() {
+  return (await auth())?.user.userId;
+}
