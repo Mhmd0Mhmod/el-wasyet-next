@@ -98,7 +98,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     Component: OrdersTable,
   },
   "order-receipt": {
-    statusIds: [6, 7, 8, 9],
+    statusIds: [6],
     title: "استلام الاوامر",
     description: "سجل استلام الاوامر من العملاء",
     Component: OrderReceiptTable,
