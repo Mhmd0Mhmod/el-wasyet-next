@@ -29,6 +29,7 @@ import { ClipboardIcon, MoreVerticalIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import RefundOrderForm from "@/components/main/orders/RefundOrderForm";
+import OrderTableDropDownMenu from "@/components/main/orders/OrderTableDropDownMenu";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -111,25 +112,8 @@ async function OrdersTable({
             <OrderLogs order={order} />
           </Dialog.Content>
         </Dialog>
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVerticalIcon />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuGroup dir="rtl">
-                <Dialog.Trigger>
-                  <DropdownMenuItem>مرتجع</DropdownMenuItem>
-                </Dialog.Trigger>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Dialog.Content title="مرتجع" className="sm:max-w-fit">
-            <RefundOrderForm orderId={order.id} />
-          </Dialog.Content>
-        </Dialog>
+
+        <OrderTableDropDownMenu order={order} />
       </TableCell>
     </TableRow>
   ));

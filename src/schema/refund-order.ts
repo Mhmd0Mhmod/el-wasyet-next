@@ -2,7 +2,7 @@ import z from "zod";
 
 export const refundOrderSchema = z.object({
   orderId: z.number().int().positive(),
-  action: z.literal("refund order"),
+  action: z.string(),
   notes: z.string().optional(),
   amount: z.number().optional(),
   cashAmount: z.number().optional(),
