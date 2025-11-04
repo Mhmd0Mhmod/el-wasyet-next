@@ -1,17 +1,17 @@
-import PageLayout from "@/components/Layout/PageLayout";
-import { Suspense } from "react";
-import TableSkeleton from "@/components/general/TableSkeleton";
-import { getExpenses } from "@/data/expenses";
-import Table from "@/components/general/Table";
-import { TableCell, TableRow } from "@/components/ui/table";
 import Pagination from "@/components/general/Pagination";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { formatCurrency, formatDate } from "@/lib/helper";
-import { Edit3Icon } from "lucide-react";
-import Dialog from "@/components/general/Dialog";
-import { Button } from "@/components/ui/button";
+import Table from "@/components/general/Table";
+import TableSkeleton from "@/components/general/TableSkeleton";
+import PageLayout from "@/components/Layout/PageLayout";
 import AddNewExpense from "@/components/main/expenses/add-new-expense";
+import DeleteExpense from "@/components/main/expenses/DeleteExpense";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { getExpenses } from "@/data/expenses";
+import { formatCurrency, formatDate } from "@/lib/helper";
+import { Trash2Icon } from "lucide-react";
+import { Suspense } from "react";
 
 interface Props {
   searchParams: Promise<{
@@ -62,13 +62,15 @@ async function DataTable({ searchParams }: Props) {
             <TableCell>{item.branchName}</TableCell>
             <TableCell>{item.employeeName}</TableCell>
             <TableCell>
-              <Dialog>
-                <Dialog.Trigger>
-                  <Button variant={"ghost"} size={"icon"}>
-                    <Edit3Icon size={16} />
-                  </Button>
-                </Dialog.Trigger>
-              </Dialog>
+              <DeleteExpense expenseId={item.id}>
+                <Button
+                  variant="ghost"
+                  className="hover:text-red-400"
+                  size="icon"
+                >
+                  <Trash2Icon />
+                </Button>
+              </DeleteExpense>
             </TableCell>
           </TableRow>
         ))}
