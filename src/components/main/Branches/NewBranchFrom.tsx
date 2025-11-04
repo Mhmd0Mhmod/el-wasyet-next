@@ -25,39 +25,52 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { DialogClose } from "@/components/ui/dialog";
+import { useCallback } from "react";
 
 function NewBranchFrom({ branch }: { branch?: Branch }) {
   const { data: managers } = useManagers();
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchSchema),
-    defaultValues: {
-      name: branch ? branch.name : "",
-      managerId: branch ? branch.managerId?.toString() : null,
-      telephone: branch ? branch.telephone || "" : "",
-      email: branch ? branch.email : "",
-      address: branch ? branch.address : "",
+    defaultValues: branch || {
+      name: "",
+      managerId: undefined,
+      telephone: "",
+      email: "",
+      address: "",
     },
   });
-  const onSubmit = (data: BranchFormData) => {
-    if (branch) {
-      updateBranch(branch.id, data).then((res) => {
-        if (res.success) {
-          toast.success("تم تعديل الفرع بنجاح");
-        } else {
-          toast.error(res.message);
-        }
-      });
-    } else {
-      createBranch(data).then((res) => {
-        if (res.success) {
-          form.reset();
-          toast.success("تم إضافة الفرع بنجاح");
-        } else {
-          toast.error(res.message);
-        }
-      });
-    }
-  };
+  const onSubmit = useCallback(
+    async (data: BranchFormData) => {
+      const id = toast.loading("جاري الحفظ...");
+      if (branch) {
+        updateBranch(branch.id, data)
+          .then((res) => {
+            if (res.success) {
+              toast.success("تم تعديل الفرع بنجاح", { id });
+            } else {
+              toast.error(res.message || "حدث خطأ أثناء تعديل الفرع", { id });
+            }
+          })
+          .catch(() => {
+            toast.error("حدث خطأ أثناء تعديل الفرع", { id });
+          });
+      } else {
+        createBranch(data)
+          .then((res) => {
+            if (res.success) {
+              toast.success("تم إضافة الفرع بنجاح", { id });
+              form.reset();
+            } else {
+              toast.error(res.message || "حدث خطأ أثناء إضافة الفرع", { id });
+            }
+          })
+          .catch(() => {
+            toast.error("حدث خطأ أثناء إضافة الفرع", { id });
+          });
+      }
+    },
+    [branch, form],
+  );
 
   return (
     <div dir="rtl">
@@ -90,7 +103,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
                   <FormLabel className="text-right">مدير الفرع</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => field.onChange(parseInt(value))}
                       value={field.value?.toString()}
                     >
                       <SelectTrigger className="w-full text-right" dir="rtl">
