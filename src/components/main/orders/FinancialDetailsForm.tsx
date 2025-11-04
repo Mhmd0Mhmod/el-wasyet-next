@@ -1,23 +1,23 @@
 "use client";
 
-import { useOrderForm } from "../providers/OrderFormProvider";
-import { Button } from "../ui/button";
+import { useOrderForm } from "../../providers/OrderFormProvider";
+import { Button } from "../../ui/button";
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Skeleton } from "../ui/skeleton";
+} from "../../ui/select";
+import { Skeleton } from "../../ui/skeleton";
 
 function FinancialDetailsForm() {
   const { agents, isLoadingAgents, isLoadingOffers, offers, form } =

@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 type Column = {
   id: string;
   label: string;

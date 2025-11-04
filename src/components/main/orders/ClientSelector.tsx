@@ -5,8 +5,8 @@ import { useCallback, useState } from "react";
 
 import { useClients } from "@/hooks/useClients";
 import { cn } from "@/lib/utils";
-import { useOrderForm } from "../providers/OrderFormProvider";
-import { Button } from "../ui/button";
+import { useOrderForm } from "../../providers/OrderFormProvider";
+import { Button } from "../../ui/button";
 import {
   Command,
   CommandEmpty,
@@ -14,11 +14,11 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../ui/command";
-import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import Dialog from "../general/Dialog";
+} from "../../ui/command";
+import { FormControl, FormField, FormItem, FormMessage } from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import Dialog from "../../general/Dialog";
 import ClientForm from "../clients/ClientsForm";
 interface ClientSelectorProps {
   placeholder?: string;

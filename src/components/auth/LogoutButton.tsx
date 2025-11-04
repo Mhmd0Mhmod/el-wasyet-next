@@ -1,7 +1,7 @@
 "use client";
 import { Logout } from "@/actions/auth/actions";
 import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 function LogoutButton() {

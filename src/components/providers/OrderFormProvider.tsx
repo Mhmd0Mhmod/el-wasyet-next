@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createContext, useCallback, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Form } from "../ui/form";
+import { Form } from "@/components/ui/form";
 
 interface OrderFormContextProps {
   form: ReturnType<typeof useForm<OrderFormValues>>;

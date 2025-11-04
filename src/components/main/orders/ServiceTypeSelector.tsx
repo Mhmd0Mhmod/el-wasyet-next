@@ -1,21 +1,21 @@
 "use client";
 import { useServices } from "@/hooks/useServices";
-import { useOrderForm } from "../providers/OrderFormProvider";
+import { useOrderForm } from "../../providers/OrderFormProvider";
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
+} from "../../ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Skeleton } from "../ui/skeleton";
+} from "../../ui/select";
+import { Skeleton } from "../../ui/skeleton";
 
 function ServiceTypeSelector() {
   const { services, isLoadingServices } = useServices();

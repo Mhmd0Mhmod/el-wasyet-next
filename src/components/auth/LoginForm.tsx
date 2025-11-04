@@ -4,8 +4,8 @@ import { LoginFormValues } from "@/schema/login";
 import { ShortBranch } from "@/types/branch";
 import { EyeClosed, EyeIcon, User } from "lucide-react";
 import { useForm } from "react-hook-form";
-import Input from "../general/Input";
-import { Button } from "../ui/button";
+import Input from "@/components/general/Input";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,14 +13,14 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";

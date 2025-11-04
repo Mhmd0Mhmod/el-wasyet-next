@@ -1,10 +1,10 @@
 import Pagination from "@/components/general/Pagination";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
-import ExportButton from "@/components/operation/actions/ExportButton";
-import CertificatesTable from "@/components/operation/tables/CertificatesTable";
-import OrderReceiptTable from "@/components/operation/tables/OrderReceiptTable";
-import OrdersTable from "@/components/operation/tables/OrdersTable";
+import ExportButton from "@/components/main/operation/actions/ExportButton";
+import CertificatesTable from "@/components/main/operation/tables/CertificatesTable";
+import OrderReceiptTable from "@/components/main/operation/tables/OrderReceiptTable";
+import OrdersTable from "@/components/main/operation/tables/OrdersTable";
 import { getOrdersByStatusIds } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";

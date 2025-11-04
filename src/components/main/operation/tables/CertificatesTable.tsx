@@ -1,4 +1,4 @@
-import ClientDetails from "@/components/clients/ClientDetails";
+import ClientDetails from "@/components/main/clients/ClientDetails";
 import Dialog from "@/components/general/Dialog";
 import Table from "@/components/general/Table";
 import { Button } from "@/components/ui/button";

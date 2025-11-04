@@ -1,4 +1,4 @@
-import Dialog from "../general/Dialog";
+import Dialog from "@/components/general/Dialog";
 import NewBranchFrom from "./NewBranchFrom";
 import { Branch } from "@/types/branch";
 

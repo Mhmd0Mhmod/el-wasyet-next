@@ -15,8 +15,8 @@ import { useClient } from "@/hooks/useClient";
 import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useRef } from "react";
-import Dialog from "../general/Dialog";
-import Table from "../general/Table";
+import Dialog from "@/components/general/Dialog";
+import Table from "@/components/general/Table";
 import {
   Pagination,
   PaginationContent,
@@ -25,17 +25,21 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@/components/ui/pagination";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { TableCell, TableRow } from "../ui/table";
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { TableCell, TableRow } from "@/components/ui/table";
 import AddBranchClient from "./AddBranchClient";
 const orderColumns = [
   { id: "orderId", label: "رقم الأمر" },

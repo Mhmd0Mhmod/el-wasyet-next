@@ -1,6 +1,6 @@
+import { Button } from "@/components/ui/button";
 import { BranchClientValues } from "@/schema/client";
 import { Mail, MapPin, Phone, Trash2, User } from "lucide-react";
-import { Button } from "../ui/button";
 function BranchClientCard({
   client,
   index,

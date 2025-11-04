@@ -1,12 +1,12 @@
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
-import { Input } from "../ui/input";
+} from "../../ui/collapsible";
+import { Input } from "../../ui/input";
 
 function AddDocumentForm({
   onSubmit,

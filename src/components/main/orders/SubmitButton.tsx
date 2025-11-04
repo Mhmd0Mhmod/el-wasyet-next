@@ -1,7 +1,7 @@
 "use client";
 
-import { useOrderForm } from "../providers/OrderFormProvider";
-import { Button } from "../ui/button";
+import { useOrderForm } from "../../providers/OrderFormProvider";
+import { Button } from "../../ui/button";
 function SubmitButton() {
   const { form } = useOrderForm();
   const isSubmitting = form.formState.isSubmitting;

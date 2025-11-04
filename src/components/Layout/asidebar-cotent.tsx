@@ -2,7 +2,11 @@
 import { NAVIGATION_LINKS } from "@/app/(query)/(dashboard)/dashboard/helper";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 function ASidebarContent() {

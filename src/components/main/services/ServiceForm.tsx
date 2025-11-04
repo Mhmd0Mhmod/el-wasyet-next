@@ -1,19 +1,26 @@
 "use client";
 import { createService, updateService } from "@/actions/services/actions";
+import AddOverheadForm from "@/components/general/AddOverheadForm";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { generateServiceSchema, ServiceValues } from "@/schema/service";
 import { Service, ShortWorkFlow } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
-import { ControllerRenderProps, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import AddOverheadForm from "../general/AddOverheadForm";
-import { createFormField } from "../general/FormComponent";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Checkbox } from "../ui/checkbox";
-import { Form, FormLabel } from "../ui/form";
-import { Input } from "../ui/input";
-import { Switch } from "../ui/switch";
+
 function ServiceForm({
   service,
   workFlows,
@@ -34,16 +41,6 @@ function ServiceForm({
     control: form.control,
     name: "documents",
   });
-
-  function handleNumberInputChange(
-    field: ControllerRenderProps<ServiceValues>,
-  ) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      const numericValue = value === "" ? "" : Number(value);
-      field.onChange(numericValue);
-    };
-  }
 
   const onSubmit = (data: ServiceValues) => {
     if (service) {
@@ -66,8 +63,6 @@ function ServiceForm({
     }
   };
 
-  const FormComponent = createFormField<ServiceValues>(form);
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -78,54 +73,75 @@ function ServiceForm({
               <CardTitle>المعلومات الأساسية</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-2">
-              <FormComponent
+              <FormField
                 name="Name"
-                label="اسم الخدمة"
-                render={({ field }) => <Input {...field} />}
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>اسم الخدمة</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <FormComponent
+              <FormField
                 name="defaultFees"
-                label="السعر الصافي للخدمة"
+                control={form.control}
                 render={({ field }) => (
-                  <Input
-                    type="number"
-                    {...field}
-                    onChange={handleNumberInputChange(field)}
-                  />
+                  <FormItem>
+                    <FormLabel>الرسوم الافتراضية</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
-              <FormComponent
+
+              <FormField
                 name="validityPeriodDays"
-                label="مده الخدمه (بالأيام)"
+                control={form.control}
                 render={({ field }) => (
-                  <Input
-                    type="number"
-                    {...field}
-                    onChange={handleNumberInputChange(field)}
-                  />
+                  <FormItem>
+                    <FormLabel>فترة الصلاحية (بالأيام)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
-              <FormComponent
+              <FormField
                 name="expiryPeriodYears"
-                label="فترة الصلاحية (بالسنوات)"
+                control={form.control}
                 render={({ field }) => (
-                  <Input
-                    type="number"
-                    {...field}
-                    onChange={handleNumberInputChange(field)}
-                  />
+                  <FormItem>
+                    <FormLabel>فترة الصلاحية (بالسنوات)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
-              <FormComponent
+
+              <FormField
                 name="isCertificate"
-                label="شهادة "
-                className="flex items-center justify-between md:col-span-2"
+                control={form.control}
                 render={({ field }) => (
-                  <Switch
-                    className="flex-row-reverse"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <FormItem className="flex items-center justify-between md:col-span-2">
+                    <FormLabel>هل هذه الخدمة شهادة؟</FormLabel>
+                    <FormControl>
+                      <Switch
+                        className="flex-row-reverse"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
             </CardContent>
@@ -148,15 +164,21 @@ function ServiceForm({
               <div className="space-y-4">
                 {documentFields.map((field, index) => (
                   <div key={field.id} className="flex gap-2">
-                    <FormComponent
+                    <FormField
                       name={`documents.${index}.description`}
-                      className="flex-1"
+                      control={form.control}
                       render={({ field }) => (
-                        <Input
-                          type="text"
-                          placeholder="اسم الوثيقة"
-                          {...field}
-                        />
+                        <FormItem>
+                          <FormLabel>اسم الوثيقة</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              placeholder="اسم الوثيقة"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
                     />
                     <Button
@@ -181,48 +203,53 @@ function ServiceForm({
             <CardContent>
               <div className="space-y-4">
                 {workFlows.map((workflow) => (
-                  <FormComponent
+                  <FormField
                     key={workflow.id}
                     name="Workflows"
+                    control={form.control}
                     render={({ field }) => {
                       const selectedWorkflow = field.value.find(
                         (w) => w.orderStatusId === workflow.id,
                       );
                       const isSelected = !!selectedWorkflow;
                       return (
-                        <div className="flex items-center space-x-3 rounded border p-3">
-                          <Checkbox
-                            checked={isSelected}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                const nextSequence = field.value.length + 1;
-                                field.onChange([
-                                  ...field.value,
-                                  {
-                                    orderStatusId: workflow.id,
-                                    sequence: nextSequence,
-                                  },
-                                ]);
-                              } else {
-                                interface WorkflowItem {
-                                  orderStatusId: number;
-                                  sequence: number;
-                                }
+                        <FormItem className="flex items-center space-x-3 rounded border p-3">
+                          <FormControl>
+                            <Checkbox
+                              checked={isSelected}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  const nextSequence = field.value.length + 1;
+                                  field.onChange([
+                                    ...field.value,
+                                    {
+                                      orderStatusId: workflow.id,
+                                      sequence: nextSequence,
+                                    },
+                                  ]);
+                                } else {
+                                  interface WorkflowItem {
+                                    orderStatusId: number;
+                                    sequence: number;
+                                  }
 
-                                const updatedWorkflows: WorkflowItem[] =
-                                  field.value
-                                    .filter(
-                                      (w: WorkflowItem) =>
-                                        w.orderStatusId !== workflow.id,
-                                    )
-                                    .map((w: WorkflowItem, index: number) => ({
-                                      ...w,
-                                      sequence: index + 1,
-                                    }));
-                                field.onChange(updatedWorkflows);
-                              }
-                            }}
-                          />
+                                  const updatedWorkflows: WorkflowItem[] =
+                                    field.value
+                                      .filter(
+                                        (w: WorkflowItem) =>
+                                          w.orderStatusId !== workflow.id,
+                                      )
+                                      .map(
+                                        (w: WorkflowItem, index: number) => ({
+                                          ...w,
+                                          sequence: index + 1,
+                                        }),
+                                      );
+                                  field.onChange(updatedWorkflows);
+                                }
+                              }}
+                            />
+                          </FormControl>
                           <FormLabel className="flex-1">
                             {workflow.name}
                           </FormLabel>
@@ -231,7 +258,7 @@ function ServiceForm({
                               ترتيب: {selectedWorkflow.sequence}
                             </span>
                           )}
-                        </div>
+                        </FormItem>
                       );
                     }}
                   />

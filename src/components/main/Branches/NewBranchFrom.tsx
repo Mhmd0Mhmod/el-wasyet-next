@@ -24,7 +24,7 @@ import { Branch } from "@/types/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { DialogClose } from "../ui/dialog";
+import { DialogClose } from "@/components/ui/dialog";
 
 function NewBranchFrom({ branch }: { branch?: Branch }) {
   const { data: managers } = useManagers();

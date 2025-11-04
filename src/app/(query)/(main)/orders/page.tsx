@@ -5,7 +5,7 @@ import Select from "@/components/general/Select";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
-import OrderLogs from "@/components/orders/[id]/order-logs";
+import OrderLogs from "@/components/main/orders/[id]/order-logs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

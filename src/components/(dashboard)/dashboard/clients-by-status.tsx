@@ -1,4 +1,4 @@
-import { translateToArabic } from "@/components/operation/helper";
+import { translateToArabic } from "@/components/main/operation/helper";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCount } from "@/lib/helper";
 import { cn } from "@/lib/utils";

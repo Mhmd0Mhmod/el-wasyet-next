@@ -11,8 +11,8 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "../ui/form";
-import { Skeleton } from "../ui/skeleton";
+} from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FormFieldProps<T extends FieldValues, N extends FieldPath<T>> {
   className?: string;

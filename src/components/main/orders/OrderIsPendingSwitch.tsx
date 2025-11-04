@@ -1,7 +1,7 @@
 "use client";
-import { useOrderForm } from "../providers/OrderFormProvider";
-import { FormField } from "../ui/form";
-import { Switch } from "../ui/switch";
+import { useOrderForm } from "../../providers/OrderFormProvider";
+import { FormField } from "../../ui/form";
+import { Switch } from "../../ui/switch";
 
 function OrderIsPendingSwitch() {
   const { form } = useOrderForm();

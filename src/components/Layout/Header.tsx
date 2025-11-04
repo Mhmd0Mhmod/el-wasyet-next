@@ -1,14 +1,14 @@
 import { NAVBARLINKS } from "@/lib/helper";
 import { ChevronDownIcon, PanelLeftClose } from "lucide-react";
 import LogoutButton from "../auth/LogoutButton";
-import Link from "../general/Link";
+import Link from "@/components/general/Link";
 import NotificationButton from "../notificaitons/NotificationButton";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
+} from "@/components/ui/collapsible";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,8 +16,8 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "../ui/navigation-menu";
-import { Separator } from "../ui/separator";
+} from "@/components/ui/navigation-menu";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetClose,
@@ -26,7 +26,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet";
+} from "@/components/ui/sheet";
 import Logo from "./Logo";
 function Header() {
   return (

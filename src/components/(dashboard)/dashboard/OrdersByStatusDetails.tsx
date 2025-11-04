@@ -2,7 +2,7 @@
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import ClientPagination from "@/components/general/ClientPagination";
-import { getRemainingDaysStyle } from "@/components/operation/helper";
+import { getRemainingDaysStyle } from "@/components/main/operation/helper";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import useOrderStatusDetails from "@/hooks/use-order-status-details";

@@ -9,19 +9,19 @@ import {
 import { formatDate } from "@/lib/helper";
 import { Notification } from "@/types/notification";
 import { useCallback, useRef, useState, useTransition } from "react";
-import Dialog from "../general/Dialog";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
+import Dialog from "@/components/general/Dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 
 interface NotificationCardProps {
   notification: Notification;

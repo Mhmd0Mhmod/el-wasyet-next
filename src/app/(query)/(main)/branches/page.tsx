@@ -1,4 +1,4 @@
-import NewBranch from "@/components/Branches/NewBranch";
+import NewBranch from "@/components/main/Branches/NewBranch";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
 import { Button } from "@/components/ui/button";

@@ -21,16 +21,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Spinner from "../general/Spinner";
-import { Label } from "../ui/label";
+import Spinner from "@/components/general/Spinner";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Switch } from "../ui/switch";
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 interface EmployeeFormProps {
   employeeId?: number;
   disabled?: boolean;
@@ -99,7 +99,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
           if (res.success) toast.success("تم تحديث الموظف بنجاح", { id });
           else toast.error(res.message, { id });
         })
-        .catch((error) => {
+        .catch(() => {
           toast.error("حدث خطأ أثناء تحديث الموظف", { id });
         });
     } else {

@@ -1,4 +1,4 @@
-import EmployeeForm from "@/components/employees/EmployeeForm";
+import EmployeeForm from "@/components/main/employees/EmployeeForm";
 import Dialog from "@/components/general/Dialog";
 import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";

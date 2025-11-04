@@ -4,17 +4,17 @@ import { useFormsServices } from "@/hooks/useFormsServices";
 import { Plus, Trash2 } from "lucide-react";
 import { useCallback } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 
 interface AddOverheadFormProps {
   name: string;

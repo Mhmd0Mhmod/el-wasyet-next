@@ -1,5 +1,5 @@
 import Dialog from "@/components/general/Dialog";
-import { translateToArabic } from "@/components/operation/helper";
+import { translateToArabic } from "@/components/main/operation/helper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCount } from "@/lib/helper";

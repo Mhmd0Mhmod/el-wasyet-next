@@ -24,11 +24,11 @@ import { Plus, User } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Dialog from "../general/Dialog";
-import { DialogClose } from "../ui/dialog";
 import AddBranchClient from "./AddBranchClient";
 import BranchClientCard from "./BranchClientCard";
 import Loading from "@/app/loading";
+import Dialog from "@/components/general/Dialog";
+import { DialogClose } from "@/components/ui/dialog";
 
 interface ClientFormProps {
   clientId?: number;

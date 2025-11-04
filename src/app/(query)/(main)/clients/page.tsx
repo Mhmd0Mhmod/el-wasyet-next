@@ -1,5 +1,5 @@
-import ClientDetails from "@/components/clients/ClientDetails";
-import ClientForm from "@/components/clients/ClientsForm";
+import ClientDetails from "@/components/main/clients/ClientDetails";
+import ClientForm from "@/components/main/clients/ClientsForm";
 import Dialog from "@/components/general/Dialog";
 import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";

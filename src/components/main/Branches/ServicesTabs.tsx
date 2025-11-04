@@ -1,8 +1,8 @@
 import { Service } from "@/types/service";
-import Table from "../general/Table";
-import { TabsList, TabsTrigger } from "../general/Tabs";
-import { TableCell, TableRow } from "../ui/table";
-import { Tabs, TabsContent } from "../ui/tabs";
+import Table from "@/components/general/Table";
+import { TabsList, TabsTrigger } from "@/components/general/Tabs";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 
 const TABSLIST = [
   { label: "رسوم إضافية", value: "overheads" },

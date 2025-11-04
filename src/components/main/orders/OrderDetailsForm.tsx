@@ -1,5 +1,5 @@
 "use client";
-import { useOrderForm } from "../providers/OrderFormProvider";
+import { useOrderForm } from "../../providers/OrderFormProvider";
 import {
   FormControl,
   FormDescription,
@@ -7,10 +7,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Skeleton } from "../ui/skeleton";
-import { Textarea } from "../ui/textarea";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Skeleton } from "../../ui/skeleton";
+import { Textarea } from "../../ui/textarea";
 
 function OrderDetailsForm() {
   const { service, isLoadingService, form } = useOrderForm();

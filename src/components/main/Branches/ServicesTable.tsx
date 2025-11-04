@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ServicesTableHeaders } from "@/data/branch-services";
 import { Service } from "@/types/service";
 import { Edit2, Eye } from "lucide-react";
-import Table from "../general/Table";
-import { TableCell, TableRow } from "../ui/table";
-import Dialog from "../general/Dialog";
+import Table from "@/components/general/Table";
+import { TableCell, TableRow } from "@/components/ui/table";
+import Dialog from "@/components/general/Dialog";
 import ServicesTabs from "./ServicesTabs";
 
 function ServicesTable({ services }: { services: Service[] }) {
