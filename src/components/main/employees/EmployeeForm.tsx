@@ -141,9 +141,6 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
     form.setValue("managerId", null);
   }
 
-  const disabledManagers =
-    form.watch("roleId") === "" ||
-    form.watch("roleId") === roles[0]?.id.toString();
   return (
     <>
       <Form {...form}>
@@ -231,27 +228,27 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>المدير المباشر</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    disabled={disabledManagers}
-                    value={field.value ?? undefined}
-                  >
-                    <FormControl>
+                  <FormControl>
+                    <Select
+                      {...field}
+                      onValueChange={field.onChange}
+                      value={field.value ?? undefined}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="اختار المدير المباشر" />
                       </SelectTrigger>
-                    </FormControl>
-                    <SelectContent dir="rtl">
-                      {managers?.map((manager) => (
-                        <SelectItem
-                          value={manager.id?.toString()}
-                          key={manager.id}
-                        >
-                          {manager.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      <SelectContent dir="rtl">
+                        {managers?.map((manager) => (
+                          <SelectItem
+                            value={manager.id?.toString()}
+                            key={manager.id}
+                          >
+                            {manager.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
