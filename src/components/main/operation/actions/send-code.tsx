@@ -1,5 +1,5 @@
 "use client";
-import { sendCode } from "@/actions/[operations]/action";
+import { verifyCode } from "@/actions/[operations]/action";
 import { Button } from "@/components/ui/button";
 import {
   InputOTP,
@@ -14,18 +14,19 @@ function SendCode({ order }: { order: OrderByStatus }) {
   const [code, setCode] = useState("");
   const disabled = code.length < 6;
   const handleClick = useCallback(async () => {
-    const id = toast.loading("جاري إرسال الكود...");
+    const id = toast.loading("جاري التحقق من الكود...");
     try {
-      const res = await sendCode(order.orderId);
+      const res = await verifyCode(order.orderId, code);
       if (res.success) {
-        toast.success("تم إرسال الكود بنجاح", { id });
+        toast.success(res.message, { id });
+        setCode("");
       } else {
-        toast.error(res.message || "حدث خطأ أثناء إرسال الكود", { id });
+        toast.error(res.message || "حدث خطأ أثناء التحقق من الكود", { id });
       }
     } catch {
-      toast.error("حدث خطأ أثناء إرسال الكود", { id });
+      toast.error("حدث خطأ أثناء التحقق من الكود", { id });
     }
-  }, [order.orderId]);
+  }, [order.orderId, code]);
   return (
     <div className="flex flex-col items-center space-y-5">
       <p> تم إرسال كود مكون من 6 أرقام</p>

@@ -42,6 +42,34 @@ export async function sendCode(orderId: number): Promise<APIResponse<null>> {
     return handleErrorResponse(err);
   }
 }
+export async function verifyCode(
+  orderId: number,
+  code: string,
+): Promise<APIResponse<null>> {
+  try {
+    const user = await getCurrentUser();
+    if (!user?.user.userId) {
+      return {
+        success: false,
+        message:
+          "لم يتم العثور على المستخدم الحالي. يرجى تسجيل الدخول مرة أخرى.",
+      };
+    }
+
+    const { data } = await authFetch.post("OperationLog/verify-receipt-code", {
+      orderId,
+      employeeId: user.user.id,
+      code,
+    });
+    return {
+      success: data.success,
+      message: data.message,
+      data: null,
+    };
+  } catch (err) {
+    return handleErrorResponse(err);
+  }
+}
 async function processOperation(
   operation: Operation,
   endpoint: string,
