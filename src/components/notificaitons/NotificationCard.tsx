@@ -13,7 +13,7 @@ import {
 import { formatDate } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import { Notification } from "@/types/notification";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import RequestConfirmDialogContent from "./Request-Confirm-Dialog-Content";
 import RequestStockConfirmDialogContent from "./RequestStockConfirmDialogContent";
 
@@ -24,10 +24,15 @@ interface NotificationCardProps {
 export function NotificationCard({ notification }: NotificationCardProps) {
   const [open, setOpen] = useState(false);
   const [notificationState, setNotificationState] = useState(notification);
-
+  const [, startTransition] = useTransition();
   const updateReadStatus = useCallback(async () => {
-    await markNotificationAsRead(notification.notificationId);
-  }, [notification.notificationId]);
+    if (notificationState.isRead) return;
+    if (notification.isRequestStock || notification.isRequest) return;
+    startTransition(() => {
+      setNotificationState((prev) => ({ ...prev, isRead: !prev.isRead }));
+      markNotificationAsRead(notification.notificationId);
+    });
+  }, [notification, notificationState]);
 
   const openDialog = useCallback(() => {
     if (notification.isRequestStock || notification.isRequest) setOpen(true);

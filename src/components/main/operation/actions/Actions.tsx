@@ -121,7 +121,7 @@ function Actions({ order }: { order: OrderByStatus }) {
               <div className="flex flex-col gap-2">
                 <Label>المدفوع كريديت</Label>
                 <Input
-                  type="number"
+                  type="text"
                   step="0.01"
                   min="0"
                   {...form.register("creditAmount", { valueAsNumber: true })}
@@ -136,7 +136,7 @@ function Actions({ order }: { order: OrderByStatus }) {
               <div className="flex flex-col gap-2">
                 <Label>المدفوع كاش</Label>
                 <Input
-                  type="number"
+                  type="text"
                   step="0.01"
                   min="0"
                   {...form.register("cashAmount", { valueAsNumber: true })}

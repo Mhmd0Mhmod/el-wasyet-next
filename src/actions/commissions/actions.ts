@@ -29,7 +29,10 @@ export async function updateCommission(
         message: "Role ID is required",
       };
     }
-    await authFetch.put<APIResponse>(`Commission/role/${roleId}`, data);
+    await authFetch.put<APIResponse>(
+      `Commission/EditRoleCommission/${roleId}`,
+      data,
+    );
     revalidatePath("/commissions");
     return {
       success: true,

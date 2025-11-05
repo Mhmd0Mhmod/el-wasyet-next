@@ -172,7 +172,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                   <FormLabel htmlFor="quantity">الكمية</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       min={0}
                       {...field}
                       value={field.value?.toString()}
@@ -194,7 +194,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                   <FormLabel htmlFor="threshold">الحد الأدنى للتنبيه</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       min={0}
                       {...field}
                       value={field.value?.toString()}
@@ -217,7 +217,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                     <FormLabel>سعر الاستمارة</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
                         placeholder="اكتب سعر الاستمارة"
                         {...field}
                         onChange={(e) =>

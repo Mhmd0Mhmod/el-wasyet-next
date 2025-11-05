@@ -72,7 +72,7 @@ function AgentForm({ agent }: { agent?: Agent }) {
         <Input
           {...form.register("commissionPercentage")}
           id="commissionPercentage"
-          type="number"
+          type="text"
         />
       </div>
       <div className="col-span-2 flex justify-end">

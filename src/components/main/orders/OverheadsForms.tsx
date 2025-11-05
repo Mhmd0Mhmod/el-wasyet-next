@@ -121,7 +121,7 @@ function OverheadsForms() {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type="number"
+                    type="text"
                     {...field}
                     value={field.value?.toString() || ""}
                     onChange={(e) => {
@@ -149,7 +149,7 @@ function OverheadsForms() {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type="number"
+                    type="text"
                     {...field}
                     value={field.value?.toString() || ""}
                     onChange={(e) => {

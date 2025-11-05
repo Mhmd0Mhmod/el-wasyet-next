@@ -55,7 +55,7 @@ function OrderDetailsForm() {
                 <FormLabel>العدد المطلوب</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
+                    type="text"
                     {...field}
                     value={field.value?.toString() || ""}
                     onChange={(e) => {

@@ -37,7 +37,7 @@ function CommissionForm({ commission }: { commission?: Commission }) {
           id,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء تحديث العموله", { id });
     }
   }, []);
@@ -52,7 +52,7 @@ function CommissionForm({ commission }: { commission?: Commission }) {
           id,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء إنشاء العموله", { id });
     }
   }, []);
@@ -100,7 +100,7 @@ function CommissionForm({ commission }: { commission?: Commission }) {
         <div className="space-y-2">
           <Label>نسبه العموله %</Label>
           <Input
-            type="number"
+            type="text"
             {...form.register("commissionPercentage", {
               valueAsNumber: true,
             })}

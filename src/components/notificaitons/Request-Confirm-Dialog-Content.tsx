@@ -137,7 +137,7 @@ function RequestConfirmDialogContent({
       {showPartialInput && !showRejectInput && (
         <Input
           ref={ref}
-          type="number"
+          type="text"
           placeholder="أدخل القيمة المتبقية"
           className="rounded border p-2"
           min="0"

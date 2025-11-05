@@ -77,7 +77,7 @@ function NewFormType({ onAdded }: NewFormTypeProps) {
               <FormLabel>سعر الاستمارة</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
+                  type="text"
                   placeholder="اكتب سعر الاستمارة"
                   {...field}
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}

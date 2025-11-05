@@ -67,7 +67,7 @@ function RefundOrderForm({ orderId }: { orderId: number }) {
               <FormControl>
                 <Input
                   {...field}
-                  type="number"
+                  type="text"
                   placeholder="ادخل المبلغ المدفوع كاش"
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
@@ -85,7 +85,7 @@ function RefundOrderForm({ orderId }: { orderId: number }) {
               <FormControl>
                 <Input
                   {...field}
-                  type="number"
+                  type="text"
                   placeholder="ادخل المبلغ المدفوع كريدت"
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />

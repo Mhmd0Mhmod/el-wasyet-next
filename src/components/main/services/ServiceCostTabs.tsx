@@ -115,7 +115,7 @@ function ServiceCostTabs() {
                   <Label htmlFor="fee-amount">المبلغ</Label>
                   <Input
                     id="fee-amount"
-                    type="number"
+                    type="text"
                     placeholder="0"
                     value={newFee.amount}
                     onChange={(e) =>

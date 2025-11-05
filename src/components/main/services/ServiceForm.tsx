@@ -107,7 +107,7 @@ function ServiceForm({
                     <FormLabel>الرسوم الافتراضية</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
@@ -128,7 +128,7 @@ function ServiceForm({
                     <FormLabel>فترة الصلاحية (بالأيام)</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
@@ -148,7 +148,7 @@ function ServiceForm({
                     <FormLabel>فترة الصلاحية (بالسنوات)</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>

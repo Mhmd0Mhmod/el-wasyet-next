@@ -57,7 +57,7 @@ function DiscountForm({ offer }: { offer?: Offer }) {
           <Label htmlFor="discountPercentage">نسبة الخصم</Label>
           <Input
             id="discountPercentage"
-            type="number"
+            type="text"
             {...form.register("discountPercentage", {
               required: "هذا الحقل مطلوب",
             })}
