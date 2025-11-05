@@ -63,7 +63,7 @@ async function CommissionsTable() {
       <Table
         columns={COLUMNS}
         renderData={commissions.map((commission) => (
-          <TableRow key={commission.roleId}>
+          <TableRow key={commission.id}>
             <TableCell>{commission.roleName}</TableCell>
             <TableCell>
               % {formatCount(commission.commissionPercentage)}

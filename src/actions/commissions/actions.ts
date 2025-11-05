@@ -30,7 +30,7 @@ export async function updateCommission(
       };
     }
     await authFetch.put<APIResponse>(
-      `Commission/EditRoleCommission/${roleId}`,
+      `Commission/EditRoleCommission/${data.id}`,
       data,
     );
     revalidatePath("/commissions");
