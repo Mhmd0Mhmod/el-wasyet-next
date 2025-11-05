@@ -1,3 +1,4 @@
+import DeleteDiscountButton from "@/components/(dashboard)/discounts/delete-discount-button";
 import DiscountDetials from "@/components/(dashboard)/discounts/discount-dialog";
 import DiscountForm from "@/components/(dashboard)/discounts/discount-form";
 import Dialog from "@/components/general/Dialog";
@@ -113,7 +114,7 @@ async function page() {
                     <DialogClose asChild>
                       <Button variant="outline">إلغاء</Button>
                     </DialogClose>
-                    <Button variant="destructive">حذف</Button>
+                    <DeleteDiscountButton discountId={discount.offerId} />
                   </div>
                 </Dialog.Content>
               </Dialog>

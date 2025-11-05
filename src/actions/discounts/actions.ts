@@ -31,3 +31,12 @@ export async function updateOffer(data: Partial<Offer>): Promise<APIResponse> {
     return handleErrorResponse(error);
   }
 }
+export async function deleteOffer(offerId: number): Promise<APIResponse> {
+  try {
+    await authFetch.delete(`Offer/delete/${offerId}`);
+    revalidatePath("/discounts");
+    return { success: true, data: undefined };
+  } catch (error) {
+    return handleErrorResponse(error);
+  }
+}
