@@ -21,6 +21,7 @@ export async function getOrders({
     page?: string;
     serviceIds?: string;
     orderStatusIds?: string;
+    colorId?: string;
   }>;
 }): Promise<PaginatedResponse<Order>> {
   try {
@@ -39,6 +40,9 @@ export async function getOrders({
       orderStatusIds.forEach((id) =>
         params.append("orderStatusIds", id.toString()),
       );
+    }
+    if (searchParams?.colorId) {
+      params.append("colorId", searchParams.colorId);
     }
     if (serviceIds && serviceIds.length > 0) {
       serviceIds.forEach((id) => params.append("serviceIds", id.toString()));

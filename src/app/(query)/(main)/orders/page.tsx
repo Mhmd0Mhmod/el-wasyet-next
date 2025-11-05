@@ -44,6 +44,7 @@ async function OrdersTable({
     page?: string;
     serviceIds?: string;
     orderStatusIds?: string;
+    colorId?: string;
   };
 }) {
   const { items, pageNumber, totalPages } = await getOrders({
@@ -110,6 +111,28 @@ async function OrdersTable({
     </TableRow>
   ));
 
+  const filterColors = [
+    {
+      status: "تم الاستلام قبل انتهاء فترة الخدمة",
+      className: "green",
+      id: 1,
+    },
+    {
+      status: "تم الاستلام بعد انتهاء فترة الخدمة",
+      className: "yellow",
+      id: 2,
+    },
+    {
+      status: "لم يتم الاستلام ولكن لم تنتهي مده الخدمة",
+      className: "gray",
+      id: 3,
+    },
+    {
+      status: "لم يتم الاستلام وتجاوز فترة الخدمة",
+      className: "red",
+      id: 4,
+    },
+  ];
   return (
     <>
       <Table columns={ORDER_TABLE_COLUMNS} renderData={renderOrderRows} />
@@ -119,37 +142,28 @@ async function OrdersTable({
             حالة تسليم الطلبيات:
           </span>
 
-          <Badge
-            variant="outline"
-            className="gap-2 border-green-200 bg-green-50 text-green-800"
-          >
-            <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            تم الاستلام قبل انتهاء فترة الخدمة
-          </Badge>
+          {filterColors.map((color) => (
+            <Link
+              key={color.id}
+              href={{
+                query: {
+                  ...searchParams,
+                  colorId: color.id.toString(),
+                },
+              }}
+            >
+              <Badge
+                variant="outline"
+                className={`flex gap-2 border-${color.className}-200 bg-${color.className}-50 text-${color.className}-800`}
+              >
+                <div
+                  className={`h-2 w-2 rounded-full bg-${color.className}-500`}
+                ></div>
 
-          <Badge
-            variant="outline"
-            className="gap-2 border-yellow-200 bg-yellow-50 text-yellow-800"
-          >
-            <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-            تم الاستلام بعد انتهاء فترة الخدمة
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="gap-2 border-gray-200 bg-gray-50 text-gray-800"
-          >
-            <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-            لم يتم الاستلام ولكن لم تنتهي مده الخدمة
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="gap-2 border-red-200 bg-red-50 text-red-800"
-          >
-            <div className="h-2 w-2 rounded-full bg-red-500"></div>
-            لم يتم الاستلام وتجاوز فترة الخدمة
-          </Badge>
+                {color.status}
+              </Badge>
+            </Link>
+          ))}
         </div>
       </div>
 
