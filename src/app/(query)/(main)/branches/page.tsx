@@ -21,11 +21,10 @@ const columns = [
 async function BranchesTableData({
   searchParams,
 }: {
-  searchParams: { search?: string; page?: string };
+  searchParams: { search?: string };
 }) {
   const branches = await getBranches({
     search: searchParams.search,
-    page: searchParams.page,
   });
 
   return (
@@ -62,9 +61,9 @@ async function BranchesTableData({
 async function page({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; page?: string }>;
+  searchParams: Promise<{ search?: string }>;
 }) {
-  const { search, page } = await searchParams;
+  const params = await searchParams;
   return (
     <PageLayout
       title="الفروع"
@@ -84,9 +83,9 @@ async function page({
 
       <Suspense
         fallback={<TableSkeleton rows={5} columns={5} />}
-        key={search + (page || "")}
+        key={JSON.stringify(params)}
       >
-        <BranchesTableData searchParams={{ search, page }} />
+        <BranchesTableData searchParams={params} />
       </Suspense>
     </PageLayout>
   );

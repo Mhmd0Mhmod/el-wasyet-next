@@ -1,21 +1,16 @@
 import { AxiosError } from "axios";
 import { authFetch, fetch } from "../lib/axios";
-import { defaults } from "../lib/utils";
 import { Branch, ShortBranch } from "../types/branch";
 
 export async function getBranches({
   search,
-  page,
 }: {
   search?: string;
-  page?: string;
 }): Promise<Branch[]> {
   try {
     const { data } = await authFetch.get<Branch[]>("Branch/all", {
       params: {
-        search,
-        page,
-        pageSize: defaults.pageSize,
+        searchTerm: search || "",
       },
     });
 
