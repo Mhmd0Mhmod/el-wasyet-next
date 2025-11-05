@@ -103,7 +103,7 @@ async function page({ params }: PageProps) {
                     form={{
                       formTypeId: form.formId,
                       branchId: stockData.branchId,
-                      stockId: parseInt(id),
+                      stockId: form.stockId,
                       threshold: form.minimumThreshold,
                       quantity: form.quantity,
                       price: form.price,

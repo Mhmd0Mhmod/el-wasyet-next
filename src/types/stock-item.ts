@@ -4,6 +4,7 @@ interface StockItem {
   forms: StockItemForm[];
 }
 interface StockItemForm {
+  stockId: number;
   formId: number;
   formName: string;
   quantity: number;
