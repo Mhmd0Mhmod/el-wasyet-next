@@ -81,6 +81,7 @@ function AddNewExpense() {
                 <FormControl>
                   <Input
                     type="number"
+                    step={"any"}
                     {...field}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />

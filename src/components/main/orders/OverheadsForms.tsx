@@ -122,6 +122,7 @@ function OverheadsForms() {
                 <div className="relative">
                   <Input
                     type="number"
+                    step={"any"}
                     {...field}
                     value={field.value?.toString()}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
@@ -147,6 +148,7 @@ function OverheadsForms() {
                 <div className="relative">
                   <Input
                     type="number"
+                    step={"any"}
                     {...field}
                     value={field.value?.toString()}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}

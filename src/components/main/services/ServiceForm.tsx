@@ -108,6 +108,7 @@ function ServiceForm({
                     <FormControl>
                       <Input
                         type="number"
+                        step={"any"}
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
@@ -129,6 +130,7 @@ function ServiceForm({
                     <FormControl>
                       <Input
                         type="number"
+                        step={"any"}
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
@@ -149,6 +151,7 @@ function ServiceForm({
                     <FormControl>
                       <Input
                         type="number"
+                        step={"any"}
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>

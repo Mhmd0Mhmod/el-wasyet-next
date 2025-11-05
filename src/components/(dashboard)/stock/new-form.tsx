@@ -174,6 +174,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                     <Input
                       type="number"
                       min={0}
+                      step="any"
                       {...field}
                       value={field.value?.toString()}
                       onChange={(value) =>
@@ -196,6 +197,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                     <Input
                       type="number"
                       min={0}
+                      step="any"
                       {...field}
                       value={field.value?.toString()}
                       onChange={(value) =>
@@ -218,6 +220,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         placeholder="اكتب سعر الاستمارة"
                         {...field}
                         onChange={(e) =>

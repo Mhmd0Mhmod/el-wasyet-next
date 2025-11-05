@@ -138,6 +138,7 @@ function RequestConfirmDialogContent({
         <Input
           ref={ref}
           type="number"
+          step={"any"}
           placeholder="أدخل القيمة المتبقية"
           className="rounded border p-2"
           min="0"
