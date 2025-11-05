@@ -19,7 +19,7 @@ import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import { Order } from "@/types/order";
-import { ClipboardIcon, Plus } from "lucide-react";
+import { ClipboardIcon, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -133,6 +133,7 @@ async function OrdersTable({
       id: 4,
     },
   ];
+
   return (
     <>
       <Table columns={ORDER_TABLE_COLUMNS} renderData={renderOrderRows} />
@@ -142,28 +143,33 @@ async function OrdersTable({
             حالة تسليم الطلبيات:
           </span>
 
-          {filterColors.map((color) => (
-            <Link
-              key={color.id}
-              href={{
-                query: {
-                  ...searchParams,
-                  colorId: color.id.toString(),
-                },
-              }}
-            >
-              <Badge
-                variant="outline"
-                className={`flex gap-2 border-${color.className}-200 bg-${color.className}-50 text-${color.className}-800`}
-              >
-                <div
-                  className={`h-2 w-2 rounded-full bg-${color.className}-500`}
-                ></div>
+          {filterColors.map((color) => {
+            const isSelected = searchParams.colorId === color.id.toString();
+            const query = new URLSearchParams(
+              searchParams as Record<string, string>,
+            );
+            if (isSelected) {
+              query.delete("colorId");
+            } else {
+              query.set("colorId", color.id.toString());
+            }
+            return (
+              <Link key={color.id} href={`?${query.toString()}`}>
+                <Badge
+                  variant="outline"
+                  className={`flex gap-2 border-${color.className}-200 bg-${color.className}-50 text-${color.className}-800`}
+                >
+                  <div
+                    className={`h-2 w-2 rounded-full bg-${color.className}-500 flex items-center justify-center`}
+                  >
+                    {isSelected ? <X size={12} /> : null}
+                  </div>
 
-                {color.status}
-              </Badge>
-            </Link>
-          ))}
+                  {color.status}
+                </Badge>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
