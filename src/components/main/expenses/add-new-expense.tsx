@@ -80,9 +80,9 @@ function AddNewExpense() {
                 <FormLabel>المبلغ</FormLabel>
                 <FormControl>
                   <Input
-                    type="text"
+                    type="number"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />

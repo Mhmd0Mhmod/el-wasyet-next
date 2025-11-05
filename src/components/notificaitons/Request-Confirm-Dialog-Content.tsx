@@ -62,7 +62,7 @@ function RequestConfirmDialogContent({
 
     if (!notification.requestId) return;
     const id = toast.loading("جاري المعالجة...");
-    const remainingValue = parseInt(ref?.current?.value || "0");
+    const remainingValue = parseFloat(ref?.current?.value || "0");
     setNotificationState((prev) => ({ ...prev, isRead: true }));
 
     startTransition(() => {
@@ -137,7 +137,7 @@ function RequestConfirmDialogContent({
       {showPartialInput && !showRejectInput && (
         <Input
           ref={ref}
-          type="text"
+          type="number"
           placeholder="أدخل القيمة المتبقية"
           className="rounded border p-2"
           min="0"

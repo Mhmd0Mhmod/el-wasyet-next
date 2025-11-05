@@ -121,13 +121,10 @@ function OverheadsForms() {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type="text"
+                    type="number"
                     {...field}
-                    value={field.value?.toString() || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value === "" ? 0 : Number(value));
-                    }}
+                    value={field.value?.toString()}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                   <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
                     ج.م
@@ -149,13 +146,10 @@ function OverheadsForms() {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type="text"
+                    type="number"
                     {...field}
-                    value={field.value?.toString() || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value === "" ? 0 : Number(value));
-                    }}
+                    value={field.value?.toString()}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                   <span className="absolute top-1/2 left-10 -translate-y-1/2 transform text-sm text-gray-500">
                     ج.م

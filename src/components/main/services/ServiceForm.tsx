@@ -107,11 +107,11 @@ function ServiceForm({
                     <FormLabel>الرسوم الافتراضية</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
+                        type="number"
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
+                          field.onChange(parseFloat(e.target.value))
                         }
                       />
                     </FormControl>
@@ -128,11 +128,11 @@ function ServiceForm({
                     <FormLabel>فترة الصلاحية (بالأيام)</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
+                        type="number"
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
+                          field.onChange(parseFloat(e.target.value))
                         }
                       />
                     </FormControl>
@@ -148,11 +148,11 @@ function ServiceForm({
                     <FormLabel>فترة الصلاحية (بالسنوات)</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
+                        type="number"
                         {...field}
                         value={field.value.toString()}
                         onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
+                          field.onChange(parseFloat(e.target.value))
                         }
                       />
                     </FormControl>
