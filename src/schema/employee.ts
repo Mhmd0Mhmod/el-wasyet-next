@@ -68,7 +68,7 @@ const employeeFormSchema = z.object({
       message: VALIDATION_MESSAGES.userName.invalid,
     }),
   password: z.string().optional(),
-  managerId: z.string().nullable(),
+  managerId: z.number().nullable(),
   suspended: z.boolean(),
   abilityIds: z
     .array(z.number())

@@ -18,7 +18,7 @@ import { useManagers } from "@/hooks/useManagers";
 import { useRoles } from "@/hooks/useRoles";
 import { employeeFormSchema, EmployeeFormValues } from "@/schema/employee";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Spinner from "@/components/general/Spinner";
@@ -37,52 +37,86 @@ interface EmployeeFormProps {
 }
 
 function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
+  const form = useForm<EmployeeFormValues>({
+    disabled,
+    resolver: zodResolver(employeeFormSchema),
+  });
+
   const {
     employee,
     isLoading: isLoadingEmployee,
     error: employeeError,
   } = useEmployee(employeeId!);
-  const { data: managers } = useManagers();
+  const { data: managers, isLoading: isLoadingManagers } = useManagers();
   const { roles, isLoading: isLoadingRoles, error: rolesError } = useRoles();
-
-  const form = useForm<EmployeeFormValues>({
-    disabled,
-    resolver: zodResolver(employeeFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      roleId: "",
-      userName: "",
-      managerId: null,
-      suspended: false,
-      abilityIds: [],
-      password: "",
-      hasViewCashBoxAbility: false,
-    },
-  });
 
   const currentRole = form.watch("roleId");
   const role = roles?.find((r) => r.id.toString() === currentRole);
   const { abilities, isLoading: isLoadingAbilities } = useAbilities(role!);
   useEffect(() => {
     if (employee?.id && managers) {
-      const manager = managers.find((m) => m.name === employee.managerName);
       form.reset({
-        id: employee.id,
-        name: employee.name,
-        email: employee.email,
-        phone: employee.phone,
-        roleId: employee.roleId,
-        userName: employee.userName,
-        managerId: manager?.id?.toString() || null,
-        suspended: employee.suspended,
-        abilityIds: employee.abilityDTOs.map((el) => el.id),
-        password: "",
-        hasViewCashBoxAbility: false,
+        ...employee,
+        abilityIds: employee.abilityDTOs.map((ability) => ability.id),
       });
     }
-  }, [employee, managers, form]);
+    return () => {
+      form.reset();
+    };
+  }, [employee, form, managers, role]);
+
+  const handleSubmit = useCallback(
+    (data: EmployeeFormValues) => {
+      if (disabled) return;
+      const id = toast.loading("جاري الحفظ...");
+      if (employee?.id) {
+        updateEmployee(data)
+          .then((res) => {
+            if (res.success) toast.success("تم تحديث الموظف بنجاح", { id });
+            else toast.error(res.message, { id });
+          })
+          .catch(() => {
+            toast.error("حدث خطأ أثناء تحديث الموظف", { id });
+          });
+      } else {
+        createEmployee(data).then((res) => {
+          if (res.success) {
+            toast.success("تم إضافة الموظف بنجاح", { id });
+          } else {
+            toast.error(res.message, { id });
+          }
+        });
+      }
+    },
+    [disabled, employee],
+  );
+
+  const handleAbilityChange = useCallback(
+    (
+      abilityId: number,
+      checked: boolean,
+      field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
+    ) => {
+      const currentAbilities = form.getValues("abilityIds") || [];
+      if (checked) {
+        const abilityToAdd = abilities?.find((a) => a.id === abilityId);
+        if (abilityToAdd) {
+          field.onChange([...currentAbilities, abilityToAdd.id]);
+        }
+      } else {
+        field.onChange(currentAbilities.filter((a) => a !== abilityId));
+      }
+    },
+    [abilities, form],
+  );
+  const onSelectRole = useCallback(
+    function (value: string) {
+      form.setValue("roleId", value);
+      form.setValue("abilityIds", []);
+      form.setValue("managerId", null);
+    },
+    [form],
+  );
 
   if (isLoadingEmployee || isLoadingRoles) {
     return <Loading />;
@@ -90,29 +124,6 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
   if (employeeError || rolesError) {
     throw new Error(employeeError?.message || rolesError?.message);
   }
-  const handleSubmit = async (data: EmployeeFormValues) => {
-    if (disabled) return;
-    const id = toast.loading("جاري الحفظ...");
-    if (employee?.id) {
-      updateEmployee(data)
-        .then((res) => {
-          if (res.success) toast.success("تم تحديث الموظف بنجاح", { id });
-          else toast.error(res.message, { id });
-        })
-        .catch(() => {
-          toast.error("حدث خطأ أثناء تحديث الموظف", { id });
-        });
-    } else {
-      createEmployee(data).then((res) => {
-        if (res.success) {
-          toast.success("تم إضافة الموظف بنجاح", { id });
-        } else {
-          toast.error(res.message, { id });
-        }
-      });
-    }
-  };
-
   const isLoading =
     form.formState.isLoading ||
     form.formState.isSubmitting ||
@@ -120,26 +131,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
 
   const submitButtonText = employee?.id ? "تحديث الموظف" : "إضافة موظف";
 
-  const handleAbilityChange = (
-    abilityId: number,
-    checked: boolean,
-    field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
-  ) => {
-    const currentAbilities = form.getValues("abilityIds") || [];
-    if (checked) {
-      const abilityToAdd = abilities?.find((a) => a.id === abilityId);
-      if (abilityToAdd) {
-        field.onChange([...currentAbilities, abilityToAdd.id]);
-      }
-    } else {
-      field.onChange(currentAbilities.filter((a) => a !== abilityId));
-    }
-  };
-  function onSelectRole(value: string) {
-    form.setValue("roleId", value);
-    form.setValue("abilityIds", []);
-    form.setValue("managerId", null);
-  }
+  console.log(employee);
 
   return (
     <>
@@ -201,7 +193,8 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
                 <FormItem>
                   <FormLabel>الوظيفة</FormLabel>
                   <Select
-                    disabled={roles.length === 0}
+                    {...field}
+                    disabled={isLoadingRoles || field.disabled}
                     onValueChange={onSelectRole}
                     value={field.value}
                   >
@@ -231,8 +224,9 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
                   <FormControl>
                     <Select
                       {...field}
-                      onValueChange={field.onChange}
-                      value={field.value ?? undefined}
+                      disabled={isLoadingManagers || field.disabled}
+                      onValueChange={(value) => field.onChange(parseInt(value))}
+                      value={field.value?.toString()}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="اختار المدير المباشر" />
