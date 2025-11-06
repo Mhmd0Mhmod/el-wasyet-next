@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 
 import { useClients } from "@/hooks/useClients";
 import { cn } from "@/lib/utils";
+import Dialog from "../../general/Dialog";
 import { useOrderForm } from "../../providers/OrderFormProvider";
 import { Button } from "../../ui/button";
 import {
@@ -18,7 +19,6 @@ import {
 import { FormControl, FormField, FormItem, FormMessage } from "../../ui/form";
 import { Input } from "../../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import Dialog from "../../general/Dialog";
 import ClientForm from "../clients/ClientsForm";
 interface ClientSelectorProps {
   placeholder?: string;
@@ -32,7 +32,7 @@ function ClientSelector({
   const { form } = useOrderForm();
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const { clients, isLoadingClients } = useClients(searchTerm);
+  const { clients, isLoadingClients, refetchClients } = useClients(searchTerm);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value.replace(/[^+\d]/g, ""));
@@ -41,6 +41,9 @@ function ClientSelector({
   const selectedClient = clients.find(
     (client) => client.id === selectedClientId,
   );
+  const onUpdateClient = () => {
+    refetchClients();
+  };
   return (
     <>
       <FormField
@@ -97,7 +100,7 @@ function ClientSelector({
                               </Button>
                             </Dialog.Trigger>
                             <Dialog.Content title="إضافة عميل">
-                              <ClientForm />
+                              <ClientForm onSubmit={onUpdateClient} />
                             </Dialog.Content>
                           </Dialog>
                         )}

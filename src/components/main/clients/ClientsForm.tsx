@@ -24,7 +24,7 @@ import {
 import { Client } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, User } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import AddBranchClient from "./AddBranchClient";
@@ -32,9 +32,10 @@ import BranchClientCard from "./BranchClientCard";
 
 interface ClientFormProps {
   clientId?: number;
+  onSubmit?: (client: ClientFormValues) => void;
 }
 
-function ClientForm({ clientId }: ClientFormProps) {
+function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
   const { client, isLoading: isLoadingClient } = useClient(clientId!);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const form = useForm<ClientFormValues>({
@@ -47,38 +48,49 @@ function ClientForm({ clientId }: ClientFormProps) {
     }
   }, [client, form]);
 
+  const handleSubmit = useCallback(
+    async (data: ClientFormValues) => {
+      const id = toast.loading("جاري حفظ بيانات العميل...", {
+        dismissible: true,
+        duration: 5000,
+      });
+      if (client?.id) {
+        updateClient(data)
+          .then((res) => {
+            if (res.success) {
+              toast.success("تم تحديث بيانات العميل بنجاح", { id });
+            } else {
+              toast.error(res.message, { id });
+            }
+          })
+          .catch(() => {
+            toast.error("حدث خطأ أثناء تحديث بيانات العميل", { id });
+          });
+      } else {
+        createClient(data)
+          .then((res) => {
+            if (res.success) {
+              toast.success("تم إضافة العميل بنجاح");
+              form.reset();
+            } else {
+              toast.error(res.message);
+            }
+          })
+          .catch(() => {
+            toast.error("حدث خطأ أثناء إضافة العميل", { id });
+          });
+      }
+      onFormSubmit?.(data);
+    },
+    [client, onFormSubmit, form],
+  );
   if (isLoadingClient) {
     return <Loading />;
   }
-
-  const handleSubmit = (data: ClientFormValues) => {
-    const id = toast.loading("جاري حفظ بيانات العميل...");
-    if (client?.id) {
-      updateClient(data)
-        .then((res) => {
-          if (res.success) {
-            toast.success("تم تحديث بيانات العميل بنجاح", { id });
-          } else {
-            toast.error(res.message, { id });
-          }
-        })
-        .catch(() => {
-          toast.error("حدث خطأ أثناء تحديث بيانات العميل", { id });
-        });
-    } else {
-      createClient(data)
-        .then((res) => {
-          if (res.success) {
-            toast.success("تم إضافة العميل بنجاح");
-            form.reset();
-          } else {
-            toast.error(res.message);
-          }
-        })
-        .catch(() => {
-          toast.error("حدث خطأ أثناء إضافة العميل", { id });
-        });
-    }
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    form.handleSubmit(handleSubmit)();
   };
 
   const handleCancel = () => {
@@ -104,7 +116,7 @@ function ClientForm({ clientId }: ClientFormProps) {
       className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-6 shadow-sm"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-6">
           {/* Main Customer Information */}
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

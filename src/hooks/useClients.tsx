@@ -5,12 +5,18 @@ function useClients(searchTerm: string) {
     data: clients = [],
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["clients", searchTerm],
     queryFn: () => searchClients(searchTerm),
     enabled: searchTerm.length === 11 || searchTerm.length === 14,
     staleTime: 5 * 60 * 1000,
   });
-  return { clients, isLoadingClients: isLoading, clientsError: error };
+  return {
+    clients,
+    isLoadingClients: isLoading,
+    clientsError: error,
+    refetchClients: refetch,
+  };
 }
 export { useClients };
