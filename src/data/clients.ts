@@ -47,9 +47,9 @@ export async function getClients({
 export async function getClientById(
   id: number,
   {
-    params = { page: 1 },
+    params = { pageIndex: 1 },
   }: {
-    params?: { page?: number };
+    params?: { pageIndex?: number };
   } = {},
 ): Promise<Client> {
   try {

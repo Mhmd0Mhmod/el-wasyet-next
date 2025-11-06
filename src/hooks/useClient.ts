@@ -1,10 +1,10 @@
 import { getClientById } from "@/data/clients";
 import { useQuery } from "@tanstack/react-query";
 
-function useClient(clientId: number) {
+function useClient(clientId: number, pageIndex: number = 1) {
   const query = useQuery({
-    queryKey: ["client", clientId],
-    queryFn: () => getClientById(clientId),
+    queryKey: ["client", clientId, pageIndex],
+    queryFn: () => getClientById(clientId, { params: { pageIndex } }),
     enabled: !!clientId,
   });
   return {

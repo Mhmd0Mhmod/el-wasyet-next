@@ -29,10 +29,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { useClient } from "@/hooks/useClient";
-import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
+import { Plus, User, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useState } from "react";
 import AddBranchClient from "./AddBranchClient";
+import Link from "next/link";
 const orderColumns = [
   { id: "orderId", label: "رقم الأمر" },
   { id: "serviceName", label: "الخدمة" },
@@ -41,13 +42,12 @@ const orderColumns = [
   { id: "requiredChange", label: "المطلوب" },
   { id: "amount", label: "قيمة الأمر" },
   { id: "note", label: "ملاحظات" },
-  { id: "actions", label: "العمليات" },
 ];
 
 function ClientDetails({ clientId }: { clientId: number }) {
   const [id, setId] = useState(clientId);
   const [page, setPage] = useState(1);
-  const { client, isLoading, error, refetch } = useClient(id);
+  const { client, isLoading, error, refetch } = useClient(id, page);
   if (isLoading)
     return (
       <ScrollArea dir="rtl" className="max-h-[70vh]">
@@ -220,7 +220,11 @@ function ClientDetails({ clientId }: { clientId: number }) {
         columns={orderColumns}
         renderData={client.orders.items.map((order) => (
           <TableRow key={order.orderId}>
-            <TableCell>{order.orderId}</TableCell>
+            <TableCell>
+              <Link href={`/orders/${order.orderId}`}>
+                <Button variant={"link"}>{order.orderId}</Button>
+              </Link>
+            </TableCell>
             <TableCell>{order.serviceName}</TableCell>
             <TableCell className="whitespace-wrap">
               {Intl.DateTimeFormat("ar-EG", {
@@ -251,19 +255,6 @@ function ClientDetails({ clientId }: { clientId: number }) {
               ) : (
                 "لا توجد ملاحظات"
               )}
-            </TableCell>
-            <TableCell>
-              <div className="flex gap-1">
-                <Button variant="outline" size="sm">
-                  <Eye className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
             </TableCell>
           </TableRow>
         ))}
