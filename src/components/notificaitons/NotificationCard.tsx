@@ -29,14 +29,15 @@ export function NotificationCard({ notification }: NotificationCardProps) {
     if (notificationState.isRead) return;
     if (notification.isRequestStock || notification.isRequest) return;
     startTransition(() => {
-      setNotificationState((prev) => ({ ...prev, isRead: !prev.isRead }));
+      setNotificationState((prev) => ({ ...prev, isRead: true }));
       markNotificationAsRead(notification.notificationId);
     });
   }, [notification, notificationState]);
 
   const openDialog = useCallback(() => {
+    if (notificationState.isRead) return;
     if (notification.isRequestStock || notification.isRequest) setOpen(true);
-  }, [notification]);
+  }, [notification, notificationState]);
   const isClickable = notification.isRequestStock || notification.isRequest;
   return (
     <Dialog open={open} setOpen={setOpen}>

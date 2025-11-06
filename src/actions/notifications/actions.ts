@@ -94,7 +94,7 @@ export async function approveRequestStockNotification({
   requestStockId: number;
 }): Promise<APIResponse<void>> {
   try {
-    const response = await authFetch.patch(
+    const response = await authFetch.post(
       `RequestStock/ApproveTheRequest/${requestStockId}`,
     );
     await markNotificationAsRead(notificationId);
@@ -118,7 +118,7 @@ export async function rejectRequestStockNotification({
   reason?: string;
 }): Promise<APIResponse<void>> {
   try {
-    const response = await authFetch.patch(
+    const response = await authFetch.post(
       `RequestStock/RejectTheRequest/${requestStockId}`,
       reason,
     );

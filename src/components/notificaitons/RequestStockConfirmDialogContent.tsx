@@ -39,14 +39,12 @@ function RequestStockConfirmDialogContent({
             toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, {
               id,
             });
-            // Revert to unread if failed
-            setNotificationState((prev) => ({ ...prev, isRead: false }));
+            setNotificationState({ ...notification });
           }
         })
         .catch(() => {
           toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-          // Revert to unread if failed
-          setNotificationState((prev) => ({ ...prev, isRead: false }));
+          setNotificationState({ ...notification });
         })
         .finally(() => {
           setOpen(false);
@@ -74,12 +72,12 @@ function RequestStockConfirmDialogContent({
             toast.success("تم الرفض بنجاح.", { id });
           } else {
             toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-            setNotificationState((prev) => ({ ...prev, isRead: false }));
+            setNotificationState({ ...notification });
           }
         })
         .catch(() => {
           toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-          setNotificationState((prev) => ({ ...prev, isRead: false }));
+          setNotificationState({ ...notification });
         })
         .finally(() => {
           setOpen(false);
