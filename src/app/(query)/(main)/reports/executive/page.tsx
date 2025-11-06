@@ -87,7 +87,7 @@ async function DataTable({ searchParams }: PageProps) {
             <TableCell>{item.createdbyEmployeeName}</TableCell>
             <TableCell>{formatCurrency(item.amount)}</TableCell>
             <TableCell>{item.notes}</TableCell>
-            <TableCell>{item.orderstatus}</TableCell>
+            <TableCell>{item.actionType}</TableCell>
             <TableCell>{item.branchName}</TableCell>
             <TableCell>{item.orderstatus}</TableCell>
           </TableRow>

@@ -21,6 +21,7 @@ interface OperationConfig {
 const OPERATION_CONFIGS: Record<string, OperationConfig> = {
   "pending-orders": {
     statusIds: [1],
+    isCertificate: false,
     title: "الاوامر المعلقه",
     description: "سجل أوامر المعلقه ومتابعة حالة الاوامر",
     Component: OrdersTable,
@@ -49,6 +50,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
   },
   "new-orders": {
     statusIds: [2],
+    isCertificate: false,
     title: "الاوامر الجديده",
     description: "سجل الاوامر االجديده ومتابعة حالة الاوامر",
     Component: ({ orders }) => (
@@ -173,7 +175,7 @@ async function LoadTable({
 
     const result = await getOrdersByStatusIds({
       orderStatusIds: statusIds,
-      IsCertificate: isCertificate || false,
+      IsCertificate: isCertificate,
       searchTerm: searchParams.search,
       pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
     });

@@ -228,7 +228,7 @@ export async function getOrdersByStatusIds({
   pageNumber,
 }: {
   orderStatusIds: number[];
-  IsCertificate?: boolean;
+  IsCertificate?: boolean | null;
   searchTerm?: string;
   pageNumber?: number;
 }): Promise<
@@ -240,21 +240,6 @@ export async function getOrdersByStatusIds({
   }
 > {
   try {
-    const params = new URLSearchParams();
-    if (orderStatusIds && orderStatusIds.length > 0) {
-      orderStatusIds.forEach((id) =>
-        params.append("orderStatusIds", id.toString()),
-      );
-    }
-    if (IsCertificate !== undefined) {
-      params.append("IsCertificate", IsCertificate ? "true" : "false");
-    }
-    if (searchTerm) {
-      params.append("searchTerm", searchTerm);
-    }
-    if (pageNumber) {
-      params.append("pageNumber", pageNumber.toString());
-    }
     const { data } = await authFetch.get<
       Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {
         items: {
@@ -263,7 +248,13 @@ export async function getOrdersByStatusIds({
         };
       }
     >(`/Order/GetBy-Status`, {
-      params,
+      params: {
+        orderStatusIds: orderStatusIds.join(","),
+        IsCertificate: IsCertificate ?? null,
+        searchTerm: searchTerm ?? undefined,
+        pageNumber: pageNumber ?? 1,
+        PageSize: defaults.pageSize,
+      },
     });
     return data;
   } catch (err) {
