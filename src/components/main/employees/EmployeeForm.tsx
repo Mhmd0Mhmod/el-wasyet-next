@@ -80,8 +80,6 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
 
   const handleSubmit = useCallback(
     (data: EmployeeFormValues) => {
-      console.log(data);
-
       if (disabled) return;
       const id = toast.loading("جاري الحفظ...");
       if (employee?.id) {
