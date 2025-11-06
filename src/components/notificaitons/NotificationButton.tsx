@@ -33,7 +33,10 @@ function NotificationButton() {
   );
 }
 function NotificationSheetContent() {
-  const { data: notifications, isFetching } = useNotification();
+  const {
+    query: { data: notifications, isFetching },
+    mutation: { mutateAsync: markAllAsRead },
+  } = useNotification();
   const unreadCount = notifications?.filter((n) => !n.isRead).length;
   const unreadNotifications = notifications?.filter((n) => !n.isRead);
 
@@ -82,7 +85,9 @@ function NotificationSheetContent() {
             </div>
           </ScrollArea>
 
-          {!isFetching && unreadCount && <MarkAllAsReadButton />}
+          {!isFetching && unreadCount && (
+            <MarkAllAsReadButton onAllMarkedAsRead={markAllAsRead} />
+          )}
         </TabsContent>
 
         <TabsContent value="unread" className="mt-4 space-y-4">
@@ -107,7 +112,9 @@ function NotificationSheetContent() {
             </div>
           </ScrollArea>
 
-          {!isFetching && unreadCount && <MarkAllAsReadButton />}
+          {!isFetching && unreadCount && (
+            <MarkAllAsReadButton onAllMarkedAsRead={markAllAsRead} />
+          )}
         </TabsContent>
       </Tabs>
     </>

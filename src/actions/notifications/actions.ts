@@ -5,6 +5,19 @@ import { handleErrorResponse } from "@/lib/helper";
 import { revalidateTag } from "next/cache";
 import { getCurrentUser } from "../auth/actions";
 
+export async function markAllNotificationsAsRead(): Promise<APIResponse<void>> {
+  try {
+    const response = await authFetch.patch("Notification/make-all-read");
+    revalidateTag("notifications");
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (error) {
+    return handleErrorResponse(error);
+  }
+}
+
 export async function markNotificationAsRead(
   notificationId: number,
 ): Promise<APIResponse<void>> {
