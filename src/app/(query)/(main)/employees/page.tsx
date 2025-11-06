@@ -87,10 +87,11 @@ async function EmployeesTable({
                       <Eye className="h-4 w-4" />
                     </Button>
                   </Dialog.Trigger>
-                  <Dialog.Content title="تفاصيل موظف">
-                    <div className="max-h-[80vh] overflow-y-auto">
-                      <EmployeeForm employeeId={employee.id} disabled />
-                    </div>
+                  <Dialog.Content
+                    title="تفاصيل موظف"
+                    className="mx-auto min-w-2xl"
+                  >
+                    <EmployeeForm employeeId={employee.id} disabled />
                   </Dialog.Content>
                 </Dialog>
                 <Dialog>
