@@ -7,15 +7,22 @@ import { Order } from "@/types/order";
 
 export async function createOrder(
   formData: OrderFormValues,
-): Promise<APIResponse<Order>> {
+): Promise<APIResponse<number>> {
   try {
     const form = generateFormData(formData);
-    const res = await authFetch.post<APIResponse<Order>>("Order/create", form, {
+    const res = await authFetch.post<{
+      message: string;
+      orderId: number;
+    }>("Order/create", form, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-    return res.data;
+    return {
+      success: true,
+      message: res.data.message,
+      data: res.data.orderId,
+    };
   } catch (err) {
     return handleErrorResponse(err);
   }

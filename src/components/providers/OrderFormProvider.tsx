@@ -1,6 +1,7 @@
 "use client";
 
 import { createOrder } from "@/actions/orders/actions";
+import { Form } from "@/components/ui/form";
 import { useAgents } from "@/hooks/useAgents";
 import { useOffers } from "@/hooks/useOffers";
 import { useService } from "@/hooks/useService";
@@ -11,10 +12,10 @@ import {
 } from "@/schema/order";
 import { OrderDetails } from "@/types/order";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Form } from "@/components/ui/form";
 
 interface OrderFormContextProps {
   form: ReturnType<typeof useForm<OrderFormValues>>;
@@ -49,6 +50,7 @@ function OrderFromProvider({
     resolver: zodResolver(orderFormSchema),
     defaultValues: generateOrderDefaultValues(orderDetails),
   });
+  const router = useRouter();
   const onSubmit = useCallback(
     async (data: OrderFormValues) => {
       const toastId = toast.loading("جاري إنشاء الأمر...");
@@ -57,6 +59,7 @@ function OrderFromProvider({
         if (response.success) {
           toast.success("تم إنشاء الأمر بنجاح!", { id: toastId });
           form.reset();
+          router.push(`/orders/${response.data}`);
         } else {
           toast.error(
             response.message || "حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.",
@@ -70,7 +73,7 @@ function OrderFromProvider({
         console.error(error);
       }
     },
-    [form],
+    [form, router],
   );
   const selectedService = form.watch("ServiceId");
   const { service, isLoading: isLoadingService } = useService(selectedService);
