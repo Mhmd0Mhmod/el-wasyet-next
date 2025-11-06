@@ -69,11 +69,11 @@ const employeeFormSchema = z.object({
     }),
   password: z.string().optional(),
   managerId: z.number().nullable(),
-  suspended: z.boolean(),
+  suspended: z.boolean().optional(),
   abilityIds: z
     .array(z.number())
     .min(1, { message: VALIDATION_MESSAGES.abilities.min }),
-  hasViewCashBoxAbility: z.boolean(),
+  hasViewCashBoxAbility: z.boolean().optional(),
 });
 
 type EmployeeFormValues = z.infer<typeof employeeFormSchema>;

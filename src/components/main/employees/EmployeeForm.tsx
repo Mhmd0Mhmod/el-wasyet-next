@@ -80,6 +80,8 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
 
   const handleSubmit = useCallback(
     (data: EmployeeFormValues) => {
+      console.log(data);
+
       if (disabled) return;
       const id = toast.loading("جاري الحفظ...");
       if (employee?.id) {
@@ -144,14 +146,12 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
 
   const submitButtonText = employee?.id ? "تحديث الموظف" : "إضافة موظف";
 
-  console.log(employee);
-
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           {/* Personal Information Grid */}
-          <div className="max-h-[50vh] overflow-y-auto">
+          <div className="max-h-[50vh] space-y-6 overflow-y-auto">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}

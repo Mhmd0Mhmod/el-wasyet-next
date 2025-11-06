@@ -1,6 +1,9 @@
 "use client";
 import Error from "@/app/error";
 import Loading from "@/app/loading";
+import ClientPagination from "@/components/general/ClientPagination";
+import Dialog from "@/components/general/Dialog";
+import Table from "@/components/general/Table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,27 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useClient } from "@/hooks/useClient";
-import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
-import { notFound } from "next/navigation";
-import { useRef } from "react";
-import Dialog from "@/components/general/Dialog";
-import Table from "@/components/general/Table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -40,6 +28,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { useClient } from "@/hooks/useClient";
+import { Edit, Eye, Plus, Trash2, User, Users } from "lucide-react";
+import { notFound } from "next/navigation";
+import { useState } from "react";
 import AddBranchClient from "./AddBranchClient";
 const orderColumns = [
   { id: "orderId", label: "رقم الأمر" },
@@ -53,9 +45,9 @@ const orderColumns = [
 ];
 
 function ClientDetails({ clientId }: { clientId: number }) {
-  const id = useRef(clientId);
-  const page = useRef(1);
-  const { client, isLoading, error, refetch } = useClient(id.current);
+  const [id, setId] = useState(clientId);
+  const [page, setPage] = useState(1);
+  const { client, isLoading, error, refetch } = useClient(id);
   if (isLoading)
     return (
       <ScrollArea dir="rtl" className="max-h-[70vh]">
@@ -69,27 +61,9 @@ function ClientDetails({ clientId }: { clientId: number }) {
       </div>
     );
   if (!client) notFound();
-  function setId(newId: number) {
-    id.current = newId;
+  function updateId(newId: number) {
+    setId(newId);
     refetch();
-  }
-  function movePrev() {
-    if (page.current > 1) {
-      page.current -= 1;
-      refetch();
-    }
-  }
-  function moveNext() {
-    if (client && page.current < client.orders.totalPages) {
-      page.current += 1;
-      refetch();
-    }
-  }
-  function goToPage(pageNumber: number) {
-    if (client && pageNumber >= 1 && pageNumber <= client.orders.totalPages) {
-      page.current = pageNumber;
-      refetch();
-    }
   }
   function onAddBranchClient() {
     // TODO: Implement add branch client functionality
@@ -195,7 +169,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
         </CardContent>
         <CardFooter className="grid grid-cols-1 gap-2 md:grid-cols-3">
           {isMainClient ? (
-            <Select onValueChange={(value) => setId(Number(value))}>
+            <Select onValueChange={(value) => updateId(Number(value))}>
               <SelectTrigger dir="rtl" className="w-full">
                 <SelectValue placeholder="العملاء الفرعيين" />
               </SelectTrigger>
@@ -216,7 +190,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
             <Button
               variant="default"
               className="w-full bg-green-100 text-green-700 hover:bg-green-200"
-              onClick={() => setId(client.parentClient!.id)}
+              onClick={() => updateId(client.parentClient!.id)}
             >
               <Users className="ml-2" />
               عرض العميل الرئيسي
@@ -235,7 +209,7 @@ function ClientDetails({ clientId }: { clientId: number }) {
             </Dialog.Trigger>
             <Dialog.Content title="إضافة عميل فرعي">
               <div className="max-h-[70vh] overflow-auto">
-                <AddBranchClient onSubmit={() => onAddBranchClient()} />
+                <AddBranchClient onSubmit={onAddBranchClient} />
               </div>
             </Dialog.Content>
           </Dialog>
@@ -294,42 +268,14 @@ function ClientDetails({ clientId }: { clientId: number }) {
           </TableRow>
         ))}
       />
-      {client.orders.totalPages > 0 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious onClick={movePrev} />
-            </PaginationItem>
-            {client.orders.pageNumber > 5 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-            {Array.from({ length: client.orders.totalPages }).map(
-              (_, index) => (
-                <PaginationItem
-                  key={index}
-                  onClick={() => {
-                    goToPage(index + 1);
-                  }}
-                >
-                  <PaginationLink isActive={page.current === index + 1}>
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ),
-            )}
-            {client.orders.pageNumber < client.orders.totalPages - 4 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-            <PaginationItem>
-              <PaginationNext onClick={moveNext} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+
+      <ClientPagination
+        totalPages={client.orders.totalPages}
+        hasNextPage={client.orders.hasNextPage}
+        hasPreviousPage={client.orders.hasPreviousPage}
+        pageNumber={page}
+        setPageNumber={setPage}
+      />
     </>
   );
 }
