@@ -18,6 +18,7 @@ function DeleteCommissionsAction({ roleId }: { roleId: string }) {
       }
     } catch (error) {
       toast.error("حدث خطأ أثناء حذف العموله", { id });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -14,7 +15,9 @@ const filterSchema = z.object({
 type FilterValues = z.infer<typeof filterSchema>;
 
 function FilterSection() {
-  const form = useForm();
+  const form = useForm<FilterValues>({
+    resolver: zodResolver(filterSchema),
+  });
   const pathName = usePathname();
   const router = useRouter();
   const onSubmit = useCallback(

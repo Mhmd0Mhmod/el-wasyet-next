@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient, updateClient } from "@/actions/clients/actions";
-import Loading from "@/app/loading";
+import Loading from "@/app/(query)/loading";
 import Dialog from "@/components/general/Dialog";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
@@ -51,9 +51,10 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
   const handleSubmit = useCallback(
     async (data: ClientFormValues) => {
       const id = toast.loading("جاري حفظ بيانات العميل...", {
-        dismissible: true,
         duration: 5000,
       });
+      console.log(data);
+
       if (client?.id) {
         updateClient(data)
           .then((res) => {
@@ -70,10 +71,10 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
         createClient(data)
           .then((res) => {
             if (res.success) {
-              toast.success("تم إضافة العميل بنجاح");
+              toast.success("تم إضافة العميل بنجاح", { id });
               form.reset();
             } else {
-              toast.error(res.message);
+              toast.error(res.message, { id });
             }
           })
           .catch(() => {

@@ -1,6 +1,6 @@
 "use client";
-import Error from "@/app/error";
-import Loading from "@/app/loading";
+import Error from "@/app/(query)/(main)/error";
+import Loading from "@/app/(query)/loading";
 import ClientPagination from "@/components/general/ClientPagination";
 import Dialog from "@/components/general/Dialog";
 import Table from "@/components/general/Table";

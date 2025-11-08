@@ -10,6 +10,8 @@ import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 interface OperationConfig {
   statusIds: number[];
   title: string;
@@ -200,5 +202,3 @@ async function LoadTable({
     throw error;
   }
 }
-
-export const dynamic = "force-dynamic";

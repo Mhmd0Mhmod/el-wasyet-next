@@ -1,4 +1,5 @@
 import Dialog from "@/components/general/Dialog";
+import Pagination from "@/components/general/Pagination";
 import SearchInput from "@/components/general/SearchInput";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
@@ -67,6 +68,11 @@ async function ServicesTable({
             </TableCell>
           </TableRow>
         ))}
+      />
+      <Pagination
+        page={data.pageNumber}
+        totalPages={data.totalPages}
+        searchParams={searchParams}
       />
     </>
   );

@@ -65,8 +65,8 @@ type OverheadData = {
   penalty?: boolean;
   forms?: boolean;
   adminFees?: boolean;
-  penaltyBankFeePrecentage?: number;
-  penaltyExtraFee?: number;
+  penaltyBankFeePrecentage?: number | null;
+  penaltyExtraFee?: number | null;
   relatedAgent?: boolean;
   formTypeID?: number | null;
 };
@@ -87,21 +87,29 @@ const validatePenaltyRequirements = (
 ): void => {
   if (data.penalty !== true) return;
 
-  const penaltyValidations = [
+  const penaltyValidations: Array<{
+    field: keyof OverheadData;
+    message: string;
+    optional?: boolean;
+  }> = [
     {
       field: "penaltyBankFeePrecentage",
       message: ERROR_MESSAGES.REQUIRED_PENALTY_BANK_FEE,
+      optional: true,
     },
     {
       field: "penaltyExtraFee",
       message: ERROR_MESSAGES.REQUIRED_PENALTY_EXTRA_FEE,
+      optional: true,
     },
     { field: "relatedAgent", message: ERROR_MESSAGES.REQUIRED_RELATED_AGENT },
-  ] as const;
+  ];
 
-  penaltyValidations.forEach(({ field, message }) => {
+  penaltyValidations.forEach(({ field, message, optional }) => {
+    // if the field is marked optional in the validations, skip the required check
+    if (optional) return;
     if (isFieldRequired(data[field])) {
-      addValidationIssue(ctx, field, message);
+      addValidationIssue(ctx, String(field), message);
     }
   });
 };
@@ -131,10 +139,12 @@ export const overheadSchema = z
     penaltyBankFeePrecentage: z
       .number()
       .min(0, ERROR_MESSAGES.INVALID_PENALTY_BANK_FEE)
+      .nullable()
       .optional(),
     penaltyExtraFee: z
       .number()
       .min(0, ERROR_MESSAGES.INVALID_PENALTY_EXTRA_FEE)
+      .nullable()
       .optional(),
     relatedAgent: z.boolean().optional(),
     formTypeID: z.number().nullable().optional(),

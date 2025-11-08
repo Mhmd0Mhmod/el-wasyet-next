@@ -2,7 +2,7 @@
 
 import { Operation } from "@/components/providers/OperationsProvider";
 import { authFetch } from "@/lib/axios";
-import { handleErrorResponse } from "@/lib/helper";
+import { handleErrorResponse } from "@/actions/helper";
 import { getCurrentUser } from "../auth/actions";
 import { getOperationEndpoint } from "./helpler";
 import { AxiosError } from "axios";

@@ -1,7 +1,7 @@
 "use server";
 
 import { authFetch } from "@/lib/axios";
-import { handleErrorResponse } from "@/lib/helper";
+import { handleErrorResponse } from "@/actions/helper";
 import { revalidatePath } from "next/cache";
 
 export async function createCommission(

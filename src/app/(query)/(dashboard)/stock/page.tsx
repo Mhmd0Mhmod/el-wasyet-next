@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";

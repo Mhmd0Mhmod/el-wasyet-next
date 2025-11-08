@@ -36,7 +36,7 @@ function AddNote({ orderId }: { orderId: number }) {
         toast.error(`حدث خطأ: ${error}`, { id });
       }
     },
-    [form],
+    [form, pathName],
   );
   return (
     <div>

@@ -85,7 +85,7 @@ function NotificationSheetContent() {
             </div>
           </ScrollArea>
 
-          {!isFetching && unreadCount && (
+          {!isFetching && unreadCount > 0 && (
             <MarkAllAsReadButton onAllMarkedAsRead={markAllAsRead} />
           )}
         </TabsContent>
@@ -112,7 +112,7 @@ function NotificationSheetContent() {
             </div>
           </ScrollArea>
 
-          {!isFetching && unreadCount && (
+          {!isFetching && unreadCount > 0 && (
             <MarkAllAsReadButton onAllMarkedAsRead={markAllAsRead} />
           )}
         </TabsContent>

@@ -1,7 +1,7 @@
 "use client";
+import ClientPagination from "@/components/general/ClientPagination";
 import Table from "@/components/general/Table";
 import TableSkeleton from "@/components/general/TableSkeleton";
-import ClientPagination from "@/components/general/ClientPagination";
 import { getRemainingDaysStyle } from "@/components/main/operation/helper";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -52,9 +52,7 @@ function OrdersByStatusDetails({
     hasNextPage,
     hasPreviousPage,
     pageNumber: page,
-    pageSize,
     totalPages,
-    totalRecords,
   } = data;
 
   return (

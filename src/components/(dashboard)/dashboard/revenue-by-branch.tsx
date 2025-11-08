@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import type { branchRevenues } from "@/types/dashboard";
 import { memo } from "react";
+import type { TooltipProps } from "recharts";
 import {
   Bar,
   BarChart,
@@ -22,7 +16,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { TooltipProps } from "recharts";
 import type {
   NameType,
   Payload,
@@ -55,11 +48,7 @@ const ChartTooltip = memo(function ChartTooltip({
   );
 });
 
-function RevenueByBranch({
-  data,
-  className,
-  onViewBranches,
-}: RevenueByBranchProps) {
+function RevenueByBranch({ data, className }: RevenueByBranchProps) {
   const chartData = data.map((branch) => ({
     branchName: branch.branchName,
     revenue: branch.revenue,
@@ -108,16 +97,6 @@ function RevenueByBranch({
           </ResponsiveContainer>
         )}
       </CardContent>
-      <CardFooter className="justify-end">
-        <Button
-          variant="outline"
-          size="sm"
-          className="cursor-pointer"
-          onClick={onViewBranches}
-        >
-          عرض الفروع بالكامل
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

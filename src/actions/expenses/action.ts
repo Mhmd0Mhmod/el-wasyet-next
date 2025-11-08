@@ -1,6 +1,6 @@
 "use server";
 import { authFetch } from "@/lib/axios";
-import { handleErrorResponse } from "@/lib/helper";
+import { handleErrorResponse } from "@/actions/helper";
 import { ExpenseInput } from "@/schema/expense";
 import { getCurrentEmployeeId } from "../auth/actions";
 import { revalidatePath } from "next/cache";

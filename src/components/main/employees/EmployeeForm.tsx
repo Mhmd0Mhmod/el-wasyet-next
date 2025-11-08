@@ -1,6 +1,6 @@
 "use client";
 import { createEmployee, updateEmployee } from "@/actions/employee/actions";
-import Loading from "@/app/loading";
+import Loading from "@/app/(query)/loading";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

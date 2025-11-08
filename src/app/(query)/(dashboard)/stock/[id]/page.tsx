@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { Bell, CheckCircle, Edit3, Plus, XCircle } from "lucide-react";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

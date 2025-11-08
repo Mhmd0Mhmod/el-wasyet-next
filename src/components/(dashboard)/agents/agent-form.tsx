@@ -25,10 +25,18 @@ function AgentForm({ agent }: { agent?: Agent }) {
       const id = toast.loading("جاري الحفظ...");
       setIsSubmitting(true);
       try {
-        await updateAgentServer(agent.id, data);
-        toast.success("تم تحديث الوكيل بنجاح", { id });
+        const response = await updateAgentServer(agent.id, data);
+        if (response.success) {
+          toast.success("تم تحديث الوكيل بنجاح", { id });
+        } else {
+          toast.error(` فشل ف تحديث الوكيل : (${response.success})`, {
+            id,
+          });
+        }
       } catch (error) {
-        toast.error("فشل تحديث الوكيل", { id });
+        toast.error(` فشل ف تحديث الوكيل : (${error})`, {
+          id,
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -39,10 +47,14 @@ function AgentForm({ agent }: { agent?: Agent }) {
     const id = toast.loading("جاري الحفظ...");
     setIsSubmitting(true);
     try {
-      await createAgentServer(data);
-      toast.success("تم إنشاء الوكيل بنجاح", { id });
+      const response = await createAgentServer(data);
+      if (response.success) {
+        toast.success("تم إنشاء الوكيل بنجاح", { id });
+      } else {
+        toast.error(`فشل إنشاء الوكيل: (${response.message})`, { id });
+      }
     } catch (error) {
-      toast.error("فشل إنشاء الوكيل", { id });
+      toast.error(`فشل إنشاء الوكيل: (${error})`, { id });
     } finally {
       setIsSubmitting(false);
     }

@@ -1,7 +1,7 @@
 "use server";
 import { auth, signIn, signOut } from "@/lib/auth";
 import { authFetch } from "@/lib/axios";
-import { handleErrorResponse } from "@/lib/helper";
+import { handleErrorResponse } from "@/actions/helper";
 import { LoginFormValues } from "@/schema/login";
 import { User } from "next-auth";
 

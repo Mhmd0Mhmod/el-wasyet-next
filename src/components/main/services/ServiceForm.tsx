@@ -45,7 +45,9 @@ function ServiceForm({
 
   const onSubmit = useCallback(
     (data: ServiceValues) => {
-      const id = toast.loading("جاري الحفظ...");
+      const id = toast.loading("جاري الحفظ...", {
+        duration: 60000,
+      });
       if (service) {
         updateService(data, service.id)
           .then((res) => {
@@ -76,6 +78,7 @@ function ServiceForm({
     [service, form],
   );
 
+  console.log(form.getValues());
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
