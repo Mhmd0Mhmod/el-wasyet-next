@@ -3,14 +3,10 @@ import z from "zod";
 const branchClientSchema = z.object({
   id: z.number().optional(),
   name: z.string().optional(),
-  email: z
-    .string()
-    .email({ message: "البريد الإلكتروني غير صحيح" })
-    .optional()
-    .or(z.literal("")),
-  phone1: z.string().optional(),
-  phone2: z.string().optional(),
-  address: z.string().optional(),
+  email: z.string().nullable().optional().or(z.literal("")),
+  phone1: z.string().nullable().optional(),
+  phone2: z.string().nullable().optional(),
+  address: z.string().nullable().optional(),
 });
 const clientFormSchema = z.object({
   id: z.number().nullable().optional(),
@@ -23,6 +19,7 @@ const clientFormSchema = z.object({
     .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
       message: "البريد الإلكتروني غير صحيح",
     })
+    .nullable()
     .optional()
     .or(z.literal("")),
   phone1: z
@@ -42,6 +39,7 @@ const clientFormSchema = z.object({
     .optional()
     .or(z.literal("")),
   childClients: z.array(branchClientSchema).optional(),
+  updateClientChildDTOs: z.array(branchClientSchema).optional(),
 });
 
 type ClientFormValues = z.infer<typeof clientFormSchema>;

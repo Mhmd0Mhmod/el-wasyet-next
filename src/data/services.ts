@@ -9,7 +9,7 @@ export async function getServices(params: { search?: string; page?: string }) {
       {
         params: {
           search: params.search,
-          page: params.page,
+          pageIndex: params.page,
         },
       },
     );

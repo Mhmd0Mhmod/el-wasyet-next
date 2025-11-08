@@ -108,7 +108,9 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
     form.setValue("childClients", updatedClients);
   };
 
-  const childClients = form.watch("childClients") || [];
+  const childClients = [...(form.watch("updateClientChildDTOs") || [])].concat(
+    ...(form.watch("childClients") || []),
+  );
   const isLoading = form.formState.isSubmitting;
 
   return (
@@ -146,6 +148,7 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
                         type="email"
                         placeholder="أدخل البريد الإلكتروني"
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -280,18 +283,19 @@ function generateDefaultValues(client?: Client): ClientFormValues {
   return {
     id: client?.id ?? null,
     name: client?.name ?? "",
-    email: client?.email ?? "",
+    email: client?.email ?? null,
     phone1: client?.phone1 ?? "",
     phone2: client?.phone2 ?? "",
     address: client?.address ?? "",
-    childClients:
-      client?.childClients.map((child) => ({
-        id: child.id ?? null,
-        name: child.name ?? "",
-        email: child.email ?? "",
-        phone1: child.phone1 ?? "",
-        phone2: child.phone2 ?? "",
-        address: child.address ?? "",
+    childClients: [],
+    updateClientChildDTOs:
+      client?.childClients?.map((child) => ({
+        id: child.id,
+        name: child.name,
+        email: child.email,
+        phone1: child.phone1,
+        phone2: child.phone2,
+        address: child.address,
       })) ?? [],
   };
 }

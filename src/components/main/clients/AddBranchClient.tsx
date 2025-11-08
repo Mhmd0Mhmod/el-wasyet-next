@@ -20,8 +20,8 @@ function AddBranchClient({
     resolver: zodResolver(branchClientSchema),
     defaultValues: {
       name: "",
-      email: "",
-      phone1: "",
+      email: null,
+      phone1: null,
       phone2: "",
       address: "",
     },
@@ -59,7 +59,12 @@ function AddBranchClient({
                     البريد الالكتروني
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="email" className="text-right" />
+                    <Input
+                      {...field}
+                      type="email"
+                      className="text-right"
+                      value={field.value?.toString()}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -74,7 +79,12 @@ function AddBranchClient({
                 <FormItem>
                   <FormLabel className="text-right">رقم الهاتف 1</FormLabel>
                   <FormControl>
-                    <Input {...field} type="tel" className="text-right" />
+                    <Input
+                      {...field}
+                      type="tel"
+                      className="text-right"
+                      value={field.value?.toString()}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -86,7 +96,12 @@ function AddBranchClient({
                 <FormItem>
                   <FormLabel className="text-right">رقم الهاتف 2</FormLabel>
                   <FormControl>
-                    <Input {...field} type="tel" className="text-right" />
+                    <Input
+                      {...field}
+                      type="tel"
+                      className="text-right"
+                      value={field.value?.toString()}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -100,7 +115,11 @@ function AddBranchClient({
               <FormItem>
                 <FormLabel className="text-right">العنوان</FormLabel>
                 <FormControl>
-                  <Input {...field} className="text-right" />
+                  <Input
+                    {...field}
+                    className="text-right"
+                    value={field.value?.toString()}
+                  />
                 </FormControl>
               </FormItem>
             )}
