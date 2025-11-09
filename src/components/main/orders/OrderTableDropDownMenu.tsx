@@ -1,5 +1,5 @@
 "use client";
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import RefundOrderForm from "@/components/main/orders/RefundOrderForm";
 import {
   DropdownMenu,

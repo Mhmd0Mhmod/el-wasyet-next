@@ -1,6 +1,6 @@
 import ClientDetails from "@/components/main/clients/ClientDetails";
-import Dialog from "@/components/general/Dialog";
-import Table from "@/components/general/Table";
+import Dialog from "@/components/shared/Dialog";
+import Table from "@/components/shared/Table";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/helper";

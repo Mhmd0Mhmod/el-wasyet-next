@@ -1,7 +1,7 @@
 "use client";
 
-import Table from "@/components/general/Table";
-import TableSkeleton from "@/components/general/TableSkeleton";
+import Table from "@/components/shared/Table";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

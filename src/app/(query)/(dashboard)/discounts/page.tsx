@@ -1,8 +1,8 @@
 import DeleteDiscountButton from "@/components/(dashboard)/discounts/delete-discount-button";
 import DiscountDetials from "@/components/(dashboard)/discounts/discount-dialog";
 import DiscountForm from "@/components/(dashboard)/discounts/discount-form";
-import Dialog from "@/components/general/Dialog";
-import Table from "@/components/general/Table";
+import Dialog from "@/components/shared/Dialog";
+import Table from "@/components/shared/Table";
 import PageLayout from "@/components/Layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";

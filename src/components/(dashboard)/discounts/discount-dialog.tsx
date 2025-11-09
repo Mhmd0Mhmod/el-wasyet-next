@@ -1,7 +1,7 @@
 "use client";
 
-import Table from "@/components/general/Table";
-import TableSkeleton from "@/components/general/TableSkeleton";
+import Table from "@/components/shared/Table";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

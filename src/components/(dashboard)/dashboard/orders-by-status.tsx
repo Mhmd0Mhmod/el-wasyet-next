@@ -1,4 +1,4 @@
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import { translateToArabic } from "@/components/main/operation/helper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

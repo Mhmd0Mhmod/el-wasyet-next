@@ -1,6 +1,6 @@
 "use client";
 import { markNotificationAsRead } from "@/actions/notifications/actions";
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

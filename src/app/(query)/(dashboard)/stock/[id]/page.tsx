@@ -1,7 +1,7 @@
 import NewForm from "@/components/(dashboard)/stock/new-form";
 import TransferCovenant from "@/components/(dashboard)/stock/transfer-convenant-button";
-import Dialog from "@/components/general/Dialog";
-import Table from "@/components/general/Table";
+import Dialog from "@/components/shared/Dialog";
+import Table from "@/components/shared/Table";
 import PageLayout from "@/components/Layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";

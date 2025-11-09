@@ -1,5 +1,5 @@
 import AccountTransactionActions from "@/components/(dashboard)/cashbox/accounts-transaction-actions";
-import Table from "@/components/general/Table";
+import Table from "@/components/shared/Table";
 import PageLayout from "@/components/Layout/PageLayout";
 import {
   AlertDialog,

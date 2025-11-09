@@ -1,9 +1,9 @@
 "use client";
 import Error from "@/app/(query)/(main)/error";
 import Loading from "@/app/(query)/loading";
-import ClientPagination from "@/components/general/ClientPagination";
-import Dialog from "@/components/general/Dialog";
-import Table from "@/components/general/Table";
+import ClientPagination from "@/components/shared/ClientPagination";
+import Dialog from "@/components/shared/Dialog";
+import Table from "@/components/shared/Table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

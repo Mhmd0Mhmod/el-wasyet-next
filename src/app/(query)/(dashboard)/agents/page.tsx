@@ -1,9 +1,9 @@
 import AgentDetials from "@/components/(dashboard)/agents/agent-dialog";
 import AgentForm from "@/components/(dashboard)/agents/agent-form";
 import DeleteAgentButton from "@/components/(dashboard)/agents/delete-agent-button";
-import Dialog from "@/components/general/Dialog";
-import SearchInput from "@/components/general/SearchInput";
-import Table from "@/components/general/Table";
+import Dialog from "@/components/shared/Dialog";
+import SearchInput from "@/components/shared/SearchInput";
+import Table from "@/components/shared/Table";
 import PageLayout from "@/components/Layout/PageLayout";
 import {
   AlertDialog,

@@ -1,7 +1,7 @@
 import CommissionForm from "@/components/(dashboard)/commissions/commission-form";
 import DeleteCommissionsAction from "@/components/(dashboard)/commissions/delete-commision-button";
-import Dialog from "@/components/general/Dialog";
-import Table from "@/components/general/Table";
+import Dialog from "@/components/shared/Dialog";
+import Table from "@/components/shared/Table";
 import PageLayout from "@/components/Layout/PageLayout";
 import {
   AlertDialog,

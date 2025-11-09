@@ -1,13 +1,13 @@
 import NewBranch from "@/components/main/Branches/NewBranch";
-import SearchInput from "@/components/general/SearchInput";
-import Table from "@/components/general/Table";
+import SearchInput from "@/components/shared/SearchInput";
+import Table from "@/components/shared/Table";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getBranches } from "@/data/branches";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
-import TableSkeleton from "@/components/general/TableSkeleton";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 
 const columns = [

@@ -1,6 +1,6 @@
 "use client";
 import { sendCode } from "@/actions/[operations]/action";
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import { Button } from "@/components/ui/button";
 import { OrderByStatus } from "@/types/order";
 import { ReactNode, useCallback } from "react";

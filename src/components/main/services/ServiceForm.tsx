@@ -1,6 +1,6 @@
 "use client";
 import { createService, updateService } from "@/actions/services/actions";
-import AddOverheadForm from "@/components/general/AddOverheadForm";
+import AddOverheadForm from "@/components/shared/AddOverheadForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";

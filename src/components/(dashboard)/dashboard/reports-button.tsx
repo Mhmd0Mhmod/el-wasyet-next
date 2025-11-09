@@ -1,4 +1,4 @@
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import { Button } from "@/components/ui/button";
 import ReportsForm from "@/components/(dashboard)/dashboard/reports-form";
 

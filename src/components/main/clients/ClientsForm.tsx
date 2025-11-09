@@ -2,7 +2,7 @@
 
 import { createClient, updateClient } from "@/actions/clients/actions";
 import Loading from "@/app/(query)/loading";
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import {

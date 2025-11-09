@@ -3,7 +3,7 @@ import { OrderFormValues } from "@/schema/order";
 import { FileText, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import Dialog from "../../general/Dialog";
+import Dialog from "../../shared/Dialog";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";

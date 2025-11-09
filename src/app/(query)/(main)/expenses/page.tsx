@@ -1,9 +1,10 @@
-import Pagination from "@/components/general/Pagination";
-import Table from "@/components/general/Table";
-import TableSkeleton from "@/components/general/TableSkeleton";
+import FilterSection from "@/components/(dashboard)/dashboard/filter";
 import PageLayout from "@/components/Layout/PageLayout";
 import AddNewExpense from "@/components/main/expenses/add-new-expense";
 import DeleteExpense from "@/components/main/expenses/DeleteExpense";
+import Pagination from "@/components/shared/Pagination";
+import Table from "@/components/shared/Table";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +16,8 @@ import { Suspense } from "react";
 
 interface Props {
   searchParams: Promise<{
-    date: string;
+    fromDate: string;
+    toDate: string;
     page: string;
   }>;
 }
@@ -26,6 +28,7 @@ function page({ searchParams }: Props) {
       title={"المصروفات"}
       description={"سجل المصروفات ومتابعة حالتها"}
     >
+      <FilterSection />
       <Suspense fallback={<TableSkeleton columns={6} rows={10} />}>
         <DataTable searchParams={searchParams} />
       </Suspense>
@@ -44,10 +47,7 @@ const TABLE_COLUMNS = [
 ];
 async function DataTable({ searchParams }: Props) {
   const params = await searchParams;
-  const response = await getExpenses({
-    date: params.date,
-    page: params.page,
-  });
+  const response = await getExpenses(params);
   const { items, pageNumber, totalPages } = response;
   const total = items?.reduce((sum, item) => sum + item.amount, 0) || 0;
   return (

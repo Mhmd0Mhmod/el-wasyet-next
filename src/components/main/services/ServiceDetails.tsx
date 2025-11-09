@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/helper";
 import { Service } from "@/types/service";
 import { CheckCircle, FileText, XCircle } from "lucide-react";
-import Table from "@/components/general/Table";
+import Table from "@/components/shared/Table";
 import { TableCell, TableRow } from "@/components/ui/table";
 
 function ServiceDetails({ service }: { service?: Service }) {

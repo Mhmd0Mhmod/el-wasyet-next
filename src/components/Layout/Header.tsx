@@ -1,7 +1,7 @@
 import { NAVBARLINKS } from "@/lib/helper";
 import { ChevronDownIcon, PanelLeftClose } from "lucide-react";
 import LogoutButton from "../auth/LogoutButton";
-import Link from "@/components/general/Link";
+import Link from "@/components/shared/Link";
 import NotificationButton from "../notificaitons/NotificationButton";
 import { Button } from "@/components/ui/button";
 import {

@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 
 import { useClients } from "@/hooks/useClients";
 import { cn } from "@/lib/utils";
-import Dialog from "../../general/Dialog";
+import Dialog from "../../shared/Dialog";
 import { useOrderForm } from "../../providers/OrderFormProvider";
 import { Button } from "../../ui/button";
 import {

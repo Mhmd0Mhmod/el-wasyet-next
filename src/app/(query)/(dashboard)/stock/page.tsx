@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import Table from "@/components/general/Table";
-import TableSkeleton from "@/components/general/TableSkeleton";
+import Table from "@/components/shared/Table";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getStockData } from "@/data/stock";

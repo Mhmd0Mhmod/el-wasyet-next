@@ -1,8 +1,8 @@
 "use client";
 import { convertOverheadLabel, formatCurrency } from "@/lib/helper";
-import AddOverheadForm from "../../general/AddOverheadForm";
-import Table from "../../general/Table";
-import TableSkeleton from "../../general/TableSkeleton";
+import AddOverheadForm from "../../shared/AddOverheadForm";
+import Table from "../../shared/Table";
+import TableSkeleton from "../../shared/TableSkeleton";
 import { useOrderForm } from "../../providers/OrderFormProvider";
 import { Badge } from "../../ui/badge";
 import { Checkbox } from "../../ui/checkbox";

@@ -1,6 +1,6 @@
 "use client";
 import { createNewStockItem, updateStockItem } from "@/actions/stock/actions";
-import Dialog from "@/components/general/Dialog";
+import Dialog from "@/components/shared/Dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,

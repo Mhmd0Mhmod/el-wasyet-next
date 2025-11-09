@@ -4,7 +4,7 @@ import { LoginFormValues } from "@/schema/login";
 import { ShortBranch } from "@/types/branch";
 import { EyeClosed, EyeIcon, User } from "lucide-react";
 import { useForm } from "react-hook-form";
-import Input from "@/components/general/Input";
+import Input from "@/components/shared/Input";
 import { Button } from "@/components/ui/button";
 import {
   Form,

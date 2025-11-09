@@ -1,9 +1,9 @@
 import EmployeeForm from "@/components/main/employees/EmployeeForm";
-import Dialog from "@/components/general/Dialog";
-import Pagination from "@/components/general/Pagination";
-import SearchInput from "@/components/general/SearchInput";
-import Table from "@/components/general/Table";
-import TableSkeleton from "@/components/general/TableSkeleton";
+import Dialog from "@/components/shared/Dialog";
+import Pagination from "@/components/shared/Pagination";
+import SearchInput from "@/components/shared/SearchInput";
+import Table from "@/components/shared/Table";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

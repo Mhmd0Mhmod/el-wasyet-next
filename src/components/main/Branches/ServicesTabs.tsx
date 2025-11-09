@@ -1,6 +1,6 @@
 import { Service } from "@/types/service";
-import Table from "@/components/general/Table";
-import { TabsList, TabsTrigger } from "@/components/general/Tabs";
+import Table from "@/components/shared/Table";
+import { TabsList, TabsTrigger } from "@/components/shared/Tabs";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 

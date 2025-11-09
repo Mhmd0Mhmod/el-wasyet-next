@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Spinner from "@/components/general/Spinner";
+import Spinner from "@/components/shared/Spinner";
 import { Label } from "@/components/ui/label";
 import {
   Select,
