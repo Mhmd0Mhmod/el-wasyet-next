@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
+import ExportButton from "@/components/shared/export-button";
 
 const columns = [
   { id: "name", label: "اسم الفرع" },
@@ -79,8 +80,10 @@ async function page({
         />
       }
     >
-      <SearchInput title="ابحث عن فرع" />
-
+      <div className="flex justify-between">
+        <SearchInput title="ابحث عن فرع" />
+        <ExportButton url="Branch/export" params={params} />
+      </div>
       <Suspense
         fallback={<TableSkeleton rows={5} columns={5} />}
         key={JSON.stringify(params)}

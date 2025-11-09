@@ -22,6 +22,7 @@ import { Order } from "@/types/order";
 import { ClipboardIcon, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import ExportButton from "@/components/shared/export-button";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -227,6 +228,7 @@ async function page({
           }))}
           multiple
         />
+        <ExportButton url="Order/export/excel" params={searchParamsValues} />
       </div>
       <Suspense
         fallback={<TableSkeleton rows={5} columns={5} />}

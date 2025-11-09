@@ -18,6 +18,9 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { getCommissions } from "@/data/commissions";
 import { formatCount } from "@/lib/helper";
 import { Edit3Icon, PlusIcon, Trash2Icon } from "lucide-react";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import ExportButton from "@/components/shared/export-button";
 
 function page() {
   return (
@@ -38,7 +41,12 @@ function page() {
         </Dialog>
       }
     >
-      <CommissionsTable />
+      <div className="flex justify-end">
+        <ExportButton url="Commission/export/roles" />
+      </div>
+      <Suspense fallback={<TableSkeleton columns={3} rows={10} />}>
+        <CommissionsTable />
+      </Suspense>
     </PageLayout>
   );
 }

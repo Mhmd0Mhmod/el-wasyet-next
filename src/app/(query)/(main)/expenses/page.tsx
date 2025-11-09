@@ -2,6 +2,7 @@ import FilterSection from "@/components/(dashboard)/dashboard/filter";
 import PageLayout from "@/components/Layout/PageLayout";
 import AddNewExpense from "@/components/main/expenses/add-new-expense";
 import DeleteExpense from "@/components/main/expenses/DeleteExpense";
+import ExportButton from "@/components/shared/export-button";
 import Pagination from "@/components/shared/Pagination";
 import Table from "@/components/shared/Table";
 import TableSkeleton from "@/components/shared/TableSkeleton";
@@ -22,11 +23,13 @@ interface Props {
   }>;
 }
 
-function page({ searchParams }: Props) {
+async function page({ searchParams }: Props) {
+  const params = await searchParams;
   return (
     <PageLayout
       title={"المصروفات"}
       description={"سجل المصروفات ومتابعة حالتها"}
+      extra={<ExportButton url="Expense/export/excel" params={params} />}
     >
       <FilterSection />
       <Suspense fallback={<TableSkeleton columns={6} rows={10} />}>

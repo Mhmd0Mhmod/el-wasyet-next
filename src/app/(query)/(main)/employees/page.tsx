@@ -12,6 +12,7 @@ import { getEmployees } from "@/data/employee";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Edit, Eye, Plus, XCircle } from "lucide-react";
 import { Suspense } from "react";
+import ExportButton from "@/components/shared/export-button";
 
 function NewEmployeeButton() {
   return (
@@ -53,7 +54,6 @@ async function EmployeesTable({
   });
   return (
     <>
-      <SearchInput title="ابحث عن موظف" />
       <Table
         columns={EMPLOYEE_TABLE_COLUMNS}
         renderData={employees.map((employee) => (
@@ -125,18 +125,23 @@ async function page({
 }: {
   searchParams: Promise<{ search?: string; page?: string }>;
 }) {
-  const { search, page } = await searchParams;
+  const params = await searchParams;
   return (
     <PageLayout
       title="الموظفين"
       description="إدارة جميع موظفي الشركة"
       extra={<NewEmployeeButton />}
     >
+      <div className="flex justify-between">
+        <SearchInput title="ابحث عن موظف" />
+        <ExportButton url="Employee/export-excel" params={params} />
+      </div>
+
       <Suspense
         fallback={<TableSkeleton rows={5} columns={5} />}
-        key={search + (page || "")}
+        key={JSON.stringify(params)}
       >
-        <EmployeesTable searchParams={{ search, page }} />
+        <EmployeesTable searchParams={params} />
       </Suspense>
     </PageLayout>
   );

@@ -11,6 +11,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { getClients } from "@/data/clients";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
+import ExportButton from "@/components/shared/export-button";
 
 const columns = [
   { id: "name", label: "الاسم" },
@@ -87,7 +88,7 @@ async function page({
     page?: string;
   }>;
 }) {
-  const { search, page } = await searchParams;
+  const params = await searchParams;
   return (
     <PageLayout
       title="العملاء"
@@ -106,12 +107,15 @@ async function page({
         </Dialog>
       }
     >
-      <SearchInput title="البحث عن عميل..." />
+      <div className="flex justify-between">
+        <SearchInput title="البحث عن عميل..." />
+        <ExportButton url="Client/export/excel" params={params} />
+      </div>
       <Suspense
         fallback={<TableSkeleton rows={5} columns={6} />}
-        key={search + (page || "")}
+        key={JSON.stringify(params)}
       >
-        <ClientsTableData searchParams={{ search, page }} />
+        <ClientsTableData searchParams={params} />
       </Suspense>
     </PageLayout>
   );

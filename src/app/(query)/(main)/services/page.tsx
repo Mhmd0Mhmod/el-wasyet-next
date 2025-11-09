@@ -13,6 +13,7 @@ import { getServices, getWorkFlows } from "@/data/services";
 import { formatCurrency } from "@/lib/helper";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
+import ExportButton from "@/components/shared/export-button";
 
 const serviceColumns = [
   ...ServicesTableHeaders.slice(0, -1),
@@ -82,7 +83,7 @@ async function page({
 }: {
   searchParams: Promise<{ search?: string; page?: string }>;
 }) {
-  const { search, page } = await searchParams;
+  const params = await searchParams;
   const workFlows = await getWorkFlows();
 
   return (
@@ -103,13 +104,16 @@ async function page({
         </Dialog>
       }
     >
-      <SearchInput title="ابحث عن خدمة" />
+      <div className="flex justify-between">
+        <SearchInput title="ابحث عن خدمة" />
+        <ExportButton url="/Service/export-to-excel" params={params} />
+      </div>
       <>
         <Suspense
           fallback={<TableSkeleton rows={5} columns={5} />}
-          key={search + (page || "")}
+          key={JSON.stringify(params)}
         >
-          <ServicesTable searchParams={{ search, page }} />
+          <ServicesTable searchParams={params} />
         </Suspense>
       </>
     </PageLayout>
