@@ -107,7 +107,10 @@ async function AgentsTable({
                   <EyeIcon size={12} />
                 </Button>
               </Dialog.Trigger>
-              <Dialog.Content title="تفاصيل الوكيل">
+              <Dialog.Content
+                title="تفاصيل الوكيل"
+                className="max-h-[90vh] overflow-auto"
+              >
                 <AgentDetials agentId={agent.id} />
               </Dialog.Content>
             </Dialog>

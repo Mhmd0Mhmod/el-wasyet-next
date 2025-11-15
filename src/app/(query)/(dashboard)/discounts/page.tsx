@@ -84,6 +84,7 @@ async function page() {
                 </Dialog.Trigger>
                 <Dialog.Content
                   title={`تفاصيل الخصم - ${discount.companyName}`}
+                  className="max-h-[90vh] overflow-auto"
                 >
                   <DiscountDetials discountId={discount.offerId} />
                 </Dialog.Content>
