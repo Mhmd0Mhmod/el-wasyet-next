@@ -1,6 +1,12 @@
 import { ServiceOverhead } from "@/types/service";
+export type NavLink = {
+  label: string;
+} & (
+  | { href: string; children?: undefined }
+  | { href?: undefined; children: { label: string; href: string }[] }
+);
 
-export const NAVBARLINKS = [
+export const NAVBARLINKS: NavLink[] = [
   { label: "الفروع", href: "/branches" },
   { label: "الخدمات", href: "/services" },
   { label: "الموظفين", href: "/employees" },
