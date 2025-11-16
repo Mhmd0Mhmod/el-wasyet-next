@@ -9,7 +9,7 @@ function useClient(clientId: number, pageIndex: number = 1) {
   });
   return {
     client: query.data,
-    isLoading: query.isLoading,
+    isLoading: query.isFetching,
     error: query.error,
     refetch: query.refetch,
   };

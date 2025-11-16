@@ -23,6 +23,7 @@ import { ClipboardIcon, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
+import ClientDetails from "@/components/main/clients/ClientDetails";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -51,7 +52,6 @@ async function OrdersTable({
   const { items, pageNumber, totalPages } = await getOrders({
     searchParams,
   });
-
   const renderOrderRows = items.map((order: Order) => (
     <TableRow
       key={order.id}
@@ -66,7 +66,23 @@ async function OrdersTable({
         </Link>
       </TableCell>
       <TableCell>{order.serviceName}</TableCell>
-      <TableCell>{order.clientName}</TableCell>
+      <TableCell>
+        <Dialog>
+          <Dialog.Trigger>
+            <Button className="cursor-pointer p-0" variant={"link"}>
+              {order.clientName}
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Content
+            title="تفاصيل العميل"
+            className="container overflow-auto sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+          >
+            <div className="max-h-[70vh] space-y-10 overflow-auto">
+              <ClientDetails clientId={order.clientId} />
+            </div>
+          </Dialog.Content>
+        </Dialog>
+      </TableCell>
       <TableCell>{order.clientPhoneNumber}</TableCell>
       <TableCell>{formatDate(order.orderDate, "datetime")}</TableCell>
       <TableCell>{order.orderStatus}</TableCell>

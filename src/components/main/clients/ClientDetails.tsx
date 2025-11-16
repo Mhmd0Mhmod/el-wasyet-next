@@ -63,7 +63,6 @@ function ClientDetails({ clientId }: ClientDetailsProps) {
   const [id, setId] = useState(clientId);
   const [page, setPage] = useState(1);
   const { client, isLoading, error, refetch } = useClient(id, page);
-
   const handleClientChange = useCallback((newId: number) => {
     setId(newId);
     setPage(1);
