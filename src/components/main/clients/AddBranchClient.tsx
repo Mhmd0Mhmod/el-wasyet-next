@@ -18,13 +18,6 @@ function AddBranchClient({
 }) {
   const form = useForm<BranchClientValues>({
     resolver: zodResolver(branchClientSchema),
-    defaultValues: {
-      name: "",
-      email: null,
-      phone1: null,
-      phone2: "",
-      address: "",
-    },
   });
 
   const handleSubmit = (event: React.FormEvent) => {

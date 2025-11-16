@@ -1,9 +1,8 @@
+import PageLayout from "@/components/Layout/PageLayout";
 import BranchInfoItem from "@/components/main/Branches/BranchInfoItem";
-import LastActivities from "@/components/main/Branches/LastActivities";
 import NewBranchButton from "@/components/main/Branches/NewBranch";
 import ServicesTable from "@/components/main/Branches/ServicesTable";
 import { TabsList, TabsTrigger } from "@/components/shared/Tabs";
-import PageLayout from "@/components/Layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import {
   Card,

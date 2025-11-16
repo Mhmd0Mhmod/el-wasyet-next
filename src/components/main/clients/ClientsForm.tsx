@@ -53,8 +53,6 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
       const id = toast.loading("جاري حفظ بيانات العميل...", {
         duration: 5000,
       });
-      console.log(data);
-
       if (client?.id) {
         updateClient(data)
           .then((res) => {
