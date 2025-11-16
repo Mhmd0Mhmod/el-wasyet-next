@@ -23,10 +23,7 @@ function NewEmployeeButton() {
           إضافة موظف جديد
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content
-        title="إضافة موظف جديد"
-        className="mx-auto max-h-[80vh] max-w-4xl overflow-y-auto"
-      >
+      <Dialog.Content title="إضافة موظف جديد">
         <EmployeeForm />
       </Dialog.Content>
     </Dialog>
@@ -36,6 +33,7 @@ const EMPLOYEE_TABLE_COLUMNS = [
   { id: "name", label: "الاسم" },
   { id: "phone", label: "رقم الهاتف" },
   { id: "email", label: "البريد الالكتروني" },
+  { id: "role", label: "الوظيفة" },
   { id: "suspended", label: "الحالة" },
   { id: "actions", label: "العمليات" },
 ];
@@ -61,6 +59,7 @@ async function EmployeesTable({
             <TableCell className="font-medium">{employee.name}</TableCell>
             <TableCell>{employee.phone}</TableCell>
             <TableCell>{employee.email}</TableCell>
+            <TableCell>{employee.role}</TableCell>
             <TableCell>
               <Badge
                 variant={employee.suspended ? "secondary" : "destructive"}

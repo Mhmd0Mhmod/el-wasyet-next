@@ -45,10 +45,7 @@ function ServiceDetails({ service }: { service?: Service }) {
               <span className="text-sm text-gray-500">رسوم إضافية:</span>
               <span>{formatCurrency(overheadFees)}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">رسوم بنكية:</span>
-              <span>{formatCurrency(service.bankFees)}</span>
-            </div>
+
             <div className="flex items-center justify-between border-t pt-2">
               <span className="text-sm text-gray-500">إجمالي الرسوم:</span>
               <span className="text-xl font-bold text-green-600">

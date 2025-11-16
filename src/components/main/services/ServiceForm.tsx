@@ -190,7 +190,7 @@ function ServiceForm({
           {/* Documents */}
           <Card>
             <CardHeader>
-              <CardTitle>الوثائق المطلوبة</CardTitle>
+              <CardTitle>المستندات المطلوبة</CardTitle>
               <Button
                 type="button"
                 variant="outline"

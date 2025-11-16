@@ -31,7 +31,6 @@ async function ServicesTable({
 }) {
   const data = await getServices(searchParams);
   const workFlows = await getWorkFlows();
-
   return (
     <>
       <Table
@@ -42,7 +41,11 @@ async function ServicesTable({
             <TableCell>{formatCurrency(service.defaultFees)}</TableCell>
             <TableCell>{service.documents.length} مستندات</TableCell>
             <TableCell>{service.workflows.length} خطوات</TableCell>
-            <TableCell>{formatCurrency(service.bankFees)}</TableCell>
+            <TableCell>
+              {formatCurrency(
+                service?.overheads?.reduce((acc, curr) => acc + curr.value, 0),
+              )}
+            </TableCell>
             <TableCell>{service.validityPeriodDays} ايام</TableCell>
             <TableCell>{service.expiryPeriodYears} سنوات</TableCell>
             <TableCell className="flex gap-2 text-gray-500">

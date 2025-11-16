@@ -65,7 +65,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
 
   const currentRole = form.watch("roleId");
   const role = roles?.find((r) => r.id.toString() === currentRole);
-  const { abilities, isLoading: isLoadingAbilities } = useAbilities(role!);
+  const { abilities, isLoading: isLoadingAbilities } = useAbilities(role);
   useEffect(() => {
     if (employee?.id && managers) {
       form.reset({
@@ -73,9 +73,6 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
         abilityIds: employee.abilityDTOs.map((ability) => ability.id),
       });
     }
-    return () => {
-      form.reset();
-    };
   }, [employee, form, managers, role]);
 
   const handleSubmit = useCallback(
@@ -147,274 +144,271 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="max-h-[80vh] space-y-6 overflow-y-auto pb-4"
+          dir="rtl"
+        >
           {/* Personal Information Grid */}
-          <div className="max-h-[50vh] space-y-6 overflow-y-auto">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="name">الاسم الكامل</FormLabel>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="name">الاسم الكامل</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="أدخل الاسم الكامل"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>البريد الإلكتروني</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="أدخل البريد الإلكتروني"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>رقم الهاتف</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="أدخل رقم الهاتف"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="roleId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>الوظيفة</FormLabel>
+                  <Select
+                    {...field}
+                    disabled={isLoadingRoles || field.disabled}
+                    onValueChange={onSelectRole}
+                    value={field.value}
+                  >
                     <FormControl>
-                      <Input
-                        placeholder="أدخل الاسم الكامل"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={"اختار الوظيفه"} />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>البريد الإلكتروني</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="أدخل البريد الإلكتروني"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>رقم الهاتف</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="أدخل رقم الهاتف"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="roleId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>الوظيفة</FormLabel>
+                    <SelectContent dir="rtl">
+                      {roles?.map((role) => (
+                        <SelectItem value={role.id?.toString()} key={role.id}>
+                          {role.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="managerId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>المدير المباشر</FormLabel>
+                  <FormControl>
                     <Select
                       {...field}
-                      disabled={isLoadingRoles || field.disabled}
-                      onValueChange={onSelectRole}
-                      value={field.value}
+                      disabled={isLoadingManagers || field.disabled}
+                      onValueChange={(value) => field.onChange(parseInt(value))}
+                      value={field.value != null ? field.value.toString() : ""}
                     >
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder={"اختار الوظيفه"} />
-                        </SelectTrigger>
-                      </FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="اختار المدير المباشر" />
+                      </SelectTrigger>
                       <SelectContent dir="rtl">
-                        {roles?.map((role) => (
-                          <SelectItem value={role.id?.toString()} key={role.id}>
-                            {role.name}
+                        {managers?.map((manager) => (
+                          <SelectItem
+                            value={manager.id?.toString()}
+                            key={manager.id}
+                          >
+                            {manager.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="managerId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>المدير المباشر</FormLabel>
-                    <FormControl>
-                      <Select
-                        {...field}
-                        disabled={isLoadingManagers || field.disabled}
-                        onValueChange={(value) =>
-                          field.onChange(parseInt(value))
-                        }
-                        value={
-                          field.value != null ? field.value.toString() : ""
-                        }
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="اختار المدير المباشر" />
-                        </SelectTrigger>
-                        <SelectContent dir="rtl">
-                          {managers?.map((manager) => (
-                            <SelectItem
-                              value={manager.id?.toString()}
-                              key={manager.id}
-                            >
-                              {manager.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="userName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>اسم المستخدم</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="أدخل اسم المستخدم"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>كلمة المرور</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="أدخل كلمة المرور"
-                        type="password"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Status Section */}
-            <FormField
-              control={form.control}
-              name="suspended"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel>حالة الموظف</FormLabel>
-                    <div className="text-muted-foreground text-sm">
-                      {field.value ? "معطل" : "مفعل"}
-                    </div>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      className="flex-row-reverse"
-                      checked={Boolean(field.value)}
-                      onCheckedChange={field.onChange}
-                      disabled={field.disabled}
-                    />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="hasViewCashBoxAbility"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel>عرض صندوق النقد</FormLabel>
-                    <div className="text-muted-foreground text-sm">
-                      {field.value ? "مفعل" : "معطل"}
-                    </div>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      className="flex-row-reverse"
-                      checked={Boolean(field.value)}
-                      onCheckedChange={field.onChange}
-                      disabled={field.disabled}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {/* Permissions Section */}
-            <FormField
-              control={form.control}
-              name="abilityIds"
+              name="userName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الصلاحيات</FormLabel>
-                  <div className="flex flex-wrap gap-6">
-                    {abilities.length > 0 &&
-                      abilities.map((permission) => {
-                        return (
-                          <div
-                            key={permission.id}
-                            className="flex flex-wrap items-center"
-                          >
-                            <Checkbox
-                              checked={Boolean(
-                                field.value?.some(
-                                  (ability: number) =>
-                                    ability === permission.id,
-                                ),
-                              )}
-                              id={permission.id.toString()}
-                              disabled={field.disabled}
-                              value={permission.id.toString()}
-                              onCheckedChange={(checked) =>
-                                handleAbilityChange(
-                                  permission.id,
-                                  checked as boolean,
-                                  field,
-                                )
-                              }
-                            />
-                            <Label
-                              htmlFor={permission.id.toString()}
-                              className="mr-2"
-                            >
-                              {permission.abilityName}
-                            </Label>
-                          </div>
-                        );
-                      })}
-                    {!role && (
-                      <p className="text-sm text-gray-500">
-                        يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.
-                      </p>
-                    )}
-                    {abilities.length == 0 && role && !isLoadingAbilities && (
-                      <p className="text-sm text-gray-500">
-                        لا توجد صلاحيات متاحة لهذه الوظيفه.
-                      </p>
-                    )}
-                    {isLoadingAbilities && (
-                      <div className="flex w-full items-center justify-center p-2">
-                        <Spinner />
-                      </div>
-                    )}
-                  </div>
+                  <FormLabel>اسم المستخدم</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="أدخل اسم المستخدم"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>كلمة المرور</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="أدخل كلمة المرور"
+                      type="password"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
+          {/* Status Section */}
+          <FormField
+            control={form.control}
+            name="suspended"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel>حالة الموظف</FormLabel>
+                  <div className="text-muted-foreground text-sm">
+                    {field.value ? "معطل" : "مفعل"}
+                  </div>
+                </div>
+                <FormControl>
+                  <Switch
+                    className="flex-row-reverse"
+                    checked={Boolean(field.value)}
+                    onCheckedChange={field.onChange}
+                    disabled={field.disabled}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="hasViewCashBoxAbility"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel>عرض صندوق النقد</FormLabel>
+                  <div className="text-muted-foreground text-sm">
+                    {field.value ? "مفعل" : "معطل"}
+                  </div>
+                </div>
+                <FormControl>
+                  <Switch
+                    className="flex-row-reverse"
+                    checked={Boolean(field.value)}
+                    onCheckedChange={field.onChange}
+                    disabled={field.disabled}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {/* Permissions Section */}
+          <FormField
+            control={form.control}
+            name="abilityIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>الصلاحيات</FormLabel>
+                <div className="flex flex-wrap gap-6">
+                  {abilities.length > 0 &&
+                    abilities.map((permission) => {
+                      return (
+                        <div
+                          key={permission.id}
+                          className="flex flex-wrap items-center"
+                        >
+                          <Checkbox
+                            checked={Boolean(
+                              field.value?.some(
+                                (ability: number) => ability === permission.id,
+                              ),
+                            )}
+                            id={permission.id.toString()}
+                            disabled={field.disabled}
+                            value={permission.id.toString()}
+                            onCheckedChange={(checked) =>
+                              handleAbilityChange(
+                                permission.id,
+                                checked as boolean,
+                                field,
+                              )
+                            }
+                          />
+                          <Label
+                            htmlFor={permission.id.toString()}
+                            className="mr-2"
+                          >
+                            {permission.abilityName}
+                          </Label>
+                        </div>
+                      );
+                    })}
+                  {!role && (
+                    <p className="text-sm text-gray-500">
+                      يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.
+                    </p>
+                  )}
+                  {abilities.length == 0 && role && !isLoadingAbilities && (
+                    <p className="text-sm text-gray-500">
+                      لا توجد صلاحيات متاحة لهذه الوظيفه.
+                    </p>
+                  )}
+                  {isLoadingAbilities && (
+                    <div className="flex w-full items-center justify-center p-2">
+                      <Spinner />
+                    </div>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           {/* Action Buttons */}
           {!disabled && (
             <>

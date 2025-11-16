@@ -96,14 +96,10 @@ async function BranchDetailsPage({
       <Tabs defaultValue="services" className="w-full">
         <TabsList dir="rtl" className="m-auto w-2xl">
           <TabsTrigger value="services">الخدمات</TabsTrigger>
-          <TabsTrigger value="last-activities">الانشطه الاخيره</TabsTrigger>
         </TabsList>
         <Card dir="rtl" className="p-6">
           <TabsContent value="services">
             <ServicesTable services={branch.services} />
-          </TabsContent>
-          <TabsContent value="last-activities">
-            <LastActivities />
           </TabsContent>
         </Card>
       </Tabs>
