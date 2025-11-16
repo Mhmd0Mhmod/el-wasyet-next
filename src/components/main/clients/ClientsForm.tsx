@@ -114,7 +114,7 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
   return (
     <div
       dir="rtl"
-      className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-6 shadow-sm"
+      className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-4 shadow-sm sm:p-6"
     >
       <Form {...form}>
         <form onSubmit={onSubmit} className="space-y-6">

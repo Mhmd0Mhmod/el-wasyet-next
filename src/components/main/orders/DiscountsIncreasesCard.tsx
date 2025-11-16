@@ -26,7 +26,7 @@ function DiscountsIncreasesCard({
         <CardTitle className="text-lg font-bold">الخصومات والزيادات</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           {/* الزيادات - Increases */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">

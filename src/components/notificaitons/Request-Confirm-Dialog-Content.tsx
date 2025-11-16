@@ -157,7 +157,7 @@ function RequestConfirmDialogContent({
       )}
 
       {!showRejectInput && (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <Button onClick={handleFullAcceptance}>قبول كلي</Button>
           <Button onClick={handlePartialAcceptance}>
             {showPartialInput ? "تأكيد القبول الجزئي" : "قبول جزئي"}
@@ -166,7 +166,7 @@ function RequestConfirmDialogContent({
       )}
 
       {showRejectInput ? (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <Button variant="outline" onClick={() => setShowRejectInput(false)}>
             رجوع
           </Button>

@@ -112,8 +112,8 @@ function OrderTableDropDownMenu({ order }: { order: Order }) {
       )}
       {currentDialog === "cancelWithForm" && (
         <Dialog.Content title="إلغاء بالاستمارة" className="sm:max-w-fit">
-          <div className="grid grid-cols-2 gap-4">
-            <h3 className="col-span-2 text-xl font-bold">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+            <h3 className="col-span-full text-xl font-bold">
               الطريقه التي تم دفع بيها الاستماره
             </h3>
             <Button onClick={onCancelWithFormCreditClick}>كريديت</Button>

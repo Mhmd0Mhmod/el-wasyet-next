@@ -184,7 +184,7 @@ function NewBranchFrom({ branch }: { branch?: Branch }) {
             )}
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <DialogClose asChild>
               <Button type="button" variant="outline" className="px-8">
                 الغاء

@@ -38,7 +38,7 @@ function page({
       extra={
         <Dialog>
           <Dialog.Trigger>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <PlusIcon />
               <span>إضافه وكيل جديد</span>
             </Button>

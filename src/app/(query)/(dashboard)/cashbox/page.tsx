@@ -27,7 +27,7 @@ async function page() {
       <div className="flex justify-end">
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button>طلب تحويل للحسابات</Button>
+            <Button className="w-full sm:w-auto">طلب تحويل للحسابات</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader className="sm:text-right">

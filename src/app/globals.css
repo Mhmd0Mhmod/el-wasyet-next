@@ -123,7 +123,34 @@
   }
 }
 
+@layer utilities {
+  .container {
+    @apply w-full px-4 sm:px-6 lg:px-8;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 html {
   scroll-behavior: smooth;
-  font-size: larger;
+  font-size: large;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: medium;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: large;
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: larger;
+  }
 }

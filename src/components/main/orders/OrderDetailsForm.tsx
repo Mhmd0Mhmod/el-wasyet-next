@@ -17,7 +17,7 @@ function OrderDetailsForm() {
 
   if (isLoadingService) {
     return (
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
         {Array.from({ length: 4 }).map((_, index) => (
           <Skeleton key={index} className="h-10 w-full rounded-md" />
         ))}
@@ -26,7 +26,7 @@ function OrderDetailsForm() {
   }
 
   return (
-    <div className="md:grid md:grid-cols-2 md:gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
       {service?.isCertificate && (
         <>
           <FormField
@@ -104,7 +104,7 @@ function OrderDetailsForm() {
         control={form.control}
         name="Notes"
         render={({ field }) => (
-          <FormItem className="col-span-2">
+          <FormItem className="lg:col-span-2">
             <FormLabel>الملاحظات</FormLabel>
             <FormControl>
               <Textarea {...field} />

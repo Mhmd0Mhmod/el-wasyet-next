@@ -67,7 +67,7 @@ function UploadDocumentButton() {
               <CardTitle className="text-lg">إضافة ملف جديد</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid w-full grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="file-input">اختر الملف</Label>
                   <Input

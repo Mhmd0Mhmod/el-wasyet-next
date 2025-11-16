@@ -52,29 +52,29 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
       />
 
       {/* Discounts and Increases Cards Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-bold">
+            <CardTitle className="flex items-center gap-2 text-base font-bold sm:text-lg">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
                 <TrendingDown className="h-4 w-4 text-blue-600" />
               </div>
               الخصومات
             </CardTitle>{" "}
-            <CardContent className="rounded-lg bg-blue-50 p-3">
+            <CardContent className="rounded-lg bg-blue-50 p-3 text-sm sm:text-base">
               {orderDetails.offerName || "لا توجد خصومات"}
             </CardContent>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-bold">
+            <CardTitle className="flex items-center gap-2 text-base font-bold sm:text-lg">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-100">
                 <TrendingUp className="h-4 w-4 text-red-600" />
               </div>
               الزيادات
             </CardTitle>
-            <CardContent className="rounded-lg bg-red-50 p-3">
+            <CardContent className="rounded-lg bg-red-50 p-3 text-sm sm:text-base">
               {orderDetails.agentName || "لا توجد زيادات"}
             </CardContent>
           </CardHeader>
@@ -109,7 +109,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
           <UploadedFilesCard files={orderDetails.files || []} />
           <Separator />
           {/* Action Buttons */}
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
             <ExportReceiptButton orderId={orderDetails.id} />
             <DownloadPDF orderId={orderDetails.id} />
             <WhatsAppShareButton orderId={orderDetails.id} />

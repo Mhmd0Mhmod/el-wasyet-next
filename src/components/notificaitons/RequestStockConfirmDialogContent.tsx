@@ -97,7 +97,7 @@ function RequestStockConfirmDialogContent({
         />
       )}
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
         {showRejectInput ? (
           <>
             <Button variant="outline" onClick={() => setShowRejectInput(false)}>

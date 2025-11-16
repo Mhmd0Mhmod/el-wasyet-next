@@ -131,7 +131,7 @@ async function page({
       description="إدارة جميع موظفي الشركة"
       extra={<NewEmployeeButton />}
     >
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <SearchInput title="ابحث عن موظف" />
         <ExportButton url="Employee/export-excel" params={params} />
       </div>

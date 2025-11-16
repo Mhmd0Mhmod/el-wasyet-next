@@ -21,10 +21,13 @@ import {
 } from "@/components/ui/sheet";
 import { NAVBARLINKS } from "@/lib/helper";
 import { ChevronDownIcon, PanelLeftClose } from "lucide-react";
-import LogoutButton from "../auth/LogoutButton";
 import NotificationButton from "../notificaitons/NotificationButton";
 import Logo from "./Logo";
 import NavigationItem from "./NavigationItem";
+import UserProfileButton from "./UserProfileButton";
+import LogoutButton from "./logout-button";
+import UserProfileDetails from "./UserProfileDetails";
+import { ScrollArea } from "../ui/scroll-area";
 function Header() {
   return (
     <header className="flex h-16 items-center border-b">
@@ -45,7 +48,7 @@ function Header() {
         <div className="flex items-center">
           <NotificationButton />
           <div className="hidden md:block">
-            <LogoutButton />
+            <UserProfileButton />
           </div>
           <div className="block md:hidden">
             <SheetButton />
@@ -72,38 +75,41 @@ function SheetButton() {
           </SheetTitle>
         </SheetHeader>
         <Separator />
-        <div className="flex flex-col gap-4 p-4">
-          {NAVBARLINKS.map((link) =>
-            link.href ? (
-              <Link key={link.href} href={link?.href}>
-                {link.label}
-              </Link>
-            ) : (
-              <Collapsible key={link.label}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant={"ghost"}
-                    className="w-full justify-between p-0 underline"
-                  >
-                    {link.label}
-                    <ChevronDownIcon />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="flex flex-col gap-2">
-                    {link?.children?.map((sublink) => (
-                      <Link key={sublink.href} href={sublink.href}>
-                        {sublink.label}
-                      </Link>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            ),
-          )}
-        </div>
+        <ScrollArea dir="rtl" className="h-72 overflow-auto">
+          <div className="flex flex-col gap-4 p-4">
+            {NAVBARLINKS.map((link) =>
+              link.href ? (
+                <Link key={link.href} href={link?.href}>
+                  {link.label}
+                </Link>
+              ) : (
+                <Collapsible key={link.label}>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className="w-full justify-between p-0 underline"
+                    >
+                      {link.label}
+                      <ChevronDownIcon />
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="flex flex-col gap-2">
+                      {link?.children?.map((sublink) => (
+                        <Link key={sublink.href} href={sublink.href}>
+                          {sublink.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              ),
+            )}
+          </div>
+        </ScrollArea>
         <Separator />
         <SheetFooter>
+          <UserProfileDetails />
           <LogoutButton />
         </SheetFooter>
       </SheetContent>

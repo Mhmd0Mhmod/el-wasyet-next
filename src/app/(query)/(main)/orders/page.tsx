@@ -224,27 +224,35 @@ async function page({
         </Button>
       }
     >
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-        <SearchInput title="بحث .." />
-        <Select
-          name="serviceIds"
-          placeholder="اسم الخدمة"
-          selectItems={services.map((service) => ({
-            value: service.id,
-            label: service.name,
-          }))}
-          multiple
-        />
-        <Select
-          name="orderStatusIds"
-          placeholder="حاله الامر"
-          selectItems={orderStatus.map((status) => ({
-            value: status.id,
-            label: status.name,
-          }))}
-          multiple
-        />
-        <ExportButton url="Order/export/excel" params={searchParamsValues} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+        <div className="w-full sm:w-auto sm:min-w-[200px] sm:flex-1">
+          <SearchInput title="بحث .." />
+        </div>
+        <div className="w-full sm:w-auto sm:min-w-[180px]">
+          <Select
+            name="serviceIds"
+            placeholder="اسم الخدمة"
+            selectItems={services.map((service) => ({
+              value: service.id,
+              label: service.name,
+            }))}
+            multiple
+          />
+        </div>
+        <div className="w-full sm:w-auto sm:min-w-[180px]">
+          <Select
+            name="orderStatusIds"
+            placeholder="حاله الامر"
+            selectItems={orderStatus.map((status) => ({
+              value: status.id,
+              label: status.name,
+            }))}
+            multiple
+          />
+        </div>
+        <div className="w-full sm:w-auto">
+          <ExportButton url="Order/export/excel" params={searchParamsValues} />
+        </div>
       </div>
       <Suspense
         fallback={<TableSkeleton rows={5} columns={5} />}

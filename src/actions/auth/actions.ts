@@ -55,7 +55,7 @@ export async function Logout() {
 }
 
 export async function getCurrentUser() {
-  return await auth();
+  return (await auth())?.user;
 }
 export async function getToken() {
   return (await auth())?.user.token;

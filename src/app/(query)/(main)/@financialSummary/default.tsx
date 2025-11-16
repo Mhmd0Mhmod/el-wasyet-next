@@ -6,7 +6,7 @@ import { Wallet, CreditCard, TrendingUp } from "lucide-react";
 
 async function Default() {
   return (
-    <div className="flex justify-end gap-4">
+    <div className="flex flex-col justify-end gap-3 sm:flex-row sm:gap-4">
       <Suspense fallback={<Loading />}>
         <FinancialSummary />
       </Suspense>
@@ -20,7 +20,7 @@ async function FinancialSummary() {
   return (
     <>
       {/* Cash & Credit Card */}
-      <div className="group relative w-52 overflow-hidden rounded-lg border border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+      <div className="group relative w-full overflow-hidden rounded-lg border border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-52">
         <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
         <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
 
@@ -54,7 +54,7 @@ async function FinancialSummary() {
       </div>
 
       {/* Commission Card */}
-      <div className="group relative w-52 overflow-hidden rounded-lg border border-rose-600 bg-gradient-to-br from-rose-500 to-rose-600 p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+      <div className="group relative w-full overflow-hidden rounded-lg border border-rose-600 bg-gradient-to-br from-rose-500 to-rose-600 p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-52">
         <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
         <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-white/10 transition-transform duration-300 group-hover:scale-150" />
 
@@ -80,7 +80,7 @@ function Loading() {
   return (
     <>
       {/* Cash & Credit Loading Skeleton */}
-      <div className="w-52 overflow-hidden rounded-lg border border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 shadow-lg">
+      <div className="w-full overflow-hidden rounded-lg border border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 p-3 shadow-lg sm:w-52">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
@@ -103,7 +103,7 @@ function Loading() {
       </div>
 
       {/* Commission Loading Skeleton */}
-      <div className="w-52 overflow-hidden rounded-lg border border-rose-600 bg-gradient-to-br from-rose-500 to-rose-600 p-3 shadow-lg">
+      <div className="w-full overflow-hidden rounded-lg border border-rose-600 bg-gradient-to-br from-rose-500 to-rose-600 p-3 shadow-lg sm:w-52">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Skeleton className="h-7 w-7 rounded-full bg-white/30" />

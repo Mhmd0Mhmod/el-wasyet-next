@@ -107,9 +107,11 @@ async function page({
         </Dialog>
       }
     >
-      <div className="flex justify-between">
+      <div className="mb-4 flex flex-wrap justify-between gap-4 sm:items-center">
         <SearchInput title="ابحث عن خدمة" />
-        <ExportButton url="/Service/export-to-excel" params={params} />
+        <div className="mr-auto">
+          <ExportButton url="/Service/export-to-excel" params={params} />
+        </div>
       </div>
       <>
         <Suspense

@@ -88,7 +88,7 @@ function ServiceForm({
             <CardHeader>
               <CardTitle>المعلومات الأساسية</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-2">
+            <CardContent className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2 lg:grid-rows-2">
               <FormField
                 name="Name"
                 control={form.control}

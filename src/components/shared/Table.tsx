@@ -31,31 +31,33 @@ function Table({
   onSelectAllChange,
 }: TableProp) {
   return (
-    <TableComponent className="border">
-      <TableHeader>
-        <TableRow>
-          {selectAll && (
-            <TableHead className="!px-2 text-center">
-              <Checkbox
-                defaultChecked={selected}
-                onCheckedChange={onSelectAllChange}
-              />
-            </TableHead>
-          )}
-          {selectAllComponent && (
-            <TableHead className="!px-2 text-center">
-              {React.createElement(selectAllComponent)}
-            </TableHead>
-          )}
-          {columns.map((column) => (
-            <TableHead key={column.id} className="text-primary text-right">
-              {column.label}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>{renderData}</TableBody>
-    </TableComponent>
+    <div className="w-full overflow-x-auto rounded-lg border">
+      <TableComponent className="min-w-[800px]">
+        <TableHeader>
+          <TableRow>
+            {selectAll && (
+              <TableHead className="!px-2 text-center">
+                <Checkbox
+                  defaultChecked={selected}
+                  onCheckedChange={onSelectAllChange}
+                />
+              </TableHead>
+            )}
+            {selectAllComponent && (
+              <TableHead className="!px-2 text-center">
+                {React.createElement(selectAllComponent)}
+              </TableHead>
+            )}
+            {columns.map((column) => (
+              <TableHead key={column.id} className="text-primary text-right">
+                {column.label}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>{renderData}</TableBody>
+      </TableComponent>
+    </div>
   );
 }
 export default Table;

@@ -94,7 +94,7 @@ function ServiceDetails({ service }: { service?: Service }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="">
-          <div className="ga grid grid-cols-1 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
             {service.documents.map((document) => (
               <div key={document.id} className="flex items-center gap-2">
                 <FileText

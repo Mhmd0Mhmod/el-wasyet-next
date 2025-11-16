@@ -52,7 +52,7 @@ async function page() {
       extra={
         <Dialog>
           <Dialog.Trigger>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <PlusIcon />
               <span>إضافه خصم جديد</span>
             </Button>

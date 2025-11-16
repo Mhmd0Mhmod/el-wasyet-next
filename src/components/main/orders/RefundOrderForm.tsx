@@ -55,7 +55,7 @@ function RefundOrderForm({ orderId }: { orderId: number }) {
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-2 gap-4"
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -113,8 +113,15 @@ function RefundOrderForm({ orderId }: { orderId: number }) {
           )}
         />
 
-        <Button type="submit">ارسال</Button>
-        <Button variant="outline" type="button" onClick={() => form.reset()}>
+        <Button type="submit" className="sm:col-span-1">
+          ارسال
+        </Button>
+        <Button
+          variant="outline"
+          type="button"
+          onClick={() => form.reset()}
+          className="sm:col-span-1"
+        >
           الغاء
         </Button>
       </form>

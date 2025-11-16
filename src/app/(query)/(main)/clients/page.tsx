@@ -96,7 +96,7 @@ async function page({
       extra={
         <Dialog>
           <Dialog.Trigger>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus size={16} />
               إضافة عميل
             </Button>
@@ -107,7 +107,7 @@ async function page({
         </Dialog>
       }
     >
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <SearchInput title="البحث عن عميل..." />
         <ExportButton url="Client/export/excel" params={params} />
       </div>

@@ -99,7 +99,7 @@ function ServiceCostTabs() {
               <CardTitle>إدارة رسوم التكلفة</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <div className="flex-1">
                   <Label htmlFor="fee-name">اسم الرسم</Label>
                   <Input
@@ -123,7 +123,10 @@ function ServiceCostTabs() {
                     }
                   />
                 </div>
-                <Button onClick={addServiceFee} className="mt-6">
+                <Button
+                  onClick={addServiceFee}
+                  className="w-full sm:mt-6 sm:w-auto"
+                >
                   إضافة
                 </Button>
               </div>
@@ -160,7 +163,7 @@ function ServiceCostTabs() {
               <CardTitle>إدارة أسماء التكلفة</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <div className="flex-1">
                   <Label htmlFor="arabic-name">الاسم بالعربية</Label>
                   <Input
@@ -183,7 +186,10 @@ function ServiceCostTabs() {
                     }
                   />
                 </div>
-                <Button onClick={addServiceName} className="mt-6">
+                <Button
+                  onClick={addServiceName}
+                  className="w-full sm:mt-6 sm:w-auto"
+                >
                   إضافة
                 </Button>
               </div>
@@ -220,7 +226,7 @@ function ServiceCostTabs() {
               <CardTitle>إدارة أنواع التكلفة</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <div className="flex-1">
                   <Label htmlFor="type-name">نوع التكلفة</Label>
                   <Input
@@ -243,7 +249,10 @@ function ServiceCostTabs() {
                     }
                   />
                 </div>
-                <Button onClick={addServiceType} className="mt-6">
+                <Button
+                  onClick={addServiceType}
+                  className="w-full sm:mt-6 sm:w-auto"
+                >
                   إضافة
                 </Button>
               </div>

@@ -78,14 +78,14 @@ async function DataTable({ searchParams }: Props) {
           </TableRow>
         ))}
       />
-      <div className={"flex items-center justify-between"}>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Pagination
           className={"justify-start"}
           totalPages={totalPages}
           page={pageNumber}
           searchParams={params}
         />
-        <div className={"mr-auto flex items-center justify-between gap-4"}>
+        <div className="flex items-center justify-between gap-4 sm:mr-auto">
           <Label className={"text-nowrap"}>إجمالي المصروفات: </Label>
           <Input
             disabled

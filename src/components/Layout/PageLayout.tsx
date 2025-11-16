@@ -19,26 +19,39 @@ function PageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn("container space-y-12 py-6", className)}>
+    <section
+      className={cn(
+        "container max-w-7xl space-y-6 px-4 py-4 sm:px-6 sm:py-6 md:space-y-8 lg:space-y-12",
+        className,
+      )}
+    >
       <div
         className={cn(
-          "flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-start",
+          "flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4",
         )}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex w-full items-start gap-2 sm:w-auto sm:gap-4">
           {backButton && (
-            <Button variant="ghost">
+            <Button variant="ghost" size="sm" className="mt-1 shrink-0">
               <Link href={"/orders"} className="text-gray-500 hover:underline">
-                <ArrowRight className="inline-block" size={24} />
+                <ArrowRight className="inline-block" size={20} />
               </Link>
             </Button>
           )}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold">{title}</h1>
-            <p className="text-gray-500">{description}</p>
+          <div className="min-w-0 space-y-1 sm:space-y-2">
+            <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
+            {description && (
+              <p className="text-sm text-gray-500 sm:text-base">
+                {description}
+              </p>
+            )}
           </div>
         </div>
-        {extra && <div>{extra}</div>}
+        {extra && (
+          <div className="flex w-full shrink-0 justify-end sm:w-auto">
+            {extra}
+          </div>
+        )}
       </div>
       {children}
     </section>

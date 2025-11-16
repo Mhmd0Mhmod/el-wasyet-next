@@ -36,7 +36,7 @@ async function BranchDetailsPage({
         <NewBranchButton
           branch={branch}
           Trigger={() => (
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Edit2 />
               تعديل الفرع
             </Button>
@@ -49,7 +49,7 @@ async function BranchDetailsPage({
           <CardTitle className="text-2xl">معلومات الفرع</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-8">
             <BranchInfoItem
               icon={<MapPin className="h-6 w-6 text-gray-600" />}
               title="العنوان"

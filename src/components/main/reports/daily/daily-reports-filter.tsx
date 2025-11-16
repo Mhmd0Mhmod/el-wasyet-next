@@ -34,7 +34,7 @@ function DailyReportsFilter() {
   return (
     <div>
       <form
-        className="grid grid-cols-1 items-center-safe gap-4 md:grid-cols-3"
+        className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="space-y-4">

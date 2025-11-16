@@ -80,7 +80,7 @@ async function page({
         />
       }
     >
-      <div className="flex justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <SearchInput title="ابحث عن فرع" />
         <ExportButton url="Branch/export" params={params} />
       </div>
