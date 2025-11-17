@@ -5,7 +5,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
@@ -23,11 +22,7 @@ function ASidebarHeader() {
     }
   }, [open]);
   return (
-    <SidebarMenu
-      className={cn("flex flex-row items-center-safe justify-between", {
-        "flex-col": !open,
-      })}
-    >
+    <SidebarMenu className={cn("flex flex-row items-center justify-center")}>
       <SidebarMenuItem>
         <SidebarMenuButton tooltip={"الصفحه الرئيسيه"}>
           <Link href={"/"}>
@@ -39,11 +34,6 @@ function ASidebarHeader() {
               loading="lazy"
             />
           </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-      <SidebarMenuItem className="hidden md:block">
-        <SidebarMenuButton asChild>
-          <SidebarTrigger className="h-6 w-6" />
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>

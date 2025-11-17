@@ -16,7 +16,7 @@ import {
 function AsideBar() {
   return (
     <Sidebar side={"right"} collapsible="icon" variant="inset">
-      <SidebarHeader className="border-b">
+      <SidebarHeader>
         <ASidebarHeader />
       </SidebarHeader>
       <SidebarContent>
