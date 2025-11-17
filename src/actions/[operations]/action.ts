@@ -23,7 +23,7 @@ type SubmitActionsParams = {
 export async function sendCode(orderId: number): Promise<APIResponse<null>> {
   try {
     const user = await getCurrentUser();
-    if (!user?.user.userId) {
+    if (!user?.userId) {
       return {
         success: false,
         message:
@@ -33,7 +33,7 @@ export async function sendCode(orderId: number): Promise<APIResponse<null>> {
 
     const { data } = await authFetch.post("OperationLog/send-receipt-code", {
       orderId,
-      employeeId: user.user.id,
+      employeeId: user.userId,
     });
     return data.success
       ? { success: true, data: null }
@@ -48,7 +48,7 @@ export async function verifyCode(
 ): Promise<APIResponse<null>> {
   try {
     const user = await getCurrentUser();
-    if (!user?.user.userId) {
+    if (!user?.userId) {
       return {
         success: false,
         message:
@@ -58,7 +58,7 @@ export async function verifyCode(
 
     const { data } = await authFetch.post("OperationLog/verify-receipt-code", {
       orderId,
-      employeeId: user.user.id,
+      employeeId: user.userId,
       code,
     });
     return {
@@ -130,7 +130,7 @@ export async function submitActions(
   try {
     const { operations, pathname } = params;
     const user = await getCurrentUser();
-    const employeeId = user?.user.userId;
+    const employeeId = user?.userId;
 
     if (!employeeId) {
       return {

@@ -44,7 +44,7 @@ export async function approveRequestNotification({
   Remainingvalue?: number | null;
 }): Promise<APIResponse<void>> {
   try {
-    const employeeId = (await getCurrentUser())?.user.userId;
+    const employeeId = (await getCurrentUser())?.userId;
     if (!employeeId) {
       throw new Error("User not authenticated");
     }
