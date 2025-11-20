@@ -1,12 +1,23 @@
 "use client";
-import { LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Logout } from "@/actions/auth/actions";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { toast } from "sonner";
 
 function LogoutButton() {
-  function handleLogout() {
-    Logout();
-  }
+  const router = useRouter();
+  const handleLogout = useCallback(async () => {
+    const id = toast.loading("جاري تسجيل الخروج...");
+    try {
+      await Logout();
+      toast.success("تم تسجيل الخروج بنجاح.", { id });
+      router.refresh();
+    } catch {
+      toast.error("حدث خطأ ما أثناء تسجيل الخروج.", { id });
+    }
+  }, [router]);
   return (
     <Button
       variant={"ghost"}

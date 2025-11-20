@@ -1,184 +1,205 @@
 "use client";
-import {
-  approveRequestNotification,
-  rejectRequestNotification,
-} from "@/actions/notifications/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Notification } from "@/types/notification";
-import { useCallback, useRef, useState, useTransition } from "react";
+import { useNotifications } from "@/components/providers/NotficationsProvider";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 function RequestConfirmDialogContent({
-  notification: notificationState,
+  notification,
   setOpen,
-  setNotificationState,
 }: {
   notification: Notification;
   setOpen: (open: boolean) => void;
-  setNotificationState: React.Dispatch<React.SetStateAction<Notification>>;
 }) {
-  const notification = notificationState;
-  const [, startTransition] = useTransition();
-  const [showPartialInput, setShowPartialInput] = useState(false);
-  const [showRejectInput, setShowRejectInput] = useState(false);
-  const ref = useRef<HTMLInputElement>(null);
-  const rejectReasonRef = useRef<HTMLInputElement>(null);
-  const handleFullAcceptance = useCallback(() => {
-    if (!notification.requestId) return;
-    const id = toast.loading("جاري المعالجة...");
-    setNotificationState((prev) => ({ ...prev, isRead: true }));
+  const [dialog, setDialog] = useState<"selecting" | "reason" | "partial">(
+    "selecting",
+  );
 
-    startTransition(() => {
-      approveRequestNotification({
-        requestId: notification.requestId!,
-        notificationId: notification.notificationId,
-      })
-        .then((response) => {
-          if (response?.success) {
-            toast.success("تمت الموافقة بنجاح.", { id });
-          } else {
-            toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, {
-              id,
-            });
-            setNotificationState((prev) => ({ ...prev, isRead: false }));
-          }
-        })
-        .catch(() => {
-          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-          setNotificationState((prev) => ({ ...prev, isRead: false }));
-        })
-        .finally(() => {
-          setOpen(false);
-        });
-    });
-  }, [notification, setOpen, setNotificationState]);
+  const { confirmFullAcceptanceNotificationRequest, markAsRead } =
+    useNotifications();
 
-  const handlePartialAcceptance = useCallback(() => {
-    if (!showPartialInput) {
-      setShowPartialInput(true);
-      return;
+  const handleFullAcceptance = useCallback(async () => {
+    markAsRead(notification.notificationId);
+    setOpen(false);
+
+    try {
+      const response =
+        await confirmFullAcceptanceNotificationRequest(notification);
+      if (response?.success) {
+        toast.success("تمت الموافقة بنجاح.");
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message);
+      }
+    } catch {
+      toast.error("حدث خطأ ما أثناء المعالجة.");
     }
+  }, [
+    confirmFullAcceptanceNotificationRequest,
+    notification,
+    setOpen,
+    markAsRead,
+  ]);
 
-    if (!notification.requestId) return;
-    const id = toast.loading("جاري المعالجة...");
-    const remainingValue = parseFloat(ref?.current?.value || "0");
-    setNotificationState((prev) => ({ ...prev, isRead: true }));
+  if (dialog === "reason") {
+    return (
+      <RejectReasonForm
+        notification={notification}
+        returnToSelectMode={() => setDialog("selecting")}
+        setOpen={setOpen}
+      />
+    );
+  }
 
-    startTransition(() => {
-      approveRequestNotification({
-        requestId: notification.requestId!,
-        Remainingvalue: remainingValue,
-        notificationId: notification.notificationId,
-      })
-        .then((response) => {
-          if (response?.success) {
-            toast.success("تمت الموافقة بنجاح.", { id });
-          } else {
-            toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message, {
-              id,
-            });
-            // Revert to unread if failed
-            setNotificationState((prev) => ({ ...prev, isRead: false }));
-          }
-        })
-        .catch(() => {
-          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-          setNotificationState((prev) => ({ ...prev, isRead: false }));
-        })
-        .finally(() => {
-          setOpen(false);
-          setShowPartialInput(false);
-        });
-    });
-  }, [notification, setOpen, showPartialInput, setNotificationState]);
-
-  const rejectRequest = useCallback(() => {
-    if (!showRejectInput) {
-      setShowRejectInput(true);
-      return;
-    }
-
-    if (!notification.requestId) return;
-    const id = toast.loading("جاري المعالجة...");
-    const reason = rejectReasonRef?.current?.value || "";
-
-    // Optimistically mark as read
-    setNotificationState((prev) => ({ ...prev, isRead: true }));
-
-    startTransition(() => {
-      rejectRequestNotification({
-        requestId: notification.requestId!,
-        notificationId: notification.notificationId,
-        reason,
-      })
-        .then((response) => {
-          if (response?.success) {
-            toast.success("تم الرفض بنجاح.", { id });
-          } else {
-            toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-            setNotificationState((prev) => ({ ...prev, isRead: false }));
-          }
-        })
-        .catch(() => {
-          toast.error("حدث خطأ ما أثناء المعالجة.", { id });
-          setNotificationState((prev) => ({ ...prev, isRead: false }));
-        })
-        .finally(() => {
-          setOpen(false);
-          setShowPartialInput(false);
-          setShowRejectInput(false);
-        });
-    });
-  }, [notification, setOpen, setNotificationState, showRejectInput]);
+  if (dialog === "partial") {
+    return (
+      <ApprovalPartialForm
+        notification={notification}
+        returnToSelectMode={() => setDialog("selecting")}
+        setOpen={setOpen}
+      />
+    );
+  }
 
   return (
     <div className="grid gap-4 pt-4">
-      {showPartialInput && !showRejectInput && (
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+        <Button onClick={handleFullAcceptance}>قبول كلي</Button>
+        <Button onClick={() => setDialog("partial")}>قبول جزئي</Button>
+      </div>
+      <Button variant="outline" onClick={() => setDialog("reason")}>
+        رفض
+      </Button>
+    </div>
+  );
+}
+
+function ApprovalPartialForm({
+  notification,
+  returnToSelectMode,
+  setOpen,
+}: {
+  notification: Notification;
+  returnToSelectMode: () => void;
+  setOpen: (open: boolean) => void;
+}) {
+  const [remainingValue, setRemainingValue] = useState("");
+  const { confirmPartialAcceptanceNotificationRequest, markAsRead } =
+    useNotifications();
+
+  const handlePartialAcceptance = useCallback(async () => {
+    if (!remainingValue || parseFloat(remainingValue) <= 0) {
+      toast.error("يرجى إدخال قيمة صحيحة");
+      return;
+    }
+
+    markAsRead(notification.notificationId);
+    setOpen(false);
+
+    try {
+      const response = await confirmPartialAcceptanceNotificationRequest(
+        notification,
+        parseFloat(remainingValue),
+      );
+      if (response.success) {
+        toast.success("تمت الموافقة بنجاح.");
+      } else {
+        toast.error("حدث خطأ ما أثناء المعالجة: " + response.message);
+      }
+    } catch {
+      toast.error("حدث خطأ ما أثناء المعالجة.");
+    }
+  }, [
+    confirmPartialAcceptanceNotificationRequest,
+    notification,
+    remainingValue,
+    setOpen,
+    markAsRead,
+  ]);
+
+  return (
+    <div className="grid gap-4 pt-4">
+      <div className="space-y-2">
+        <Label htmlFor="remainingValue">القيمة المتبقية</Label>
         <Input
-          ref={ref}
+          id="remainingValue"
+          value={remainingValue}
+          onChange={(e) => setRemainingValue(e.target.value)}
           type="number"
-          step={"any"}
+          step="any"
           placeholder="أدخل القيمة المتبقية"
           className="rounded border p-2"
           min="0"
           autoFocus
         />
-      )}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+        <Button variant="outline" onClick={returnToSelectMode}>
+          رجوع
+        </Button>
+        <Button onClick={handlePartialAcceptance}>تأكيد القبول الجزئي</Button>
+      </div>
+    </div>
+  );
+}
 
-      {showRejectInput && !showPartialInput && (
+function RejectReasonForm({
+  notification,
+  returnToSelectMode,
+  setOpen,
+}: {
+  notification: Notification;
+  returnToSelectMode: () => void;
+  setOpen: (open: boolean) => void;
+}) {
+  const [reason, setReason] = useState("");
+  const { rejectNotificationRequest, markAsRead } = useNotifications();
+
+  const rejectRequest = useCallback(async () => {
+    if (!reason.trim()) {
+      toast.error("يرجى إدخال سبب الرفض");
+      return;
+    }
+
+    markAsRead(notification.notificationId);
+    setOpen(false);
+
+    try {
+      const response = await rejectNotificationRequest(notification, reason);
+      if (response.success) {
+        toast.success("تم الرفض بنجاح.");
+      } else {
+        toast.error(response.message);
+      }
+    } catch {
+      toast.error("حدث خطأ ما أثناء المعالجة.");
+    }
+  }, [rejectNotificationRequest, notification, reason, setOpen, markAsRead]);
+
+  return (
+    <div className="grid gap-4 pt-4">
+      <div className="space-y-2">
+        <Label htmlFor="rejectReason">سبب الرفض</Label>
         <Input
-          ref={rejectReasonRef}
+          id="rejectReason"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
           type="text"
           placeholder="أدخل سبب الرفض"
           className="rounded border p-2"
           autoFocus
         />
-      )}
-
-      {!showRejectInput && (
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-          <Button onClick={handleFullAcceptance}>قبول كلي</Button>
-          <Button onClick={handlePartialAcceptance}>
-            {showPartialInput ? "تأكيد القبول الجزئي" : "قبول جزئي"}
-          </Button>
-        </div>
-      )}
-
-      {showRejectInput ? (
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-          <Button variant="outline" onClick={() => setShowRejectInput(false)}>
-            رجوع
-          </Button>
-          <Button variant="destructive" onClick={rejectRequest}>
-            تأكيد الرفض
-          </Button>
-        </div>
-      ) : (
-        <Button variant="outline" onClick={rejectRequest}>
-          رفض
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+        <Button variant="outline" onClick={returnToSelectMode}>
+          رجوع
         </Button>
-      )}
+        <Button variant="destructive" onClick={rejectRequest}>
+          تأكيد الرفض
+        </Button>
+      </div>
     </div>
   );
 }

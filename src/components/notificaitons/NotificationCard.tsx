@@ -1,5 +1,4 @@
 "use client";
-import { markNotificationAsRead } from "@/actions/notifications/actions";
 import Dialog from "@/components/shared/Dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,37 +12,49 @@ import {
 import { formatDate } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import { Notification } from "@/types/notification";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useState } from "react";
+import { useNotifications } from "../providers/NotficationsProvider";
 import RequestConfirmDialogContent from "./Request-Confirm-Dialog-Content";
-import RequestStockConfirmDialogContent from "./RequestStockConfirmDialogContent";
 
 interface NotificationCardProps {
   notification: Notification;
 }
 
+const openDialgCallback = (notification: Notification) => {
+  if (
+    (!notification.isRead && notification.isRequest) ||
+    notification.isRequestStock
+  ) {
+    return true;
+  }
+  return false;
+};
 export function NotificationCard({ notification }: NotificationCardProps) {
+  const isClickable = openDialgCallback(notification);
+  const { markAsRead } = useNotifications();
   const [open, setOpen] = useState(false);
-  const [notificationState, setNotificationState] = useState(notification);
-  const [, startTransition] = useTransition();
-  const updateReadStatus = useCallback(async () => {
-    if (notificationState.isRead) return;
-    if (notification.isRequestStock || notification.isRequest) return;
-    startTransition(() => {
-      setNotificationState((prev) => ({ ...prev, isRead: true }));
-      markNotificationAsRead(notification.notificationId);
-    });
-  }, [notification, notificationState]);
-
   const openDialog = useCallback(() => {
-    if (notificationState.isRead) return;
-    if (notification.isRequestStock || notification.isRequest) setOpen(true);
-  }, [notification, notificationState]);
-  const isClickable = notification.isRequestStock || notification.isRequest;
+    if (isClickable) {
+      setOpen(true);
+    }
+  }, [isClickable]);
+
+  const updateReadStatus = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (isClickable) {
+        return openDialog();
+      }
+      markAsRead(notification.notificationId);
+    },
+    [notification.notificationId, markAsRead, isClickable, openDialog],
+  );
+
   return (
     <Dialog open={open} setOpen={setOpen}>
       <Card
         className={cn({
-          "border-purple-200 bg-purple-50": !notificationState.isRead,
+          "border-purple-200 bg-purple-50": !notification.isRead,
           "cursor-pointer hover:bg-gray-50": isClickable,
         })}
         dir="rtl"
@@ -51,24 +62,24 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       >
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-sm">{notificationState.type}</CardTitle>
-            {!notificationState.isRead && (
+            <CardTitle className="text-sm">{notification.type}</CardTitle>
+            {!notification.isRead && (
               <Badge variant="default" className="h-2 w-2 rounded-full p-0" />
             )}
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
           <CardDescription className="text-sm">
-            {notificationState.message}
+            {notification.message}
           </CardDescription>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground text-xs">
-              {formatDate(notificationState.date, "datetime")}
+              {formatDate(notification.date, "datetime")}
             </span>
-            {notificationState.isRead && (
+            {notification.isRead && (
               <span className="text-sm text-green-600">مقروء</span>
             )}
-            {!notificationState.isRead && (
+            {!notification.isRead && (
               <Button
                 onClick={updateReadStatus}
                 variant="link"
@@ -82,20 +93,10 @@ export function NotificationCard({ notification }: NotificationCardProps) {
         </CardContent>
       </Card>
       <Dialog.Content title="هل انت موافق">
-        {notificationState.isRequest && (
-          <RequestConfirmDialogContent
-            notification={notificationState}
-            setOpen={setOpen}
-            setNotificationState={setNotificationState}
-          />
-        )}
-        {notificationState.isRequestStock && (
-          <RequestStockConfirmDialogContent
-            notification={notificationState}
-            setOpen={setOpen}
-            setNotificationState={setNotificationState}
-          />
-        )}
+        <RequestConfirmDialogContent
+          notification={notification}
+          setOpen={setOpen}
+        />
       </Dialog.Content>
     </Dialog>
   );
