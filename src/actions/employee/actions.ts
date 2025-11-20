@@ -27,7 +27,6 @@ export async function updateEmployee(
   body: EmployeeFormValues,
 ): Promise<APIResponse<Employee>> {
   try {
-    console.log(body);
     const parsedBody = await employeeFormSchema.parseAsync(body);
     const { data } = await authFetch.put(`Auth/edit/employee`, parsedBody);
     revalidatePath("/employees");

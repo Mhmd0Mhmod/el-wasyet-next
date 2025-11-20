@@ -53,7 +53,11 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   );
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+        autoComplete="off"
+      >
         <FormField
           control={form.control}
           name="usernameOrEmail"
@@ -63,6 +67,7 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
                 <Input
                   props={{
                     placeholder: "اسم المستخدم",
+                    autoComplete: "off",
                     ...field,
                   }}
                   Icon={User}
@@ -114,6 +119,7 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
                   props={{
                     placeholder: "كلمة المرور",
                     type: showPassword ? "text" : "password",
+                    autoComplete: "new-password",
                     ...field,
                   }}
                   Icon={showPassword ? EyeIcon : EyeClosed}

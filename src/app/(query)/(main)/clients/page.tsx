@@ -54,9 +54,11 @@ async function ClientsTableData({
                   </Dialog.Trigger>
                   <Dialog.Content
                     title="تفاصيل العميل"
-                    className="container max-h-[80vh] overflow-auto sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+                    className="container sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
                   >
-                    <ClientDetails clientId={client.id} />
+                    <div className="max-h-[80vh] overflow-auto">
+                      <ClientDetails clientId={client.id} />
+                    </div>
                   </Dialog.Content>
                 </Dialog>
                 <Dialog>

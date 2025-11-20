@@ -1,19 +1,19 @@
 import ClientDetails from "@/components/main/clients/ClientDetails";
+import { OperationsProvider } from "@/components/providers/OperationsProvider";
 import Dialog from "@/components/shared/Dialog";
 import Table from "@/components/shared/Table";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/helper";
+import { cn } from "@/lib/utils";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
-import SelectOrderCheckbox from "./SelectOrderCheckbox";
-import Actions from "../actions/Actions";
-import { OperationsProvider } from "@/components/providers/OperationsProvider";
-import SelectAll from "./SelectAll";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { getRemainingDaysStyle } from "../helper";
+import Actions from "../actions/Actions";
 import AddNote from "../actions/add-note";
+import { getRemainingDaysStyle } from "../helper";
+import SelectAll from "./SelectAll";
+import SelectOrderCheckbox from "./SelectOrderCheckbox";
 
 const columns = [
   { id: "actions", label: "إدارة الاجراءات" },
@@ -75,7 +75,7 @@ function CertificatesTable({
                     </Dialog.Trigger>
                     <Dialog.Content
                       title="تفاصيل العميل"
-                      className="container overflow-auto sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+                      className="container sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
                     >
                       <div className="max-h-[70vh] space-y-10 overflow-auto">
                         <ClientDetails clientId={order.clientId} />

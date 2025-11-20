@@ -1,10 +1,10 @@
 import {
   BadgePercent,
-  Boxes,
+  CircleDollarSign,
   Coins,
+  Files,
   Handshake,
   Home,
-  PiggyBank,
 } from "lucide-react";
 
 export const NAVIGATION_LINKS = [
@@ -16,12 +16,12 @@ export const NAVIGATION_LINKS = [
   {
     label: "عهده الاستمارات",
     href: "/stock",
-    icon: Boxes,
+    icon: Files,
   },
   {
     label: "الخزنه",
     href: "/cashbox",
-    icon: PiggyBank,
+    icon: CircleDollarSign,
   },
   {
     label: "الخصومات",

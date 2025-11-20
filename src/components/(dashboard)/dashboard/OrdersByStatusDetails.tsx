@@ -57,34 +57,41 @@ function OrdersByStatusDetails({
 
   return (
     <>
-      <Table
-        columns={COLUMNS}
-        renderData={items?.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell>
-              <Button asChild variant="link" size="sm" className="text-primary">
-                <Link href={`/orders/${item.id}`}>{item.orderCode}</Link>
-              </Button>
-            </TableCell>
-            <TableCell>{item.customerName}</TableCell>
-            <TableCell>{item.serviceName}</TableCell>
-            <TableCell>
-              {(() => {
-                const style = getRemainingDaysStyle(item.remainingDays);
-                const IconComponent = style.icon;
-                return (
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium ${style.className}`}
-                  >
-                    <IconComponent size={14} />
-                    <span>{style.text}</span>
-                  </span>
-                );
-              })()}
-            </TableCell>
-          </TableRow>
-        ))}
-      />
+      <div className="max-h-[70vh] overflow-auto">
+        <Table
+          columns={COLUMNS}
+          renderData={items?.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell>
+                <Button
+                  asChild
+                  variant="link"
+                  size="sm"
+                  className="text-primary"
+                >
+                  <Link href={`/orders/${item.id}`}>{item.orderCode}</Link>
+                </Button>
+              </TableCell>
+              <TableCell>{item.customerName}</TableCell>
+              <TableCell>{item.serviceName}</TableCell>
+              <TableCell>
+                {(() => {
+                  const style = getRemainingDaysStyle(item.remainingDays);
+                  const IconComponent = style.icon;
+                  return (
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium ${style.className}`}
+                    >
+                      <IconComponent size={14} />
+                      <span>{style.text}</span>
+                    </span>
+                  );
+                })()}
+              </TableCell>
+            </TableRow>
+          ))}
+        />
+      </div>
 
       <ClientPagination
         pageNumber={page}

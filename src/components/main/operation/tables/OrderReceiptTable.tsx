@@ -3,13 +3,14 @@ import Table from "@/components/shared/Table";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/helper";
+import { cn } from "@/lib/utils";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
 import Link from "next/link";
+import ClientDetails from "../../clients/ClientDetails";
+import AddNote from "../actions/add-note";
 import SendCodeButton from "../actions/send-code-button";
 import { getRemainingDaysStyle } from "../helper";
-import AddNote from "../actions/add-note";
-import { cn } from "@/lib/utils";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "order_code", label: "كود الطلب" },
@@ -74,7 +75,21 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
                 <Link href={`/orders/${order.orderId}`}>{order.orderCode}</Link>
               </Button>
             </TableCell>
-            <TableCell>{order.clientName}</TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button variant={"link"}>{order.clientName}</Button>
+                </Dialog.Trigger>
+                <Dialog.Content
+                  title="تفاصيل العميل"
+                  className="container sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+                >
+                  <div className="max-h-[70vh] space-y-10 overflow-auto">
+                    <ClientDetails clientId={order.clientId} />
+                  </div>
+                </Dialog.Content>
+              </Dialog>
+            </TableCell>
             <TableCell>{order.serviceName}</TableCell>
             <TableCell>{formatDate(order.orderDate, "datetime")}</TableCell>
             <TableCell>{order.createdBy}</TableCell>

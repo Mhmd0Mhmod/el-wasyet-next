@@ -25,7 +25,6 @@ export const getRemainingDaysStyle = (dueDate: number) => {
 };
 
 export const translateToArabic = (text: string): string => {
-  // normalize: lowercase and remove spaces
   const key = (text ?? "").toString().toLowerCase().replace(/\s+/g, "");
   const translations: { [key: string]: string } = {
     pending: "قيد الانتظار",
@@ -49,7 +48,7 @@ export const translateToArabic = (text: string): string => {
     sendcode: "إرسال الرمز",
     writecode: "كتابة الرمز",
     receivingdone: "تم الاستلام",
-    collectiondone: "تحصيل مكتمل",
+    collectiondone: "تم الاستيفاء",
     expired: "تخطي الموعد",
   };
   return translations[key] || text;

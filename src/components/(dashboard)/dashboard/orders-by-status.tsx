@@ -81,6 +81,7 @@ function OrdersByStatus({ data, className, dates }: OrdersByStatusProps) {
                   title={`تفاصيل الطلبات - ${translateToArabic(
                     item.statusName,
                   )}`}
+                  className="sm:max-w-2xl md:max-w-3xl"
                 >
                   <OrdersByStatusDetails
                     statusId={item.statusId}

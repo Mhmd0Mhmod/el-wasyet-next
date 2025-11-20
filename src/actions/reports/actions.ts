@@ -7,8 +7,6 @@ import { RefundOrderInput } from "@/schema/refund-order";
 export async function refundOrder(
   data: RefundOrderInput,
 ): Promise<APIResponse> {
-  console.log(data);
-
   try {
     const response = await authFetch.post<APIResponse>(
       "OperationLog/refund-order-process",

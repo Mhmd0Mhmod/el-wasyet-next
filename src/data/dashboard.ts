@@ -60,8 +60,6 @@ export async function getOrdersByStatusDetails(
         pageNumber: pageNumber,
       },
     });
-    console.log(response.data);
-
     return response.data;
   } catch (error) {
     console.error("Error fetching orders by status details:", error);

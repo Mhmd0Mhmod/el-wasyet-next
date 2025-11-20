@@ -74,11 +74,7 @@ function MonthPerformanceChart({ data }: { data: MonthlyPerformancePoint[] }) {
           iconType="circle"
           formatter={(value) => (
             <span className="text-muted-foreground text-sm font-medium">
-              {value === "netProfit"
-                ? "صافي الربح"
-                : value === "totalExpenses"
-                  ? "المصروفات"
-                  : "الإيرادات"}
+              {value}
             </span>
           )}
         />

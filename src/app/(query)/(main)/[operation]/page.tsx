@@ -182,7 +182,6 @@ async function LoadTable({
       pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
     });
     const { items, pageNumber, totalPages } = result;
-    console.log("Items:", items);
     return (
       <>
         <div className="flex">

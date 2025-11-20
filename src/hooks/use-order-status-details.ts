@@ -26,7 +26,7 @@ function useOrderStatusDetails(props: {
       props.pageNumber,
     ],
     queryFn: queryfn,
-    enabled: !!props.orderStatusId,
+    enabled: props.orderStatusId !== undefined,
     initialData: {} as PaginatedResponse<OrderByStatusDetail>,
   });
 }
