@@ -19,7 +19,7 @@ type CashboxSummary = {
   comessionAmount: number;
 };
 
-export async function getCashierSummary(): Promise<CashboxSummary> {
+export async function getCashierSummary(): Promise<CashboxSummary | null> {
   try {
     const token = await getToken();
     const response = await fetch(
@@ -36,10 +36,10 @@ export async function getCashierSummary(): Promise<CashboxSummary> {
     );
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch cashier summary");
+      return null;
     }
     return data;
-  } catch (error) {
-    throw error;
+  } catch {
+    return null;
   }
 }

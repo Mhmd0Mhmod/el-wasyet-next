@@ -16,6 +16,7 @@ async function Default() {
 
 async function FinancialSummary() {
   const summary = await getCashierSummary();
+  if (!summary) return null;
 
   return (
     <>
