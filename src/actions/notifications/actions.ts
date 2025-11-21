@@ -89,13 +89,16 @@ export async function rejectRequestNotification({
 export async function approveRequestStockNotification({
   requestStockId,
   notificationId,
+  Remainingvalue = null,
 }: {
   notificationId: number;
   requestStockId: number;
+  Remainingvalue?: number | null;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.post(
       `RequestStock/ApproveTheRequest/${requestStockId}`,
+      Remainingvalue,
     );
     await markNotificationAsRead(notificationId);
 

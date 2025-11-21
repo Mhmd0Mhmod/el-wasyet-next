@@ -1,4 +1,11 @@
 "use client";
+import {
+  approveRequestNotification,
+  approveRequestStockNotification,
+  markNotificationAsRead as markNotificationAsReadAction,
+  rejectRequestNotification,
+  rejectRequestStockNotification,
+} from "@/actions/notifications/actions";
 import { useNotification as useNotificationQuery } from "@/hooks/use-notification";
 import { Notification } from "@/types/notification";
 import { UseMutateAsyncFunction, useQueryClient } from "@tanstack/react-query";
@@ -10,11 +17,6 @@ import {
   useTransition,
 } from "react";
 import { toast } from "sonner";
-import {
-  approveRequestNotification,
-  markNotificationAsRead as markNotificationAsReadAction,
-  rejectRequestNotification,
-} from "@/actions/notifications/actions";
 
 type APIResponse<T = undefined> =
   | { success: true; message?: string; data: T }
@@ -93,30 +95,55 @@ export function NotificationsProvider({
   );
   const confirmFullAcceptanceNotificationRequest = useCallback(
     async (notification: Notification) => {
-      return await approveRequestNotification({
-        requestId: notification.requestId!,
-        notificationId: notification.notificationId,
-      });
+      if (notification.isRequest && !notification.isRequestStock)
+        return await approveRequestNotification({
+          requestId: notification.requestId!,
+          notificationId: notification.notificationId,
+        });
+
+      if (notification.isRequestStock && !notification.isRequest)
+        return await approveRequestStockNotification({
+          requestStockId: notification.requestStockId!,
+          notificationId: notification.notificationId,
+        });
+
+      throw new Error("Invalid notification type for approval");
     },
     [],
   );
   const confirmPartialAcceptanceNotificationRequest = useCallback(
     async (notification: Notification, remainingValue: number) => {
-      return await approveRequestNotification({
-        requestId: notification.requestId!,
-        Remainingvalue: remainingValue,
-        notificationId: notification.notificationId,
-      });
+      if (notification.isRequest && !notification.isRequestStock)
+        return await approveRequestNotification({
+          requestId: notification.requestId!,
+          Remainingvalue: remainingValue,
+          notificationId: notification.notificationId,
+        });
+      if (notification.isRequestStock && !notification.isRequest)
+        return await approveRequestStockNotification({
+          requestStockId: notification.requestStockId!,
+          notificationId: notification.notificationId,
+          Remainingvalue: remainingValue,
+        });
+      throw new Error("Invalid notification type for approval");
     },
     [],
   );
   const rejectNotificationRequest = useCallback(
     async (notification: Notification, reason: string) => {
-      return await rejectRequestNotification({
-        requestId: notification.requestId!,
-        notificationId: notification.notificationId,
-        reason,
-      });
+      if (notification.isRequest && !notification.isRequestStock)
+        return await rejectRequestNotification({
+          requestId: notification.requestId!,
+          notificationId: notification.notificationId,
+          reason,
+        });
+      if (notification.isRequestStock && !notification.isRequest)
+        return await rejectRequestStockNotification({
+          requestStockId: notification.requestStockId!,
+          notificationId: notification.notificationId,
+          reason,
+        });
+      throw new Error("Invalid notification type for rejection");
     },
     [],
   );
