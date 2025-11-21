@@ -12,13 +12,14 @@ import { getExcutiveReport } from "@/data/reports";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import Link from "next/link";
 import { Suspense } from "react";
+import { DateRange } from "@/types/filter";
 
 interface PageProps {
-  searchParams: Promise<{
-    startDate: string;
-    endDate: string;
-    page: string;
-  }>;
+  searchParams: Promise<
+    DateRange & {
+      page: string;
+    }
+  >;
 }
 
 async function page({ searchParams }: PageProps) {
@@ -27,7 +28,7 @@ async function page({ searchParams }: PageProps) {
     <PageLayout
       title={"تقرير تنفيذي "}
       description={"تقارير تنفيذية لمتابعة الأداء والعمليات اليومية "}
-      extra={<ExportExecutiveReportButton />}
+      extra={<ExportExecutiveReportButton params={params} />}
     >
       <DailyReportsFilter />
       <Suspense

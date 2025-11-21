@@ -1,9 +1,9 @@
+import PageLayout from "@/components/Layout/PageLayout";
+import AdvancedDailyReportsFilter from "@/components/main/reports/detials-daily/advanced-daily-reports-filter";
+import ExportDetailsDailyReportsButton from "@/components/main/reports/detials-daily/export-details-daily-report-button";
 import Pagination from "@/components/shared/Pagination";
 import Table from "@/components/shared/Table";
 import TableSkeleton from "@/components/shared/TableSkeleton";
-import PageLayout from "@/components/Layout/PageLayout";
-import ExportDailyReportsButton from "@/components/main/reports/daily/export-daily-report-button";
-import AdvancedDailyReportsFilter from "@/components/main/reports/detials-daily/advanced-daily-reports-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,17 +13,18 @@ import { getAdvancedDailyReport } from "@/data/reports";
 import { authFetch } from "@/lib/axios";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { ShortBranch } from "@/types/branch";
+import { DateRange } from "@/types/filter";
 import Link from "next/link";
 import { Suspense } from "react";
 
 interface PageProps {
-  searchParams: Promise<{
-    startDate: string;
-    endDate: string;
-    branchId?: string;
-    employeeId?: string;
-    page: string;
-  }>;
+  searchParams: Promise<
+    DateRange & {
+      branchId?: string;
+      employeeId?: string;
+      page: string;
+    }
+  >;
 }
 
 async function page({ searchParams }: PageProps) {
@@ -34,7 +35,7 @@ async function page({ searchParams }: PageProps) {
     <PageLayout
       title="تقارير يومي تفصيلي"
       description="تقارير يومية للمصروفات ومتابعة حالتها"
-      extra={<ExportDailyReportsButton />}
+      extra={<ExportDetailsDailyReportsButton params={params} />}
     >
       <AdvancedDailyReportsFilter branchs={branchs} employees={employees} />
       <Suspense

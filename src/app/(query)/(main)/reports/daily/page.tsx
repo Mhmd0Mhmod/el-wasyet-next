@@ -3,7 +3,6 @@ import Table from "@/components/shared/Table";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import DailyReportsFilter from "@/components/main/reports/daily/daily-reports-filter";
-import ExportDailyReportsButton from "@/components/main/reports/daily/export-daily-report-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,13 +11,15 @@ import { getDailyReports } from "@/data/reports";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import Link from "next/link";
 import { Suspense } from "react";
+import { DateRange } from "@/types/filter";
+import ExportDailyReportsButton from "@/components/main/reports/daily/export-daily-report-button";
 
 interface PageProps {
-  searchParams: Promise<{
-    startDate: string;
-    endDate: string;
-    page: string;
-  }>;
+  searchParams: Promise<
+    DateRange & {
+      page: string;
+    }
+  >;
 }
 
 async function page({ searchParams }: PageProps) {
@@ -27,7 +28,7 @@ async function page({ searchParams }: PageProps) {
     <PageLayout
       title={"تقارير يومي "}
       description={"تقارير يومية للمصروفات ومتابعة حالتها"}
-      extra={<ExportDailyReportsButton />}
+      extra={<ExportDailyReportsButton params={params} />}
     >
       <DailyReportsFilter />
       <Suspense

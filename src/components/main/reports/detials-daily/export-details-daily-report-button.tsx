@@ -1,18 +1,25 @@
 "use client";
-import { ExportExecutiveReport } from "@/actions/reports/actions-client";
+import { ExportDetailedDailyReport } from "@/actions/reports/actions-client";
 import { Button } from "@/components/ui/button";
 import { DateRange } from "@/types/filter";
 import { CloudDownload } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-
-function ExportExecutiveReportButton({ params }: { params: DateRange }) {
+function ExportDetailsDailyReportsButton({
+  params,
+}: {
+  params: DateRange & {
+    branchId?: string;
+    employeeId?: string;
+    page: string;
+  };
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const handleExport = useCallback(async () => {
     setIsLoading(true);
     const id = toast.loading("جاري تجهيز التقرير...");
     try {
-      await ExportExecutiveReport(params);
+      await ExportDetailedDailyReport(params);
       toast.success("تم تنزيل التقرير بنجاح", { id });
     } catch (error) {
       console.error("Error exporting report:", error);
@@ -28,4 +35,4 @@ function ExportExecutiveReportButton({ params }: { params: DateRange }) {
     </Button>
   );
 }
-export default ExportExecutiveReportButton;
+export default ExportDetailsDailyReportsButton;
