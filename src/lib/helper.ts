@@ -187,3 +187,11 @@ export const convertMonthToArabic = (month: string): string => {
     month
   );
 };
+
+export const getFullURL = (path: string): string => {
+  const BASE_URL = process.env.NEXT_PUBLIC_STORAGE_BASE_URL || "";
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  return `${BASE_URL}/${path}`;
+};

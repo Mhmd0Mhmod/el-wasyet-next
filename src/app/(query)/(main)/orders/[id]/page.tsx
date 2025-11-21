@@ -9,12 +9,12 @@ import OrderDetailsCard from "@/components/main/orders/OrderDetailsCard";
 import OrderSummaryCard from "@/components/main/orders/OrderSummaryCard";
 import RequiredChangesCard from "@/components/main/orders/RequiredChangesCard";
 import UploadedFilesCard from "@/components/main/orders/UploadedFilesCard";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getOrderById } from "@/data/orders";
-import { Edit3, TrendingDown, TrendingUp } from "lucide-react";
-import Link from "next/link";
+import { getFullURL } from "@/lib/helper";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 async function page({ params }: { params: Promise<{ id: string }> }) {
@@ -25,14 +25,6 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
     <PageLayout
       title="تفاصيل الاوامر"
       description="إدارة أوامر العملاء ومتابعة حالة الخدمات"
-      extra={
-        <Button>
-          <Link href={`/orders/${id}/edit`}>
-            <Edit3 className="inline-block" size={16} />
-            تعديل الأمر
-          </Link>
-        </Button>
-      }
     >
       {/* Order Summary Card */}
       <OrderSummaryCard orderDetails={orderDetails} />
@@ -62,6 +54,16 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
               الخصومات
             </CardTitle>{" "}
             <CardContent className="rounded-lg bg-blue-50 p-3 text-sm sm:text-base">
+              {orderDetails.imageUrlForOffer && (
+                <div className="relative aspect-square">
+                  <Image
+                    src={getFullURL(orderDetails.imageUrlForOffer)}
+                    alt="Offer Image"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              )}
               {orderDetails.offerName || "لا توجد خصومات"}
             </CardContent>
           </CardHeader>

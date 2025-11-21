@@ -1,6 +1,8 @@
 import { Separator } from "@/components/ui/separator";
+import { getFullURL } from "@/lib/helper";
 import { OrderDetails } from "@/types/order";
-import { FileText, User } from "lucide-react";
+import { FileText } from "lucide-react";
+import Link from "next/link";
 
 interface UploadedFilesCardProps {
   files: OrderDetails["files"];
@@ -22,9 +24,14 @@ function UploadedFilesCard({ files }: UploadedFilesCardProps) {
               <div className="flex h-16 w-16 items-center justify-center rounded-lg border-2 border-gray-200 bg-gray-50">
                 <FileText className="h-6 w-6 text-gray-500" />
               </div>
-              <span className="max-w-1/2 text-center text-xs text-ellipsis text-gray-600">
+              <Link
+                href={getFullURL(file.fileUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary max-w-1/2 text-center text-xs text-ellipsis text-gray-600 hover:underline"
+              >
                 {file.fileUrl.split("/").pop()}
-              </span>
+              </Link>
             </div>
           ))}
         </div>
@@ -41,11 +48,16 @@ function UploadedFilesCard({ files }: UploadedFilesCardProps) {
           {outputFiles.map((file) => (
             <div key={file.id} className="flex flex-col items-center space-y-2">
               <div className="flex h-16 w-16 items-center justify-center rounded-lg border-2 border-gray-200 bg-gray-50">
-                <User className="h-6 w-6 text-gray-500" />
+                <FileText className="h-6 w-6 text-gray-500" />
               </div>
-              <span className="text-center text-xs text-gray-600">
+              <Link
+                href={getFullURL(file.fileUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary text-center text-xs text-gray-600 hover:underline"
+              >
                 {file.fileUrl.split("/").pop()}
-              </span>
+              </Link>
             </div>
           ))}
         </div>

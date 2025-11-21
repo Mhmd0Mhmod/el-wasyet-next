@@ -93,6 +93,7 @@ interface OrderDetails extends Order, Omit<FinancialFields, "amount"> {
   overheads: OrderOverhead[];
   documents: OrderDocument[];
   files: OrderFile[];
+  imageUrlForOffer: string;
 }
 
 interface Offer {
