@@ -55,6 +55,8 @@ const TABLE_COLUMNS = [
   { id: "cash", label: "كاش" },
   { id: "credit", label: "كريديت" },
   { id: "price", label: "السعر" },
+  { id: "expenses", label: "المصاريف " },
+  { id: "netAmount", label: "صافي الربح " },
   { id: "operationTime", label: "وقت العملية" },
   { id: "orderCode", label: "كود الأوردر" },
   { id: "branch", label: "الفرع" },
@@ -95,6 +97,8 @@ async function DataTable({ searchParams }: PageProps) {
             <TableCell>{formatCurrency(item.cash)}</TableCell>
             <TableCell>{formatCurrency(item.credit)}</TableCell>
             <TableCell>{formatCurrency(item.amount)}</TableCell>
+            <TableCell>{formatCurrency(item.expenses)}</TableCell>
+            <TableCell>{formatCurrency(item.netAmount)}</TableCell>
             <TableCell>{formatDate(item.actionDate, "datetime")}</TableCell>
             <TableCell>
               <Button variant="link" size="sm" asChild>

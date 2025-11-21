@@ -8,6 +8,8 @@ interface Report {
   cash: number;
   credit: number;
   amount: number;
+  expenses: number;
+  netAmount: number;
   employeeName: string;
   orderDateTime: string;
   actionDate: string;
