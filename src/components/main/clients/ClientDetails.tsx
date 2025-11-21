@@ -137,6 +137,7 @@ function ClientDetails({ clientId }: ClientDetailsProps) {
       <ClientInfoCard
         client={client}
         clientType={clientType}
+        refetch={refetch}
         onClientChange={handleClientChange}
         onAddBranchClient={handleAddBranchClient}
       />
@@ -164,6 +165,7 @@ interface ClientInfoCardProps {
   clientType: { isMainClient: boolean; isBranchClient: boolean };
   onClientChange: (newId: number) => void;
   onAddBranchClient: (data: BranchClientValues) => void;
+  refetch?: () => void;
 }
 
 function ClientInfoCard({
@@ -171,6 +173,7 @@ function ClientInfoCard({
   clientType,
   onClientChange,
   onAddBranchClient,
+  refetch,
 }: ClientInfoCardProps) {
   const { isMainClient, isBranchClient } = clientType;
 
@@ -220,7 +223,7 @@ function ClientInfoCard({
             onClientChange={onClientChange}
           />
         ) : (
-          <ConvertToMainClientButton clientId={client.id} />
+          <ConvertToMainClientButton clientId={client.id} onConvert={refetch} />
         )}
         <Separator
           orientation="vertical"

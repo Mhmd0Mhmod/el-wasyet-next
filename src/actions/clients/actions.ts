@@ -35,3 +35,20 @@ export async function updateClient(
     return handleErrorResponse(error);
   }
 }
+export async function convertToMainClient(
+  clientId: number,
+): Promise<APIResponse<void>> {
+  try {
+    const response = await authFetch.get(
+      `/Client/makeChildClientAsParent/${clientId}`,
+    );
+    revalidatePath("/clients");
+    return {
+      success: true,
+      message: response.data,
+      data: undefined,
+    };
+  } catch (error) {
+    return handleErrorResponse(error);
+  }
+}
