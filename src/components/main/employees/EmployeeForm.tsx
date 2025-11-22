@@ -127,6 +127,20 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
     },
     [form],
   );
+  const handleSelectAllAbilities = useCallback(
+    (
+      checked: boolean,
+      field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
+    ) => {
+      if (checked) {
+        const allAbilityIds = abilities.map((ability) => ability.id);
+        field.onChange(allAbilityIds);
+      } else {
+        field.onChange([]);
+      }
+    },
+    [abilities],
+  );
 
   if (isLoadingEmployee || isLoadingRoles) {
     return <Loading />;
@@ -138,9 +152,7 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
     form.formState.isLoading ||
     form.formState.isSubmitting ||
     isLoadingAbilities;
-
   const submitButtonText = employee?.id ? "تحديث الموظف" : "إضافة موظف";
-
   return (
     <>
       <Form {...form}>
@@ -354,47 +366,61 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
             name="abilityIds"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>الصلاحيات</FormLabel>
-                <div className="flex flex-wrap gap-6">
-                  {Array.from(
-                    new Map(
-                      [
-                        ...(employee.abilityDTOs || []),
-                        ...(abilities || []),
-                      ].map((permission) => [permission.id, permission]),
-                    ).values(),
-                  ).map((permission) => {
-                    return (
-                      <div
-                        key={permission.id}
-                        className="flex flex-wrap items-center"
+                <div className="mb-4 flex items-center justify-between">
+                  <FormLabel>الصلاحيات</FormLabel>
+                  {abilities.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="select-all-abilities"
+                        checked={
+                          field.value?.length === abilities.length &&
+                          abilities.length > 0
+                        }
+                        disabled={field.disabled || isLoadingAbilities}
+                        onCheckedChange={(checked: boolean) =>
+                          handleSelectAllAbilities(checked, field)
+                        }
+                      />
+                      <Label
+                        htmlFor="select-all-abilities"
+                        className="cursor-pointer text-sm font-medium"
                       >
-                        <Checkbox
-                          checked={Boolean(
-                            field.value?.some(
-                              (ability: number) => ability === permission.id,
-                            ),
-                          )}
-                          id={permission.id.toString()}
-                          disabled={field.disabled}
-                          value={permission.id.toString()}
-                          onCheckedChange={(checked) =>
-                            handleAbilityChange(
-                              permission.id,
-                              checked as boolean,
-                              field,
-                            )
-                          }
-                        />
-                        <Label
-                          htmlFor={permission.id.toString()}
-                          className="mr-2"
-                        >
-                          {permission.abilityName}
-                        </Label>
-                      </div>
-                    );
-                  })}
+                        تحديد الكل
+                      </Label>
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-6">
+                  {abilities.map((permission) => (
+                    <div
+                      key={permission.id}
+                      className="flex flex-wrap items-center"
+                    >
+                      <Checkbox
+                        checked={Boolean(
+                          field.value?.some(
+                            (ability: number) => ability === permission.id,
+                          ),
+                        )}
+                        id={permission.id.toString()}
+                        disabled={field.disabled}
+                        value={permission.id.toString()}
+                        onCheckedChange={(checked) =>
+                          handleAbilityChange(
+                            permission.id,
+                            checked as boolean,
+                            field,
+                          )
+                        }
+                      />
+                      <Label
+                        htmlFor={permission.id.toString()}
+                        className="mr-2"
+                      >
+                        {permission.abilityName}
+                      </Label>
+                    </div>
+                  ))}
                   {!role && (
                     <p className="text-sm text-gray-500">
                       يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.
