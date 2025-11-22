@@ -7,9 +7,10 @@ function useRoles() {
     queryFn: getRoles,
   });
   return {
-    roles: query.data || [],
+    roles: query.data,
     isLoading: query.isLoading,
     error: query.error,
+    initalData: [],
   };
 }
 export { useRoles };

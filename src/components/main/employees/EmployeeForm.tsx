@@ -1,6 +1,7 @@
 "use client";
 import { createEmployee, updateEmployee } from "@/actions/employee/actions";
 import Loading from "@/app/(query)/loading";
+import Spinner from "@/components/shared/Spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,16 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useAbilities from "@/hooks/useAbilities";
-import { useEmployee } from "@/hooks/useEmployee";
-import { useManagers } from "@/hooks/useManagers";
-import { useRoles } from "@/hooks/useRoles";
-import { employeeFormSchema, EmployeeFormValues } from "@/schema/employee";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect } from "react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import Spinner from "@/components/shared/Spinner";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -31,6 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import useAbilities from "@/hooks/useAbilities";
+import { useEmployee } from "@/hooks/useEmployee";
+import { useManagers } from "@/hooks/useManagers";
+import { useRoles } from "@/hooks/useRoles";
+import { employeeFormSchema, EmployeeFormValues } from "@/schema/employee";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect } from "react";
+import { ControllerRenderProps, useForm } from "react-hook-form";
+import { toast } from "sonner";
 interface EmployeeFormProps {
   employeeId?: number;
   disabled?: boolean;
@@ -67,13 +67,13 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
   const role = roles?.find((r) => r.id.toString() === currentRole);
   const { abilities, isLoading: isLoadingAbilities } = useAbilities(role);
   useEffect(() => {
-    if (employee?.id && managers) {
+    if (employee.id) {
       form.reset({
         ...employee,
-        abilityIds: employee.abilityDTOs.map((ability) => ability.id),
+        abilityIds: employee.abilityDTOs?.map((a) => a.id) || [],
       });
     }
-  }, [employee, form, managers, role]);
+  }, [employee, form, managers, roles]);
 
   const handleSubmit = useCallback(
     (data: EmployeeFormValues) => {
@@ -356,39 +356,45 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
               <FormItem>
                 <FormLabel>الصلاحيات</FormLabel>
                 <div className="flex flex-wrap gap-6">
-                  {abilities.length > 0 &&
-                    abilities.map((permission) => {
-                      return (
-                        <div
-                          key={permission.id}
-                          className="flex flex-wrap items-center"
+                  {Array.from(
+                    new Map(
+                      [
+                        ...(employee.abilityDTOs || []),
+                        ...(abilities || []),
+                      ].map((permission) => [permission.id, permission]),
+                    ).values(),
+                  ).map((permission) => {
+                    return (
+                      <div
+                        key={permission.id}
+                        className="flex flex-wrap items-center"
+                      >
+                        <Checkbox
+                          checked={Boolean(
+                            field.value?.some(
+                              (ability: number) => ability === permission.id,
+                            ),
+                          )}
+                          id={permission.id.toString()}
+                          disabled={field.disabled}
+                          value={permission.id.toString()}
+                          onCheckedChange={(checked) =>
+                            handleAbilityChange(
+                              permission.id,
+                              checked as boolean,
+                              field,
+                            )
+                          }
+                        />
+                        <Label
+                          htmlFor={permission.id.toString()}
+                          className="mr-2"
                         >
-                          <Checkbox
-                            checked={Boolean(
-                              field.value?.some(
-                                (ability: number) => ability === permission.id,
-                              ),
-                            )}
-                            id={permission.id.toString()}
-                            disabled={field.disabled}
-                            value={permission.id.toString()}
-                            onCheckedChange={(checked) =>
-                              handleAbilityChange(
-                                permission.id,
-                                checked as boolean,
-                                field,
-                              )
-                            }
-                          />
-                          <Label
-                            htmlFor={permission.id.toString()}
-                            className="mr-2"
-                          >
-                            {permission.abilityName}
-                          </Label>
-                        </div>
-                      );
-                    })}
+                          {permission.abilityName}
+                        </Label>
+                      </div>
+                    );
+                  })}
                   {!role && (
                     <p className="text-sm text-gray-500">
                       يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.

@@ -6,11 +6,13 @@ function useEmployee(employeeId: number) {
     data: employee,
     error,
     isLoading,
+    isFetched,
   } = useQuery({
     queryKey: ["employee", employeeId],
     queryFn: () => getEmployeeById(employeeId),
     enabled: !!employeeId,
+    initialData: {} as Employee,
   });
-  return { employee, error, isLoading };
+  return { employee, error, isLoading, isFetched };
 }
 export { useEmployee };
