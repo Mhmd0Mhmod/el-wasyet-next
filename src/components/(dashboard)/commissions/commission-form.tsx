@@ -87,7 +87,7 @@ function CommissionForm({ commission }: { commission?: Commission }) {
                   <SelectValue placeholder="اختر المسمي الوظيفي" />
                 </SelectTrigger>
                 <SelectContent>
-                  {roles.map((role) => (
+                  {roles?.map((role) => (
                     <SelectItem key={role.id} value={role.id.toString()}>
                       {role.name}
                     </SelectItem>
