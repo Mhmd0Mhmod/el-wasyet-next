@@ -1,12 +1,15 @@
+"use client";
 import { NotificationsProvider } from "@/components/providers/NotficationsProvider";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { BellIcon } from "lucide-react";
 import NotificationSheetContent from "./NotificationSheetContent";
+import { useState } from "react";
 function NotificationButton() {
+  const [open, setOpen] = useState(false);
   return (
-    <NotificationsProvider>
-      <Sheet>
+    <NotificationsProvider open={open}>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant={"ghost"}>
             <BellIcon />

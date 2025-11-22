@@ -13,6 +13,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useOptimistic,
   useTransition,
 } from "react";
@@ -53,17 +54,26 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
 );
 
 export function NotificationsProvider({
+  open = false,
   children,
 }: {
+  open?: boolean;
   children: React.ReactNode;
 }) {
   const queryClient = useQueryClient();
   const {
-    query: { data: notifications = [], isLoading, refetch },
+    query: { data: notifications = [], isFetching, isLoading, refetch },
     mutation: { mutateAsync: markAllAsRead },
   } = useNotificationQuery();
 
-  const [isPending, startTransition] = useTransition();
+  // Refetch notifications when dialog opens
+  useEffect(() => {
+    if (open) {
+      refetch();
+    }
+  }, [open, refetch]);
+
+  const [, startTransition] = useTransition();
   const [optimisticNotifications, setOptimisticNotifications] = useOptimistic(
     notifications,
     (state, notificationId: number) => {
@@ -152,7 +162,7 @@ export function NotificationsProvider({
       value={{
         notifications: optimisticNotifications,
         unreadCount,
-        isFetching: isLoading,
+        isFetching: isLoading || isFetching,
         markAllAsRead,
         markAsRead,
         refetch,
