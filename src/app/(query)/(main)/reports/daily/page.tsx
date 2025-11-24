@@ -108,7 +108,7 @@ async function DataTable({ searchParams }: PageProps) {
         totalPages={totalPages}
         page={pageNumber}
         searchParams={params}
-      />{" "}
+      />
       <div className={"mt-4 grid grid-cols-1 gap-4 md:grid-cols-2"}>
         <div className={"flex space-x-2 whitespace-nowrap"}>
           <Label>مجموع الكاش</Label>

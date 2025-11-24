@@ -19,7 +19,7 @@ function ExportDailyReportsButton({ params }: { params: DateRange }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [params]);
   return (
     <Button onClick={handleExport} disabled={isLoading}>
       <CloudDownload size={16} />
