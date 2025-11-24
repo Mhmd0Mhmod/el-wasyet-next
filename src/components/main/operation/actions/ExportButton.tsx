@@ -14,8 +14,20 @@ function ExportButton({ orders }: { orders: OrderByStatus[] }) {
         return;
       }
 
+      // Remove unwanted columns
+      const filteredOrders = orders.map(
+        ({
+          closeAskExpense: _closeAskExpense,
+          isStefaClient: _isStefaClient,
+          isStefaSGL: _isStefaSGL,
+          isStefaCertifacte: _isStefaCertifacte,
+          color: _color,
+          ...rest
+        }) => rest,
+      );
+
       // Convert data to CSV with proper formatting
-      const csv = Papa.unparse(orders, {
+      const csv = Papa.unparse(filteredOrders, {
         header: true,
       });
 
