@@ -30,10 +30,13 @@ export async function ExportDetailedDailyReport(
   },
 ) {
   try {
-    const { data: blob } = await authFetch.get<Blob>("/Report/daily/export", {
-      params,
-      responseType: "blob",
-    });
+    const { data: blob } = await authFetch.get<Blob>(
+      "/Report/Advanced/export",
+      {
+        params,
+        responseType: "blob",
+      },
+    );
 
     const timestamp = new Date().toISOString().split("T")[0];
     const filename = `تقرير_الطلبات_الداخلية_${timestamp}.xlsx`;
@@ -52,7 +55,7 @@ export async function ExportDetailedDailyReport(
 export async function ExportExecutiveReport(params: DateRange) {
   try {
     const { data: blob } = await authFetch.get<Blob>(
-      "/Report/Advanced/export",
+      "/Report/executive/export",
       {
         params,
         responseType: "blob",
