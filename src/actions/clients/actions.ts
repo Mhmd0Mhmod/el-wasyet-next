@@ -37,10 +37,12 @@ export async function updateClient(
 }
 export async function convertToMainClient(
   clientId: number,
+  data: { phone: string },
 ): Promise<APIResponse<void>> {
   try {
-    const response = await authFetch.get(
+    const response = await authFetch.put(
       `/Client/makeChildClientAsParent/${clientId}`,
+      data.phone,
     );
     revalidatePath("/clients");
     return {
