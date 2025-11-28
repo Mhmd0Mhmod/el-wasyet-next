@@ -42,7 +42,7 @@ export async function convertToMainClient(
   try {
     const response = await authFetch.put(
       `/Client/makeChildClientAsParent/${clientId}`,
-      data.phone,
+      `"${data.phone}"`,
     );
     revalidatePath("/clients");
     return {
