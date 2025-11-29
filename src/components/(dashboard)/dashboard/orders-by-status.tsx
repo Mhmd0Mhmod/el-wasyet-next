@@ -1,11 +1,11 @@
 import Dialog from "@/components/shared/Dialog";
-import { translateToArabic } from "@/components/main/operation/helper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCount } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import type { ordersPerStatus } from "@/types/dashboard";
 import OrdersByStatusDetails from "./OrdersByStatusDetails";
+import { translateToArabic } from "@/app/(query)/(dashboard)/dashboard/helper";
 
 const STATUS_BAR_COLORS = [
   "bg-primary",

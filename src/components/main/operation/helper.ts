@@ -48,7 +48,7 @@ export const translateToArabic = (text: string): string => {
     sendcode: "إرسال الرمز",
     writecode: "كتابة الرمز",
     receivingdone: "تم الاستلام",
-    collectiondone: "تم التحصيل",
+    collectiondone: "تم الاستيفاء",
     expired: "تخطي الموعد",
   };
   return translations[key] || text;
