@@ -1,9 +1,5 @@
 "use client";
 import { Login } from "@/actions/auth/actions";
-import { LoginFormValues } from "@/schema/login";
-import { ShortBranch } from "@/types/branch";
-import { EyeClosed, EyeIcon, User } from "lucide-react";
-import { useForm } from "react-hook-form";
 import Input from "@/components/shared/Input";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,14 +17,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { LoginFormValues } from "@/schema/login";
+import { ShortBranch } from "@/types/branch";
+import { User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import PassowrdInput from "./PassowrdInput";
 
 function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const form = useForm<LoginFormValues>();
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const onSubmit = useCallback(
     (data: LoginFormValues) => {
@@ -37,6 +37,7 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
         form.setError("branchId", { message: "يجب اختيار فرع" });
         return;
       }
+
       setIsLoading(true);
       Login(data)
         .then((res) => {
@@ -115,19 +116,7 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  props={{
-                    placeholder: "كلمة المرور",
-                    type: showPassword ? "text" : "password",
-                    autoComplete: "new-password",
-                    ...field,
-                  }}
-                  Icon={showPassword ? EyeIcon : EyeClosed}
-                  IconProps={{
-                    className: "cursor-pointer",
-                    onClick: () => setShowPassword((prev) => !prev),
-                  }}
-                />
+                <PassowrdInput field={field} />
               </FormControl>
               <FormDescription />
               <FormMessage />
