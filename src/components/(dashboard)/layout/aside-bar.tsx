@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/actions/auth/actions";
 import ASidebarContent from "@/components/Layout/asidebar-cotent";
 import ASidebarHeader from "@/components/Layout/asidebar-header";
 import LogoutButton from "@/components/Layout/logout-button";
@@ -13,7 +14,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-function AsideBar() {
+
+async function AsideBar() {
+  const user = await getCurrentUser();
+
   return (
     <Sidebar side={"right"} collapsible="icon" variant="inset">
       <SidebarHeader>
@@ -25,7 +29,7 @@ function AsideBar() {
             القائمة الرئيسية
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <ASidebarContent />
+            <ASidebarContent user={user!} />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

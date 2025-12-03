@@ -1,20 +1,30 @@
 "use client";
 import { NAVIGATION_LINKS } from "@/app/(query)/(dashboard)/dashboard/helper";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { User } from "next-auth";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-function ASidebarContent() {
+function ASidebarContent({ user }: { user: User }) {
   const pathname = usePathname();
+  const userAbilityHrefs = new Set(
+    user?.abilities?.filter((ability) => ability.href).map((a) => a.href) || [],
+  );
+
+  const links = NAVIGATION_LINKS.filter((link) =>
+    userAbilityHrefs.has(link.href),
+  );
+
+  console.log(user);
 
   return (
     <SidebarMenu className="space-y-1">
-      {NAVIGATION_LINKS.map((link) => {
+      {links.map((link) => {
         const isActive =
           pathname === link.href ||
           (link.href !== "/" && pathname.startsWith(link.href));
