@@ -101,7 +101,7 @@ function ApprovalPartialForm({
     try {
       const response = await confirmPartialAcceptanceNotificationRequest(
         notification,
-        parseFloat(remainingValue),
+        remainingValue,
       );
       if (response.success) {
         toast.success("تمت الموافقة بنجاح.");

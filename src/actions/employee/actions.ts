@@ -24,7 +24,7 @@ export async function createEmployee(
   }
 }
 export async function updateEmployee(
-  body: EmployeeFormValues,
+  body: Partial<EmployeeFormValues>,
 ): Promise<APIResponse<Employee>> {
   try {
     const parsedBody = await employeeFormSchema.parseAsync(body);

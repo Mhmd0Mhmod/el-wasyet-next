@@ -80,6 +80,8 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
       if (disabled) return;
       const id = toast.loading("جاري الحفظ...");
       if (employee?.id) {
+        console.log(data);
+
         updateEmployee(data)
           .then((res) => {
             if (res.success) toast.success("تم تحديث الموظف بنجاح", { id });

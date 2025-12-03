@@ -41,7 +41,7 @@ export async function approveRequestNotification({
 }: {
   notificationId: number;
   requestId: number;
-  Remainingvalue?: number | null;
+  Remainingvalue?: string | null;
 }): Promise<APIResponse<void>> {
   try {
     const employeeId = (await getCurrentUser())?.userId;
@@ -93,7 +93,7 @@ export async function approveRequestStockNotification({
 }: {
   notificationId: number;
   requestStockId: number;
-  Remainingvalue?: number | null;
+  Remainingvalue?: string | null;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.post(

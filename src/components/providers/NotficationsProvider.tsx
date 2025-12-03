@@ -41,7 +41,7 @@ interface NotificationContextType {
   ) => Promise<APIResponse<void>>;
   confirmPartialAcceptanceNotificationRequest: (
     notification: Notification,
-    remainingValue: number,
+    remainingValue: string,
   ) => Promise<APIResponse<void>>;
   rejectNotificationRequest: (
     notification: Notification,
@@ -122,7 +122,7 @@ export function NotificationsProvider({
     [],
   );
   const confirmPartialAcceptanceNotificationRequest = useCallback(
-    async (notification: Notification, remainingValue: number) => {
+    async (notification: Notification, remainingValue: string) => {
       if (notification.isRequest && !notification.isRequestStock)
         return await approveRequestNotification({
           requestId: notification.requestId!,

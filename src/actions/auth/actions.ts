@@ -1,7 +1,8 @@
 "use server";
+import { handleErrorResponse } from "@/actions/helper";
+import { can } from "@/constants/abilities";
 import { auth, signIn, signOut } from "@/lib/auth";
 import { authFetch } from "@/lib/axios";
-import { handleErrorResponse } from "@/actions/helper";
 import { LoginFormValues } from "@/schema/login";
 import { User } from "next-auth";
 
@@ -62,4 +63,11 @@ export async function getToken() {
 }
 export async function getCurrentEmployeeId() {
   return (await auth())?.user.userId;
+}
+
+export async function checkAccess(abilityId: number) {
+  const user = await getCurrentUser();
+  if (!user) return false;
+  const userAbilities = (user.abilities || []).map((a) => a.id);
+  return can(userAbilities, abilityId);
 }
