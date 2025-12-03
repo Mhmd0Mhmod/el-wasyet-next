@@ -1,4 +1,5 @@
 interface Ability {
   id: number;
-  abilityName: string;
+  label: string;
+  href: string | null;
 }
