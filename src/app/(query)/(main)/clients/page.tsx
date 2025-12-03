@@ -13,6 +13,8 @@ import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
 import { formatDate } from "@/lib/helper";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 const columns = [
   { id: "name", label: "الاسم" },
@@ -30,6 +32,8 @@ async function ClientsTableData({
     page?: string;
   };
 }) {
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_CLIENT);
+
   const clients = await getClients({
     search: searchParams.search,
     page: searchParams.page ? parseInt(searchParams.page) : 1,
@@ -60,14 +64,16 @@ async function ClientsTableData({
                     </div>
                   </Dialog.Content>
                 </Dialog>
-                <Dialog>
-                  <Dialog.Trigger>
-                    <Edit2 size={16} />
-                  </Dialog.Trigger>
-                  <Dialog.Content title="تفاصيل العميل">
-                    <ClientForm clientId={client.id} />
-                  </Dialog.Content>
-                </Dialog>
+                {canEdit && (
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Edit2 size={16} />
+                    </Dialog.Trigger>
+                    <Dialog.Content title="تفاصيل العميل">
+                      <ClientForm clientId={client.id} />
+                    </Dialog.Content>
+                  </Dialog>
+                )}
               </>
             </TableCell>
           </TableRow>
@@ -90,22 +96,26 @@ async function page({
   }>;
 }) {
   const params = await searchParams;
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_CLIENT);
+
   return (
     <PageLayout
       title="العملاء"
       description="إدارة العملاء الرئيسين والفرعيين"
       extra={
-        <Dialog>
-          <Dialog.Trigger>
-            <Button className="w-full sm:w-auto">
-              <Plus size={16} />
-              إضافة عميل
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="إضافة عميل">
-            <ClientForm />
-          </Dialog.Content>
-        </Dialog>
+        canCreate && (
+          <Dialog>
+            <Dialog.Trigger>
+              <Button className="w-full sm:w-auto">
+                <Plus size={16} />
+                إضافة عميل
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافة عميل">
+              <ClientForm />
+            </Dialog.Content>
+          </Dialog>
+        )
       }
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

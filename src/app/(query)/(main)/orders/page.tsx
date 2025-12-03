@@ -24,6 +24,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
 import ClientDetails from "@/components/main/clients/ClientDetails";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -209,6 +211,7 @@ async function page({
   }>;
 }) {
   const searchParamsValues = await searchParams;
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_ORDER);
   const services = await getServices();
   const orderStatus = await getOrderStatuses();
   return (
@@ -216,12 +219,14 @@ async function page({
       title="الاوامر"
       description="إدارة أوامر العملاء ومتابعة حالة الخدمات"
       extra={
-        <Button>
-          <Link href={"/orders/new"}>
-            <Plus className="inline-block" size={16} />
-            أمر جديد
-          </Link>
-        </Button>
+        canCreate && (
+          <Button>
+            <Link href={"/orders/new"}>
+              <Plus className="inline-block" size={16} />
+              أمر جديد
+            </Link>
+          </Button>
+        )
       }
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">

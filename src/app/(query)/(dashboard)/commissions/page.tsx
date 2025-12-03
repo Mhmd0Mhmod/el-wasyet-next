@@ -21,24 +21,30 @@ import { Edit3Icon, PlusIcon, Trash2Icon } from "lucide-react";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import ExportButton from "@/components/shared/export-button";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
-function page() {
+async function page() {
+  const canManage = await checkAccess(ABILITY_IDS.MANAGE_COMMISSIONS);
+
   return (
     <PageLayout
       title="العمولات"
       description="تسجيل ومتابعة والعمولات"
       extra={
-        <Dialog>
-          <Dialog.Trigger>
-            <Button className="w-full sm:w-auto">
-              <PlusIcon />
-              إضافه عموله جديده
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="إضافه عموله جديده">
-            <CommissionForm />
-          </Dialog.Content>
-        </Dialog>
+        canManage && (
+          <Dialog>
+            <Dialog.Trigger>
+              <Button className="w-full sm:w-auto">
+                <PlusIcon />
+                إضافه عموله جديده
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافه عموله جديده">
+              <CommissionForm />
+            </Dialog.Content>
+          </Dialog>
+        )
       }
     >
       <div className="flex justify-end">
@@ -65,6 +71,8 @@ const COLUMNS = [
   },
 ];
 async function CommissionsTable() {
+  const canManage = await checkAccess(ABILITY_IDS.MANAGE_COMMISSIONS);
+
   const commissions = await getCommissions();
   return (
     <>
@@ -77,36 +85,40 @@ async function CommissionsTable() {
               % {formatCount(commission.commissionPercentage)}
             </TableCell>
             <TableCell>
-              <Dialog>
-                <Dialog.Trigger>
-                  <Button variant={"link"} className="text-gray-500">
-                    <Edit3Icon size={14} />
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content title="تعديل نسبه العموله">
-                  <CommissionForm commission={commission} />
-                </Dialog.Content>
-              </Dialog>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant={"link"} className="text-red-500">
-                    <Trash2Icon size={14} />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="sm:text-right">
-                      هل انت متأكد من حذف نسبه العموله لهذا المسمي
-                    </AlertDialogTitle>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                    <AlertDialogAction asChild>
-                      <DeleteCommissionsAction roleId={commission.roleId} />
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              {canManage && (
+                <>
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant={"link"} className="text-gray-500">
+                        <Edit3Icon size={14} />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content title="تعديل نسبه العموله">
+                      <CommissionForm commission={commission} />
+                    </Dialog.Content>
+                  </Dialog>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant={"link"} className="text-red-500">
+                        <Trash2Icon size={14} />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="sm:text-right">
+                          هل انت متأكد من حذف نسبه العموله لهذا المسمي
+                        </AlertDialogTitle>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                          <DeleteCommissionsAction roleId={commission.roleId} />
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </>
+              )}
             </TableCell>
           </TableRow>
         ))}

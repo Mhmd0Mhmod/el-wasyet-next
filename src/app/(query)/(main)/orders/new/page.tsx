@@ -11,7 +11,16 @@ import SubmitButton from "@/components/main/orders/SubmitButton";
 import UploadDocumentButton from "@/components/main/orders/UploadDocumentButton";
 import OrderFormProvider from "@/components/providers/OrderFormProvider";
 import { Label } from "@/components/ui/label";
-function page() {
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
+import { redirect } from "next/navigation";
+async function page() {
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_ORDER);
+
+  if (!canCreate) {
+    redirect("/orders");
+  }
+
   return (
     <OrderFormProvider>
       <PageLayout

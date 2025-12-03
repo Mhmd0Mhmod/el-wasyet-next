@@ -14,6 +14,8 @@ import { formatCurrency } from "@/lib/helper";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 const serviceColumns = [
   ...ServicesTableHeaders.slice(0, -1),
@@ -29,6 +31,8 @@ async function ServicesTable({
 }: {
   searchParams: { search?: string; page?: string };
 }) {
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_SERVICE);
+
   const data = await getServices(searchParams);
   const workFlows = await getWorkFlows();
   return (
@@ -59,16 +63,18 @@ async function ServicesTable({
                   <ServiceDetails service={service} />
                 </Dialog.Content>
               </Dialog>
-              <Dialog>
-                <Dialog.Trigger>
-                  <Button variant="ghost" size="sm">
-                    <Edit2 size={20} />
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content title="تعديل الخدمة">
-                  <ServiceForm service={service} workFlows={workFlows} />
-                </Dialog.Content>
-              </Dialog>
+              {canEdit && (
+                <Dialog>
+                  <Dialog.Trigger>
+                    <Button variant="ghost" size="sm">
+                      <Edit2 size={20} />
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content title="تعديل الخدمة">
+                    <ServiceForm service={service} workFlows={workFlows} />
+                  </Dialog.Content>
+                </Dialog>
+              )}
             </TableCell>
           </TableRow>
         ))}
@@ -87,6 +93,7 @@ async function page({
   searchParams: Promise<{ search?: string; page?: string }>;
 }) {
   const params = await searchParams;
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_SERVICE);
   const workFlows = await getWorkFlows();
 
   return (
@@ -94,17 +101,19 @@ async function page({
       title="الخدمات"
       description="إدارة جميع الخدمات المتاحة في الفروع"
       extra={
-        <Dialog>
-          <Dialog.Trigger>
-            <Button>
-              <Plus />
-              إضافة خدمة
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="إضافة خدمة جديدة" className="sm:max-w-xl">
-            <ServiceForm workFlows={workFlows} />
-          </Dialog.Content>
-        </Dialog>
+        canCreate && (
+          <Dialog>
+            <Dialog.Trigger>
+              <Button>
+                <Plus />
+                إضافة خدمة
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافة خدمة جديدة" className="sm:max-w-xl">
+              <ServiceForm workFlows={workFlows} />
+            </Dialog.Content>
+          </Dialog>
+        )
       }
     >
       <div className="mb-4 flex flex-wrap justify-between gap-4 sm:items-center">

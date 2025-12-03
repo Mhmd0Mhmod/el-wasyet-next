@@ -16,10 +16,13 @@ import { getFullURL } from "@/lib/helper";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 async function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const orderDetails = await getOrderById(id);
+  const canViewReceipt = await checkAccess(ABILITY_IDS.VIEW_ORDER_RECEIPT);
   if (!orderDetails) notFound();
   return (
     <PageLayout

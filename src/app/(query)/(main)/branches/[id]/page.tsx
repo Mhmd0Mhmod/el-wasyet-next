@@ -15,6 +15,8 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { getBranchById } from "@/data/branches";
 import { CheckCircle, Clock, Edit2, MapPin, Phone, User } from "lucide-react";
 import { notFound } from "next/navigation";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 async function BranchDetailsPage({
   params,
@@ -23,6 +25,7 @@ async function BranchDetailsPage({
 }) {
   const { id } = await params;
   const branch = await getBranchById(id);
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_BRANCH);
 
   if (!branch) {
     notFound();
@@ -33,15 +36,17 @@ async function BranchDetailsPage({
       title={`فرع ${branch.name}`}
       description="تفاصيل واداره الفرع"
       extra={
-        <NewBranchButton
-          branch={branch}
-          Trigger={() => (
-            <Button className="w-full sm:w-auto">
-              <Edit2 />
-              تعديل الفرع
-            </Button>
-          )}
-        />
+        canEdit && (
+          <NewBranchButton
+            branch={branch}
+            Trigger={() => (
+              <Button className="w-full sm:w-auto">
+                <Edit2 />
+                تعديل الفرع
+              </Button>
+            )}
+          />
+        )
       }
     >
       <Card dir="rtl">

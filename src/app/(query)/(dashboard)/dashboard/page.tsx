@@ -8,12 +8,30 @@ import RevenueByBranch from "@/components/(dashboard)/dashboard/revenue-by-branc
 import RevenueByService from "@/components/(dashboard)/dashboard/revenue-by-service";
 import PageLayout from "@/components/Layout/PageLayout";
 import { getDashboardData } from "@/data/dashboard";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 type Props = {
   searchParams: Promise<{ fromDate?: string; toDate?: string }>;
 };
 async function page({ searchParams }: Props) {
   const params = await searchParams;
+  const canView = await checkAccess(ABILITY_IDS.VIEW_DASHBOARD);
+
+  if (!canView) {
+    return (
+      <PageLayout
+        title="الصفحه الرئيسيه"
+        description="متابعة الأداء العام للنظام"
+        className="pb-10"
+      >
+        <div className="text-center text-gray-500">
+          ليس لديك صلاحية لعرض هذه الصفحة
+        </div>
+      </PageLayout>
+    );
+  }
+
   const dashboardData = await getDashboardData(params);
 
   return (

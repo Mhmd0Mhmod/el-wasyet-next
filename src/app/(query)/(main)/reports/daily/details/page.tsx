@@ -16,6 +16,8 @@ import { ShortBranch } from "@/types/branch";
 import { DateRange } from "@/types/filter";
 import Link from "next/link";
 import { Suspense } from "react";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 interface PageProps {
   searchParams: Promise<
@@ -28,6 +30,21 @@ interface PageProps {
 }
 
 async function page({ searchParams }: PageProps) {
+  const canView = await checkAccess(ABILITY_IDS.VIEW_DAILY_DETAILS_REPORT);
+
+  if (!canView) {
+    return (
+      <PageLayout
+        title="تقارير يومي تفصيلي"
+        description="تقارير يومية للمصروفات ومتابعة حالتها"
+      >
+        <div className="text-center text-gray-500">
+          ليس لديك صلاحية لعرض هذه الصفحة
+        </div>
+      </PageLayout>
+    );
+  }
+
   const { data: branchs } = await authFetch.get<ShortBranch[]>("Auth/branches");
   const employees = await getEmployeeBasic();
   const params = await searchParams;

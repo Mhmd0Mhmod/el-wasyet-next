@@ -7,8 +7,22 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { getStockData } from "@/data/stock";
 import Link from "next/link";
 import { Suspense } from "react";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
-function page() {
+async function page() {
+  const canView = await checkAccess(ABILITY_IDS.VIEW_CUSTODY);
+
+  if (!canView) {
+    return (
+      <PageLayout title="عهده الاستمارات" description="متابعة الأداء العام">
+        <div className="text-center text-gray-500">
+          ليس لديك صلاحية لعرض هذه الصفحة
+        </div>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout title="عهده الاستمارات" description="متابعة الأداء العام">
       <Suspense fallback={<TableSkeleton columns={2} rows={10} />}>

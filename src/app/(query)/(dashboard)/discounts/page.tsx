@@ -16,6 +16,8 @@ import {
   Trash2Icon,
   XCircle,
 } from "lucide-react";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 const COLUMNS = [
   { label: "كود المؤسسه", id: "id" },
@@ -44,23 +46,29 @@ function getDiscountStatus(isActive: boolean) {
   );
 }
 async function page() {
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_DISCOUNT);
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_DISCOUNT);
+  const canDelete = await checkAccess(ABILITY_IDS.DELETE_DISCOUNT);
+
   const discounts = await getDiscounts();
   return (
     <PageLayout
       title="تخفيضات"
       description="تسجيل التخفيضات ومتابعتها"
       extra={
-        <Dialog>
-          <Dialog.Trigger>
-            <Button className="w-full sm:w-auto">
-              <PlusIcon />
-              <span>إضافه خصم جديد</span>
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="إضافه خصم جديد">
-            <DiscountForm />
-          </Dialog.Content>
-        </Dialog>
+        canCreate && (
+          <Dialog>
+            <Dialog.Trigger>
+              <Button className="w-full sm:w-auto">
+                <PlusIcon />
+                <span>إضافه خصم جديد</span>
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافه خصم جديد">
+              <DiscountForm />
+            </Dialog.Content>
+          </Dialog>
+        )
       }
     >
       <Table
@@ -89,36 +97,42 @@ async function page() {
                   <DiscountDetials discountId={discount.offerId} />
                 </Dialog.Content>
               </Dialog>
-              <Dialog>
-                <Dialog.Trigger>
-                  <Button
-                    variant={"link"}
-                    size={"icon-sm"}
-                    className="cursor-pointer p-0 text-gray-500"
+              {canEdit && (
+                <Dialog>
+                  <Dialog.Trigger>
+                    <Button
+                      variant={"link"}
+                      size={"icon-sm"}
+                      className="cursor-pointer p-0 text-gray-500"
+                    >
+                      <Edit3Icon />
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content
+                    title={`تعديل الخصم - ${discount.companyName}`}
                   >
-                    <Edit3Icon />
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content title={`تعديل الخصم - ${discount.companyName}`}>
-                  <DiscountForm offer={discount} />
-                </Dialog.Content>
-              </Dialog>
-              <Dialog>
-                <Dialog.Trigger>
-                  <Button variant="link" className="p-0 text-red-500">
-                    <Trash2Icon />
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content title="تأكيد الحذف">
-                  <p>هل أنت متأكد من حذف هذا الخصم؟</p>
-                  <div className="mt-4 flex justify-end gap-2">
-                    <DialogClose asChild>
-                      <Button variant="outline">إلغاء</Button>
-                    </DialogClose>
-                    <DeleteDiscountButton discountId={discount.offerId} />
-                  </div>
-                </Dialog.Content>
-              </Dialog>
+                    <DiscountForm offer={discount} />
+                  </Dialog.Content>
+                </Dialog>
+              )}
+              {canDelete && (
+                <Dialog>
+                  <Dialog.Trigger>
+                    <Button variant="link" className="p-0 text-red-500">
+                      <Trash2Icon />
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content title="تأكيد الحذف">
+                    <p>هل أنت متأكد من حذف هذا الخصم؟</p>
+                    <div className="mt-4 flex justify-end gap-2">
+                      <DialogClose asChild>
+                        <Button variant="outline">إلغاء</Button>
+                      </DialogClose>
+                      <DeleteDiscountButton discountId={discount.offerId} />
+                    </div>
+                  </Dialog.Content>
+                </Dialog>
+              )}
             </TableCell>
           </TableRow>
         ))}

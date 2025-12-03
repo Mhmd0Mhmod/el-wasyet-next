@@ -14,6 +14,8 @@ import { getExpenses } from "@/data/expenses";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { Trash2Icon } from "lucide-react";
 import { Suspense } from "react";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 interface Props {
   searchParams: Promise<{
@@ -25,6 +27,8 @@ interface Props {
 
 async function page({ searchParams }: Props) {
   const params = await searchParams;
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_EXPENSE);
+
   return (
     <PageLayout
       title={"المصروفات"}
@@ -35,7 +39,7 @@ async function page({ searchParams }: Props) {
       <Suspense fallback={<TableSkeleton columns={6} rows={10} />}>
         <DataTable searchParams={searchParams} />
       </Suspense>
-      <AddNewExpense />
+      {canCreate && <AddNewExpense />}
     </PageLayout>
   );
 }
@@ -50,6 +54,8 @@ const TABLE_COLUMNS = [
 ];
 async function DataTable({ searchParams }: Props) {
   const params = await searchParams;
+  const canDelete = await checkAccess(ABILITY_IDS.DELETE_EXPENSE);
+
   const response = await getExpenses(params);
   const { items, pageNumber, totalPages } = response;
   const total = items?.reduce((sum, item) => sum + item.amount, 0) || 0;
@@ -65,15 +71,17 @@ async function DataTable({ searchParams }: Props) {
             <TableCell>{item.branchName}</TableCell>
             <TableCell>{item.employeeName}</TableCell>
             <TableCell>
-              <DeleteExpense expenseId={item.id}>
-                <Button
-                  variant="ghost"
-                  className="hover:text-red-400"
-                  size="icon"
-                >
-                  <Trash2Icon />
-                </Button>
-              </DeleteExpense>
+              {canDelete && (
+                <DeleteExpense expenseId={item.id}>
+                  <Button
+                    variant="ghost"
+                    className="hover:text-red-400"
+                    size="icon"
+                  >
+                    <Trash2Icon />
+                  </Button>
+                </DeleteExpense>
+              )}
             </TableCell>
           </TableRow>
         ))}

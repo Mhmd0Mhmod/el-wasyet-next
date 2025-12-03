@@ -13,6 +13,8 @@ import { formatCurrency, formatDate } from "@/lib/helper";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DateRange } from "@/types/filter";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 interface PageProps {
   searchParams: Promise<
@@ -24,10 +26,25 @@ interface PageProps {
 
 async function page({ searchParams }: PageProps) {
   const params = await searchParams;
+  const canView = await checkAccess(ABILITY_IDS.VIEW_EXECUTIVE_REPORT);
+
+  if (!canView) {
+    return (
+      <PageLayout
+        title="تقرير تنفيذي "
+        description="تقارير تنفيذية لمتابعة الأداء والعمليات اليومية "
+      >
+        <div className="text-center text-gray-500">
+          ليس لديك صلاحية لعرض هذه الصفحة
+        </div>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout
-      title={"تقرير تنفيذي "}
-      description={"تقارير تنفيذية لمتابعة الأداء والعمليات اليومية "}
+      title="تقرير تنفيذي "
+      description="تقارير تنفيذية لمتابعة الأداء والعمليات اليومية "
       extra={<ExportExecutiveReportButton params={params} />}
     >
       <DailyReportsFilter />

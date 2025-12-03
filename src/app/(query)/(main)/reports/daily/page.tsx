@@ -13,6 +13,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { DateRange } from "@/types/filter";
 import ExportDailyReportsButton from "@/components/main/reports/daily/export-daily-report-button";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 interface PageProps {
   searchParams: Promise<
@@ -24,10 +26,25 @@ interface PageProps {
 
 async function page({ searchParams }: PageProps) {
   const params = await searchParams;
+  const canView = await checkAccess(ABILITY_IDS.VIEW_DAILY_REPORT);
+
+  if (!canView) {
+    return (
+      <PageLayout
+        title="تقارير يومي "
+        description="تقارير يومية للمصروفات ومتابعة حالتها"
+      >
+        <div className="text-center text-gray-500">
+          ليس لديك صلاحية لعرض هذه الصفحة
+        </div>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout
-      title={"تقارير يومي "}
-      description={"تقارير يومية للمصروفات ومتابعة حالتها"}
+      title="تقارير يومي "
+      description="تقارير يومية للمصروفات ومتابعة حالتها"
       extra={<ExportDailyReportsButton params={params} />}
     >
       <DailyReportsFilter />

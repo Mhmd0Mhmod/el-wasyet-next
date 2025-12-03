@@ -25,28 +25,34 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
-function page({
+async function page({
   searchParams,
 }: {
   searchParams: Promise<{ search?: string }>;
 }) {
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_AGENT);
+
   return (
     <PageLayout
       title="الوكلاء"
       description="تسجيل الخصومات ومتابعتها"
       extra={
-        <Dialog>
-          <Dialog.Trigger>
-            <Button className="w-full sm:w-auto">
-              <PlusIcon />
-              <span>إضافه وكيل جديد</span>
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="إضافه وكيل جديد">
-            <AgentForm />
-          </Dialog.Content>
-        </Dialog>
+        canCreate && (
+          <Dialog>
+            <Dialog.Trigger>
+              <Button className="w-full sm:w-auto">
+                <PlusIcon />
+                <span>إضافه وكيل جديد</span>
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافه وكيل جديد">
+              <AgentForm />
+            </Dialog.Content>
+          </Dialog>
+        )
       }
     >
       <SearchInput title="بحث عن وكيل" />
@@ -84,6 +90,9 @@ async function AgentsTable({
   searchParams: Promise<{ search?: string }>;
 }) {
   const { search } = await searchParams;
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_AGENT);
+  const canDelete = await checkAccess(ABILITY_IDS.DELETE_AGENT);
+
   const agents = await getAgents(search);
   return (
     <Table
@@ -114,42 +123,46 @@ async function AgentsTable({
                 <AgentDetials agentId={agent.id} />
               </Dialog.Content>
             </Dialog>
-            <Dialog>
-              <Dialog.Trigger>
-                <Button
-                  variant={"link"}
-                  size={"icon-sm"}
-                  className="cursor-pointer text-gray-500"
-                >
-                  <Edit3Icon size={12} />
-                </Button>
-              </Dialog.Trigger>
-              <Dialog.Content title={`تعديل الوكيل - ${agent.name}`}>
-                <AgentForm agent={agent} />
-              </Dialog.Content>
-            </Dialog>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant={"link"}
-                  size={"icon-sm"}
-                  className="cursor-pointer text-red-500"
-                >
-                  <Trash2 size={12} />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader className="sm:text-right">
-                  <AlertDialogTitle>
-                    هل انت متأكد من حذف هذا الوكيل؟
-                  </AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                  <DeleteAgentButton agentId={agent.id} />
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {canEdit && (
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button
+                    variant={"link"}
+                    size={"icon-sm"}
+                    className="cursor-pointer text-gray-500"
+                  >
+                    <Edit3Icon size={12} />
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content title={`تعديل الوكيل - ${agent.name}`}>
+                  <AgentForm agent={agent} />
+                </Dialog.Content>
+              </Dialog>
+            )}
+            {canDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant={"link"}
+                    size={"icon-sm"}
+                    className="cursor-pointer text-red-500"
+                  >
+                    <Trash2 size={12} />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader className="sm:text-right">
+                    <AlertDialogTitle>
+                      هل انت متأكد من حذف هذا الوكيل؟
+                    </AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <DeleteAgentButton agentId={agent.id} />
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </TableCell>
         </TableRow>
       ))}

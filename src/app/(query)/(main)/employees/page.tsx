@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { CheckCircle, Edit, Eye, Plus, XCircle } from "lucide-react";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 function NewEmployeeButton() {
   return (
@@ -42,6 +44,8 @@ async function EmployeesTable({
 }: {
   searchParams: { search?: string; page?: string };
 }) {
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_EMPLOYEE);
+
   const {
     items: employees,
     pageNumber,
@@ -93,19 +97,21 @@ async function EmployeesTable({
                     <EmployeeForm employeeId={employee.id} disabled />
                   </Dialog.Content>
                 </Dialog>
-                <Dialog>
-                  <Dialog.Trigger>
-                    <Button variant="ghost" size="sm" aria-label="تعديل">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </Dialog.Trigger>
-                  <Dialog.Content
-                    title="تعديل موظف"
-                    className="mx-auto min-w-2xl"
-                  >
-                    <EmployeeForm employeeId={employee.id} />
-                  </Dialog.Content>
-                </Dialog>
+                {canEdit && (
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant="ghost" size="sm" aria-label="تعديل">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content
+                      title="تعديل موظف"
+                      className="mx-auto min-w-2xl"
+                    >
+                      <EmployeeForm employeeId={employee.id} />
+                    </Dialog.Content>
+                  </Dialog>
+                )}
               </div>
             </TableCell>
           </TableRow>
@@ -125,11 +131,13 @@ async function page({
   searchParams: Promise<{ search?: string; page?: string }>;
 }) {
   const params = await searchParams;
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_EMPLOYEE);
+
   return (
     <PageLayout
       title="الموظفين"
       description="إدارة جميع موظفي الشركة"
-      extra={<NewEmployeeButton />}
+      extra={canCreate && <NewEmployeeButton />}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <SearchInput title="ابحث عن موظف" />

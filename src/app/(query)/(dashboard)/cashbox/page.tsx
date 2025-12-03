@@ -17,8 +17,22 @@ import { getCashboxData } from "@/data/cashbox";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { CashboxDetails } from "@/types/cashbox";
 import Link from "next/link";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 async function page() {
+  const canView = await checkAccess(ABILITY_IDS.VIEW_TRANSFERS);
+
+  if (!canView) {
+    return (
+      <PageLayout title="الخزنه" description="تحليل وإدارة عمليات الخزنة">
+        <div className="text-center text-gray-500">
+          ليس لديك صلاحية لعرض هذه الصفحة
+        </div>
+      </PageLayout>
+    );
+  }
+
   const cashboxData = await getCashboxData();
   return (
     <PageLayout title="الخزنه" description="تحليل وإدارة عمليات الخزنة">

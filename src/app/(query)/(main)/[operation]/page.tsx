@@ -9,6 +9,8 @@ import { getOrdersByStatusIds } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +20,7 @@ interface OperationConfig {
   description: string;
   isCertificate?: boolean;
   Component: React.FC<{ orders: OrderByStatus[] }>;
+  abilityId?: number;
 }
 
 const OPERATION_CONFIGS: Record<string, OperationConfig> = {
@@ -27,6 +30,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     title: "الاوامر المعلقه",
     description: "سجل أوامر المعلقه ومتابعة حالة الاوامر",
     Component: OrdersTable,
+    abilityId: ABILITY_IDS.VIEW_PENDING_ORDERS,
   },
   "pending-certificates": {
     statusIds: [1],
@@ -34,6 +38,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
     title: "الشهادات المعلقة",
     description: "سجل الشهادات المعلقة ومتابعة حالتها",
     Component: CertificatesTable,
+    abilityId: ABILITY_IDS.VIEW_PENDING_CERTIFICATES,
   },
   "new-certificates": {
     statusIds: [2],
@@ -49,6 +54,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
         </div>
       </>
     ),
+    abilityId: ABILITY_IDS.VIEW_NEW_CERTIFICATES,
   },
   "new-orders": {
     statusIds: [2],
@@ -64,6 +70,7 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
         </div>
       </>
     ),
+    abilityId: ABILITY_IDS.VIEW_NEW_ORDERS,
   },
   collected: {
     statusIds: [3],
@@ -88,42 +95,49 @@ const OPERATION_CONFIGS: Record<string, OperationConfig> = {
         </div>
       </>
     ),
+    abilityId: ABILITY_IDS.VIEW_COLLECTED,
   },
   "in-progress": {
     statusIds: [4],
     title: "تحت التنفيذ",
     description: "سجل الاوامر قيد التنفيذ ومتابعة حالة الاوامر",
     Component: OrdersTable,
+    abilityId: ABILITY_IDS.VIEW_IN_PROGRESS,
   },
   "completed-orders": {
     statusIds: [5],
     title: "الاوامر المنتهيه (لخدمه العملاء)",
     description: "سجل الاوامر المكتملة ومتابعة حالة الاوامر",
     Component: OrdersTable,
+    abilityId: ABILITY_IDS.VIEW_COMPLETED_ORDERS,
   },
   "order-receipt": {
     statusIds: [6],
     title: "استلام الاوامر",
     description: "سجل استلام الاوامر من العملاء",
     Component: OrderReceiptTable,
+    abilityId: ABILITY_IDS.VIEW_ORDER_RECEIPT,
   },
   fulfillment: {
     statusIds: [11],
     title: "استيفاء",
     description: "سجل الاستيفاء ومتابعة حالة الاوامر",
     Component: OrdersTable,
+    abilityId: ABILITY_IDS.VIEW_FULFILLMENT,
   },
   "client-fulfillment": {
     statusIds: [10],
     title: "استيفاء عميل",
     description: "سجل استيفاء العملاء ومتابعة حالة الاوامر",
     Component: OrdersTable,
+    abilityId: ABILITY_IDS.VIEW_CLIENT_FULFILLMENT,
   },
   "certificate-fulfillment": {
     statusIds: [12],
     title: "استيفاء شهادة",
     description: "سجل استيفاء الشهادات ومتابعة حالة الاوامر",
     Component: OrdersTable,
+    abilityId: ABILITY_IDS.VIEW_CERTIFICATE_FULFILLMENT,
   },
 };
 
@@ -145,6 +159,21 @@ async function page({ params, searchParams }: PageProps) {
     notFound();
   }
   const config = OPERATION_CONFIGS[operation as OperationType];
+
+  // Check ability if abilityId is defined
+  if (config.abilityId) {
+    const canView = await checkAccess(config.abilityId);
+    if (!canView) {
+      return (
+        <PageLayout title={config.title} description={config.description}>
+          <div className="text-center text-gray-500">
+            ليس لديك صلاحية لعرض هذه الصفحة
+          </div>
+        </PageLayout>
+      );
+    }
+  }
+
   const searchParameters = await searchParams;
   return (
     <PageLayout title={config.title} description={config.description}>

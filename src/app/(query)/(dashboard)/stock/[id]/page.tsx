@@ -9,6 +9,8 @@ import { getStockDataById } from "@/data/stock";
 import { cn } from "@/lib/utils";
 import { Bell, CheckCircle, Edit3, Plus, XCircle } from "lucide-react";
 import { notFound } from "next/navigation";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 export const dynamic = "force-dynamic";
 
@@ -60,6 +62,7 @@ function getFormStatus(isLowStock: boolean, quantity: number) {
 }
 async function page({ params }: PageProps) {
   const { id } = await params;
+  const canManage = await checkAccess(ABILITY_IDS.MANAGE_CUSTODY);
   const stockData = await getStockDataById(id);
   if (!stockData) {
     notFound();
@@ -68,21 +71,23 @@ async function page({ params }: PageProps) {
     <PageLayout
       title={stockData.branchName || "المخازن"}
       description="حصر ومتابعة مصروفات المخازن"
-      extra={<TransferCovenant />}
+      extra={canManage && <TransferCovenant />}
     >
-      <div className="flex justify-end">
-        <Dialog>
-          <Dialog.Trigger>
-            <Button>
-              <Plus size={16} className="ml-1" />
-              اضافة استماره جديده
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content title="إضافة استماره جديده">
-            <NewForm />
-          </Dialog.Content>
-        </Dialog>
-      </div>
+      {canManage && (
+        <div className="flex justify-end">
+          <Dialog>
+            <Dialog.Trigger>
+              <Button>
+                <Plus size={16} className="ml-1" />
+                اضافة استماره جديده
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content title="إضافة استماره جديده">
+              <NewForm />
+            </Dialog.Content>
+          </Dialog>
+        </div>
+      )}
       <Table
         columns={COLUMNS}
         renderData={stockData.forms.map((form, index) => (
@@ -94,26 +99,28 @@ async function page({ params }: PageProps) {
               {getFormStatus(form.isLowStock, form.quantity)}
             </TableCell>
             <TableCell>
-              <Dialog>
-                <Dialog.Trigger>
-                  <Button variant="ghost" size="icon">
-                    <Edit3 size={16} />
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content title="تعديل بيانات الاستماره">
-                  <NewForm
-                    form={{
-                      formTypeId: form.formId,
-                      branchId: stockData.branchId,
-                      stockId: form.stockId,
-                      threshold: form.minimumThreshold,
-                      quantity: form.quantity,
-                      price: form.price,
-                      minimumThreshold: form.minimumThreshold,
-                    }}
-                  />
-                </Dialog.Content>
-              </Dialog>
+              {canManage && (
+                <Dialog>
+                  <Dialog.Trigger>
+                    <Button variant="ghost" size="icon">
+                      <Edit3 size={16} />
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content title="تعديل بيانات الاستماره">
+                    <NewForm
+                      form={{
+                        formTypeId: form.formId,
+                        branchId: stockData.branchId,
+                        stockId: form.stockId,
+                        threshold: form.minimumThreshold,
+                        quantity: form.quantity,
+                        price: form.price,
+                        minimumThreshold: form.minimumThreshold,
+                      }}
+                    />
+                  </Dialog.Content>
+                </Dialog>
+              )}
             </TableCell>
           </TableRow>
         ))}
