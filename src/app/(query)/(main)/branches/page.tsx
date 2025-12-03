@@ -10,6 +10,8 @@ import Link from "next/link";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import PageLayout from "@/components/Layout/PageLayout";
 import ExportButton from "@/components/shared/export-button";
+import { checkAccess } from "@/actions/auth/actions";
+import { ABILITY_IDS } from "@/constants/abilities";
 
 const columns = [
   { id: "name", label: "اسم الفرع" },
@@ -24,6 +26,8 @@ async function BranchesTableData({
 }: {
   searchParams: { search?: string };
 }) {
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_BRANCH);
+
   const branches = await getBranches({
     search: searchParams.search,
   });
@@ -44,14 +48,16 @@ async function BranchesTableData({
                   <Eye />
                 </Link>
               </Button>
-              <NewBranch
-                branch={branch}
-                Trigger={() => (
-                  <Button variant="ghost">
-                    <Edit2 />
-                  </Button>
-                )}
-              />
+              {canEdit && (
+                <NewBranch
+                  branch={branch}
+                  Trigger={() => (
+                    <Button variant="ghost">
+                      <Edit2 />
+                    </Button>
+                  )}
+                />
+              )}
             </TableCell>
           </TableRow>
         ))}
@@ -65,19 +71,22 @@ async function page({
   searchParams: Promise<{ search?: string }>;
 }) {
   const params = await searchParams;
+  const canCreate = await checkAccess(ABILITY_IDS.CREATE_BRANCH);
   return (
     <PageLayout
       title="الفروع"
       description="إدارة جميع فروع الشركة"
       extra={
-        <NewBranch
-          Trigger={() => (
-            <Button>
-              <Plus />
-              إضافة فرع جديد
-            </Button>
-          )}
-        />
+        canCreate && (
+          <NewBranch
+            Trigger={() => (
+              <Button>
+                <Plus />
+                إضافة فرع جديد
+              </Button>
+            )}
+          />
+        )
       }
     >
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

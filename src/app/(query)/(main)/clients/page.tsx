@@ -12,6 +12,7 @@ import { getClients } from "@/data/clients";
 import { Edit2, Eye, Plus } from "lucide-react";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
+import { formatDate } from "@/lib/helper";
 
 const columns = [
   { id: "name", label: "الاسم" },
@@ -43,9 +44,7 @@ async function ClientsTableData({
             <TableCell>{client.address}</TableCell>
             <TableCell>{client.phone1}</TableCell>
             <TableCell>{client.email}</TableCell>
-            <TableCell>
-              {new Date(client.createdDate).toLocaleDateString()}
-            </TableCell>
+            <TableCell>{formatDate(client.createdDate, "datetime")}</TableCell>
             <TableCell className="flex items-center gap-4">
               <>
                 <Dialog>
