@@ -40,6 +40,10 @@ const COLUMNS = [
     label: "اسم الفرع",
     id: "branchName",
   },
+  {
+    label: "مسؤول العهدة",
+    id: "custodian",
+  },
 ];
 async function StockDataTable() {
   const data = await getStockData();
@@ -58,6 +62,7 @@ async function StockDataTable() {
               </Link>
             </TableCell>
             <TableCell>{item.branchName}</TableCell>
+            <TableCell>{item.withWho}</TableCell>
           </TableRow>
         ))}
       />
