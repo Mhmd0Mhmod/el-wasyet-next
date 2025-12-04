@@ -11,6 +11,7 @@ import { Bell, CheckCircle, Edit3, Plus, XCircle } from "lucide-react";
 import { notFound } from "next/navigation";
 import { checkAccess } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export const dynamic = "force-dynamic";
 
@@ -86,6 +87,16 @@ async function page({ params }: PageProps) {
               <NewForm />
             </Dialog.Content>
           </Dialog>
+        </div>
+      )}
+      {stockData.withWho && (
+        <div className="flex justify-end">
+          <Alert className="w-fit" variant={"default"}>
+            <AlertTitle>
+              مالك العهده الحالي هو :
+              <span className="mr-1 font-semibold"> {stockData.withWho}</span>
+            </AlertTitle>
+          </Alert>
         </div>
       )}
       <Table
