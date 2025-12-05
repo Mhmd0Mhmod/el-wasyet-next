@@ -20,16 +20,23 @@ function TransferCovenant() {
     setSelectedEmployee(value);
     setLoading(true);
     transferConvenant(value)
-      .then(() => {
-        toast.success("تم تحويل العهده بنجاح", {
-          id,
-        });
+      .then((response) => {
+        if (response.success) {
+          toast.success("تم تحويل العهده بنجاح", { id });
+          setSelectedEmployee(undefined);
+        } else {
+          toast.error(
+            "message" in response
+              ? response.message
+              : "حدث خطأ أثناء تحويل العهده",
+            { id },
+          );
+        }
       })
-      .catch((error) => {
-        toast.error(`حدث خطأ: ${error.message}`, { id });
+      .catch(() => {
+        toast.error("حدث خطأ أثناء تحويل العهده", { id });
       })
       .finally(() => {
-        setSelectedEmployee("");
         setLoading(false);
       });
   }
