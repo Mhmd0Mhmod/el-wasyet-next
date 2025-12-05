@@ -11,6 +11,7 @@ function useAbilities(role?: Role) {
     queryFn: () => getAbilitiesByRole(role!),
     initialData: [],
     enabled: !!role?.id,
+    staleTime: "static",
   });
 
   return { abilities, isLoading: isFetching, error };

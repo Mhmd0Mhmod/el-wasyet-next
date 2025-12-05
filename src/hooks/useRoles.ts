@@ -5,6 +5,7 @@ function useRoles() {
   const query = useQuery({
     queryKey: ["roles"],
     queryFn: getRoles,
+    staleTime: "static",
   });
   return {
     roles: query.data,

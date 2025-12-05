@@ -10,8 +10,6 @@ function PassowrdInput({
   field: ControllerRenderProps<LoginFormValues>;
 }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [value, setValue] = useState<string>("");
-  const passwordStars = Array.from({ length: value.length }).fill("*").join("");
 
   return (
     <Input
@@ -19,10 +17,25 @@ function PassowrdInput({
         placeholder: "كلمة المرور",
         type: "text",
         autoComplete: "new-password",
-        value: showPassword ? value : passwordStars,
+        value: showPassword
+          ? field.value
+          : "•".repeat(field.value?.length || 0),
         onChange: (e) => {
-          setValue(e.target.value);
-          field.onChange(e);
+          if (showPassword) {
+            field.onChange(e.target.value);
+          } else {
+            const newLength = e.target.value.length;
+            const oldLength = field.value?.length || 0;
+
+            if (newLength > oldLength) {
+              // Character added - get the new character(s)
+              const addedChars = e.target.value.slice(oldLength);
+              field.onChange((field.value || "") + addedChars);
+            } else {
+              // Characters removed - trim from the end
+              field.onChange((field.value || "").slice(0, newLength));
+            }
+          }
         },
       }}
       Icon={showPassword ? EyeIcon : EyeClosed}
