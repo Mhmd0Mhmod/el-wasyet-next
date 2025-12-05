@@ -1,18 +1,18 @@
 import { getEmployeeById } from "@/data/employee";
 import { useQuery } from "@tanstack/react-query";
 
-function useEmployee(employeeId: number) {
+function useEmployee(employeeId: number | undefined) {
   const {
     data: employee,
     error,
     isLoading,
     isFetched,
+    isFetching,
   } = useQuery({
     queryKey: ["employee", employeeId],
-    queryFn: () => getEmployeeById(employeeId),
+    queryFn: () => getEmployeeById(employeeId as number),
     enabled: !!employeeId,
-    initialData: {} as Employee,
   });
-  return { employee, error, isLoading, isFetched };
+  return { employee, error, isLoading, isFetched, isFetching };
 }
 export { useEmployee };

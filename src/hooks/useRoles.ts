@@ -11,7 +11,6 @@ function useRoles() {
     roles: query.data,
     isLoading: query.isLoading,
     error: query.error,
-    initalData: [],
   };
 }
 export { useRoles };

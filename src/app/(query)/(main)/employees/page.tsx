@@ -8,15 +8,22 @@ import PageLayout from "@/components/Layout/PageLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getEmployees } from "@/data/employee";
+import { getEmployees, getRoles } from "@/data/employee";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Edit, Eye, Plus, XCircle } from "lucide-react";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
 import { checkAccess } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
+import { getManagersBranches } from "@/data/branches";
 
-function NewEmployeeButton() {
+function NewEmployeeButton({
+  managersBranches,
+  roles,
+}: {
+  managersBranches: ShortManager[];
+  roles: Role[];
+}) {
   return (
     <Dialog>
       <Dialog.Trigger>
@@ -25,8 +32,11 @@ function NewEmployeeButton() {
           إضافة موظف جديد
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content title="إضافة موظف جديد">
-        <EmployeeForm />
+      <Dialog.Content
+        title="إضافة موظف جديد"
+        className="mx-auto max-h-[80vh] min-w-2xl overflow-y-auto"
+      >
+        <EmployeeForm managers={managersBranches} roles={roles} />
       </Dialog.Content>
     </Dialog>
   );
@@ -54,6 +64,9 @@ async function EmployeesTable({
     search: searchParams.search || "",
     page: parseInt(searchParams.page || "1", 10),
   });
+
+  const managersBranches = await getManagersBranches();
+  const roles = await getRoles();
   return (
     <>
       <Table
@@ -92,9 +105,14 @@ async function EmployeesTable({
                   </Dialog.Trigger>
                   <Dialog.Content
                     title="تفاصيل موظف"
-                    className="mx-auto min-w-2xl"
+                    className="mx-auto max-h-[80vh] min-w-2xl overflow-y-auto"
                   >
-                    <EmployeeForm employeeId={employee.id} disabled />
+                    <EmployeeForm
+                      employeeId={employee.id}
+                      disabled
+                      managers={managersBranches}
+                      roles={roles}
+                    />
                   </Dialog.Content>
                 </Dialog>
                 {canEdit && (
@@ -106,9 +124,13 @@ async function EmployeesTable({
                     </Dialog.Trigger>
                     <Dialog.Content
                       title="تعديل موظف"
-                      className="mx-auto min-w-2xl"
+                      className="mx-auto max-h-[80vh] min-w-2xl overflow-y-auto"
                     >
-                      <EmployeeForm employeeId={employee.id} />
+                      <EmployeeForm
+                        employeeId={employee.id}
+                        managers={managersBranches}
+                        roles={roles}
+                      />
                     </Dialog.Content>
                   </Dialog>
                 )}
@@ -132,12 +154,20 @@ async function page({
 }) {
   const params = await searchParams;
   const canCreate = await checkAccess(ABILITY_IDS.CREATE_EMPLOYEE);
-
+  const managersBranches = await getManagersBranches();
+  const roles = await getRoles();
   return (
     <PageLayout
       title="الموظفين"
       description="إدارة جميع موظفي الشركة"
-      extra={canCreate && <NewEmployeeButton />}
+      extra={
+        canCreate && (
+          <NewEmployeeButton
+            managersBranches={managersBranches}
+            roles={roles}
+          />
+        )
+      }
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <SearchInput title="ابحث عن موظف" />

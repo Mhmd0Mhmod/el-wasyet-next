@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Pin the workspace root for Turbopack to avoid the multiple lockfile warning
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       {

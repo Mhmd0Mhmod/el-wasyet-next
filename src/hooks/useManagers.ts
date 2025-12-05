@@ -5,6 +5,7 @@ export const useManagers = () => {
   const { data, isLoading, error, isFetched } = useQuery({
     queryKey: ["managers"],
     queryFn: getManagersBranches,
+    staleTime: "static",
   });
   return { data, isLoading, error, isFetched };
 };

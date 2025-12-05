@@ -3,4 +3,5 @@ interface Ability {
   label: string;
   abilityName?: string;
   href: string | null;
+  isRelated?: boolean;
 }

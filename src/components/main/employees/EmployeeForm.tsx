@@ -1,9 +1,9 @@
 "use client";
+
 import { createEmployee, updateEmployee } from "@/actions/employee/actions";
-import Loading from "@/app/(query)/loading";
-import Spinner from "@/components/shared/Spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DialogClose } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -21,25 +20,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import useAbilities from "@/hooks/useAbilities";
 import { useEmployee } from "@/hooks/useEmployee";
-import { useManagers } from "@/hooks/useManagers";
-import { useRoles } from "@/hooks/useRoles";
-import { employeeFormSchema, EmployeeFormValues } from "@/schema/employee";
+import { EmployeeFormValues, employeeFormSchema } from "@/schema/employee";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect } from "react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-interface EmployeeFormProps {
+
+function EmployeeForm({
+  employeeId,
+  disabled = false,
+  managers,
+  roles,
+}: {
   employeeId?: number;
   disabled?: boolean;
-}
+  managers: ShortManager[];
+  roles: Role[];
+}) {
+  const {
+    employee,
+    isFetched,
+    isLoading: isEmployeeLoading,
+    isFetching: isEmployeeFetching,
+  } = useEmployee(employeeId);
 
-function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
   const form = useForm<EmployeeFormValues>({
-    disabled,
     resolver: zodResolver(employeeFormSchema),
+    disabled,
     defaultValues: {
       id: null,
       name: "",
@@ -55,133 +66,104 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
     },
   });
 
-  const {
-    employee,
-    isLoading: isLoadingEmployee,
-    error: employeeError,
-  } = useEmployee(employeeId!);
-  const { data: managers, isLoading: isLoadingManagers } = useManagers();
-  const { roles, isLoading: isLoadingRoles, error: rolesError } = useRoles();
+  const selectedRoleId = form.watch("roleId");
+  const selectedRole = roles.find(
+    (role) => role.id.toString() === selectedRoleId,
+  );
 
-  const currentRole = form.watch("roleId");
-  const role = roles?.find((r) => r.id.toString() === currentRole);
-  const { abilities, isLoading: isLoadingAbilities } = useAbilities(role);
+  const { abilities, isLoading: isAbilitiesLoading } =
+    useAbilities(selectedRole);
   useEffect(() => {
-    if (employee.id) {
+    if (isFetched && employee) {
       form.reset({
-        ...employee,
-        abilityIds: employee.abilityDTOs?.map((a) => a.id) || [],
+        id: employee.id,
+        name: employee.name,
+        email: employee.email,
+        phone: employee.phone,
+        roleId: employee.roleId,
+        userName: employee.userName,
+        password: "",
+        managerId: employee.managerId,
+        suspended: employee.suspended,
+        abilityIds: employee.abilityDTOs.map((ability) => ability.id),
+        hasViewCashBoxAbility: false,
       });
     }
-  }, [employee, form, managers, roles]);
-
-  const handleSubmit = useCallback(
-    (data: EmployeeFormValues) => {
-      if (disabled) return;
-      const id = toast.loading("جاري الحفظ...");
-      if (employee?.id) {
-        console.log(data);
-
-        updateEmployee(data)
-          .then((res) => {
-            if (res.success) toast.success("تم تحديث الموظف بنجاح", { id });
-            else toast.error(res.message, { id });
-          })
-          .catch(() => {
-            toast.error("حدث خطأ أثناء تحديث الموظف", { id });
-          });
+  }, [isFetched, employee]);
+  useEffect(() => {
+    if (abilities && !isAbilitiesLoading) {
+      if (employee && selectedRole?.id.toString() === employee.roleId) {
+        form.setValue(
+          "abilityIds",
+          employee.abilityDTOs.map((ability) => ability.id),
+        );
       } else {
-        createEmployee(data).then((res) => {
+        form.setValue(
+          "abilityIds",
+          abilities
+            .filter((ability) => ability.isRelated)
+            .map((ability) => ability.id),
+        );
+      }
+    }
+  }, [selectedRole, form]);
+  console.log(form.getValues("abilityIds"));
+
+  const onSubmit = useCallback(
+    async (data: EmployeeFormValues) => {
+      const id = toast.loading("جاري الحفظ...");
+      try {
+        if (employeeId) {
+          const res = await updateEmployee(data);
+          if (res.success) {
+            toast.success("تم تعديل الموظف بنجاح", { id });
+          } else {
+            toast.error(res.message || "حدث خطأ أثناء تعديل الموظف", { id });
+          }
+        } else {
+          const res = await createEmployee(data);
           if (res.success) {
             toast.success("تم إضافة الموظف بنجاح", { id });
+            form.reset();
           } else {
-            toast.error(res.message, { id });
+            toast.error(res.message || "حدث خطأ أثناء إضافة الموظف", { id });
           }
-        });
-      }
-    },
-    [disabled, employee],
-  );
-
-  const handleAbilityChange = useCallback(
-    (
-      abilityId: number,
-      checked: boolean,
-      field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
-    ) => {
-      const currentAbilities = form.getValues("abilityIds") || [];
-      if (checked) {
-        const abilityToAdd = abilities?.find((a) => a.id === abilityId);
-        if (abilityToAdd) {
-          field.onChange([...currentAbilities, abilityToAdd.id]);
         }
-      } else {
-        field.onChange(currentAbilities.filter((a) => a !== abilityId));
+      } catch {
+        toast.error("حدث خطأ غير متوقع", { id });
       }
     },
-    [abilities, form],
-  );
-  const onSelectRole = useCallback(
-    function (value: string) {
-      form.setValue("roleId", value);
-      form.setValue("abilityIds", []);
-      form.setValue("managerId", null);
-    },
-    [form],
-  );
-  const handleSelectAllAbilities = useCallback(
-    (
-      checked: boolean,
-      field: ControllerRenderProps<EmployeeFormValues, "abilityIds">,
-    ) => {
-      if (checked) {
-        const allAbilityIds = abilities.map((ability) => ability.id);
-        field.onChange(allAbilityIds);
-      } else {
-        field.onChange([]);
-      }
-    },
-    [abilities],
+    [employeeId, form],
   );
 
-  if (isLoadingEmployee || isLoadingRoles) {
-    return <Loading />;
+  const isInitialLoading =
+    employeeId && (isEmployeeLoading || isEmployeeFetching);
+
+  if (isInitialLoading) {
+    return <EmployeeFormSkeleton />;
   }
-  if (employeeError || rolesError) {
-    throw new Error(employeeError?.message || rolesError?.message);
-  }
-  const isLoading =
-    form.formState.isLoading ||
-    form.formState.isSubmitting ||
-    isLoadingAbilities;
-  const submitButtonText = employee?.id ? "تحديث الموظف" : "إضافة موظف";
+
   return (
-    <>
+    <div dir="rtl">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="max-h-[80vh] space-y-6 overflow-y-auto pb-4"
-          dir="rtl"
-        >
-          {/* Personal Information Grid */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* الاسم الكامل */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="name">الاسم الكامل</FormLabel>
+                  <FormLabel>الاسم الكامل</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل الاسم الكامل"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
+                    <Input placeholder="الاسم الكامل" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* البريد الإلكتروني */}
             <FormField
               control={form.control}
               name="email"
@@ -191,15 +173,16 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="أدخل البريد الإلكتروني"
+                      placeholder="البريد الإلكتروني"
                       {...field}
-                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* رقم الهاتف */}
             <FormField
               control={form.control}
               name="phone"
@@ -207,67 +190,93 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
                 <FormItem>
                   <FormLabel>رقم الهاتف</FormLabel>
                   <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="أدخل رقم الهاتف"
+                    <Input placeholder="رقم الهاتف" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* الوظيفة */}
+            <FormField
+              name="roleId"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>الوظيفة</FormLabel>
+                  <FormControl>
+                    <Select
                       {...field}
-                      value={field.value ?? ""}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className="w-full" dir="rtl">
+                        <SelectValue placeholder="اختر الوظيفة" {...field} />
+                      </SelectTrigger>
+                      <SelectContent dir="rtl">
+                        {roles.map((role) => (
+                          <SelectItem key={role.id} value={role.id.toString()}>
+                            {role.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* اسم المستخدم */}
+            <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>اسم المستخدم</FormLabel>
+                  <FormControl>
+                    <Input placeholder="اسم المستخدم" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* كلمة المرور */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>كلمة المرور</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={"text"}
+                      placeholder={"كلمة المرور"}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="roleId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>الوظيفة</FormLabel>
-                  <Select
-                    {...field}
-                    disabled={isLoadingRoles || field.disabled}
-                    onValueChange={onSelectRole}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={"اختار الوظيفه"} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent dir="rtl">
-                      {roles?.map((role) => (
-                        <SelectItem value={role.id?.toString()} key={role.id}>
-                          {role.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            {/* المدير المباشر */}
             <FormField
               control={form.control}
               name="managerId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="col-span-2">
                   <FormLabel>المدير المباشر</FormLabel>
                   <FormControl>
-                    <Select
-                      {...field}
-                      disabled={isLoadingManagers || field.disabled}
-                      onValueChange={(value) => field.onChange(parseInt(value))}
-                      value={field.value != null ? field.value.toString() : ""}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="اختار المدير المباشر" />
+                    <Select {...field} value={field.value?.toString() || ""}>
+                      <SelectTrigger className="w-full" dir="rtl">
+                        <SelectValue placeholder="اختر المدير المباشر" />
                       </SelectTrigger>
                       <SelectContent dir="rtl">
                         {managers?.map((manager) => (
                           <SelectItem
-                            value={manager.id?.toString()}
                             key={manager.id}
+                            value={manager.id.toString()}
                           >
                             {manager.name}
                           </SelectItem>
@@ -279,182 +288,156 @@ function EmployeeForm({ employeeId, disabled = false }: EmployeeFormProps) {
                 </FormItem>
               )}
             />
+
+            {/* حالة الموظف */}
             <FormField
               control={form.control}
-              name="userName"
+              name="suspended"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>اسم المستخدم</FormLabel>
+                <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                  <FormLabel className="cursor-pointer">موقوف</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل اسم المستخدم"
-                      {...field}
-                      value={field.value ?? ""}
+                    <Switch
+                      disabled={field.disabled}
+                      className="flex-row-reverse"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* عرض الصندوق */}
             <FormField
               control={form.control}
-              name="password"
+              name="hasViewCashBoxAbility"
               render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>كلمة المرور</FormLabel>
+                <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                  <FormLabel className="cursor-pointer">
+                    صلاحية عرض الصندوق
+                  </FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل كلمة المرور"
-                      type="password"
-                      {...field}
-                      value={field.value ?? ""}
+                    <Switch
+                      disabled={field.disabled}
+                      className="flex-row-reverse"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
           </div>
 
-          {/* Status Section */}
-          <FormField
-            control={form.control}
-            name="suspended"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel>حالة الموظف</FormLabel>
-                  <div className="text-muted-foreground text-sm">
-                    {field.value ? "معطل" : "مفعل"}
-                  </div>
-                </div>
-                <FormControl>
-                  <Switch
-                    className="flex-row-reverse"
-                    checked={Boolean(field.value)}
-                    onCheckedChange={field.onChange}
-                    disabled={field.disabled}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="hasViewCashBoxAbility"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel>عرض صندوق النقد</FormLabel>
-                  <div className="text-muted-foreground text-sm">
-                    {field.value ? "مفعل" : "معطل"}
-                  </div>
-                </div>
-                <FormControl>
-                  <Switch
-                    className="flex-row-reverse"
-                    checked={Boolean(field.value)}
-                    onCheckedChange={field.onChange}
-                    disabled={field.disabled}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          {/* Permissions Section */}
+          {/* الصلاحيات */}
           <FormField
             control={form.control}
             name="abilityIds"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
-                <div className="mb-4 flex items-center justify-between">
-                  <FormLabel>الصلاحيات</FormLabel>
-                  {abilities.length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="select-all-abilities"
-                        checked={
-                          field.value?.length === abilities.length &&
-                          abilities.length > 0
-                        }
-                        disabled={field.disabled || isLoadingAbilities}
-                        onCheckedChange={(checked: boolean) =>
-                          handleSelectAllAbilities(checked, field)
-                        }
-                      />
-                      <Label
-                        htmlFor="select-all-abilities"
-                        className="cursor-pointer text-sm font-medium"
-                      >
-                        تحديد الكل
-                      </Label>
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-6">
-                  {abilities.map((permission) => (
-                    <div
-                      key={permission.id}
-                      className="flex flex-wrap items-center"
-                    >
-                      <Checkbox
-                        checked={Boolean(
-                          field.value?.some(
-                            (ability: number) => ability === permission.id,
-                          ),
+                <FormLabel>الصلاحيات</FormLabel>
+                <div className="grid grid-cols-2 gap-3 rounded-lg border p-4 md:grid-cols-3 lg:grid-cols-4">
+                  {isAbilitiesLoading ? (
+                    <p className="text-muted-foreground col-span-full text-sm">
+                      جاري تحميل الصلاحيات...
+                    </p>
+                  ) : !selectedRole?.id ? (
+                    <p className="text-muted-foreground col-span-full text-sm">
+                      اختر الوظيفة أولاً لعرض الصلاحيات
+                    </p>
+                  ) : abilities?.length === 0 ? (
+                    <p className="text-muted-foreground col-span-full text-sm">
+                      لا توجد صلاحيات لهذه الوظيفة
+                    </p>
+                  ) : (
+                    abilities?.map((ability) => (
+                      <FormField
+                        key={ability.id}
+                        control={form.control}
+                        name="abilityIds"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center gap-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(ability.id)}
+                                onCheckedChange={(checked: boolean) => {
+                                  const newValue = checked
+                                    ? [...(field.value || []), ability.id]
+                                    : field.value?.filter(
+                                        (id) => id !== ability.id,
+                                      );
+                                  field.onChange(newValue);
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="!mt-0 cursor-pointer text-sm font-normal">
+                              {ability.label || ability.abilityName}
+                            </FormLabel>
+                          </FormItem>
                         )}
-                        id={permission.id.toString()}
-                        disabled={field.disabled}
-                        value={permission.id.toString()}
-                        onCheckedChange={(checked) =>
-                          handleAbilityChange(
-                            permission.id,
-                            checked as boolean,
-                            field,
-                          )
-                        }
                       />
-                      <Label
-                        htmlFor={permission.id.toString()}
-                        className="mr-2"
-                      >
-                        {permission.abilityName}
-                      </Label>
-                    </div>
-                  ))}
-                  {!role && (
-                    <p className="text-sm text-gray-500">
-                      يرجى اختيار الوظيفه لعرض الصلاحيات المتاحة.
-                    </p>
-                  )}
-                  {abilities.length == 0 && role && !isLoadingAbilities && (
-                    <p className="text-sm text-gray-500">
-                      لا توجد صلاحيات متاحة لهذه الوظيفه.
-                    </p>
-                  )}
-                  {isLoadingAbilities && (
-                    <div className="flex w-full items-center justify-center p-2">
-                      <Spinner />
-                    </div>
+                    ))
                   )}
                 </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {/* Action Buttons */}
+
           {!disabled && (
-            <>
-              <Button type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? "جاري الحفظ..." : submitButtonText}
+            <div className="flex justify-end gap-3">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  إلغاء
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting
+                  ? "جاري الحفظ..."
+                  : employeeId
+                    ? "تعديل"
+                    : "إضافة"}
               </Button>
-            </>
+            </div>
           )}
         </form>
       </Form>
-    </>
+    </div>
   );
 }
 
 export default EmployeeForm;
+
+function EmployeeFormSkeleton() {
+  return (
+    <div dir="rtl" className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* Field skeletons */}
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+        ))}
+      </div>
+      {/* Abilities skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-20" />
+        <div className="grid grid-cols-2 gap-3 rounded-lg border p-4 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Buttons skeleton */}
+      <div className="flex justify-end gap-3">
+        <Skeleton className="h-9 w-16" />
+        <Skeleton className="h-9 w-16" />
+      </div>
+    </div>
+  );
+}

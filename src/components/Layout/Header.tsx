@@ -36,7 +36,6 @@ async function Header() {
     user?.abilities?.filter((ability) => ability.href).map((a) => a.href) || [],
   );
 
-  // Filter navlinks based on user abilities
   const filterNavLinks = (links: NavLink[]): NavLink[] => {
     return links
       .map((link) => {
@@ -59,7 +58,6 @@ async function Header() {
   };
 
   const navlinks = filterNavLinks(NAVBARLINKS);
-  console.log(navlinks);
 
   return (
     <header className="flex h-16 items-center border-b">
