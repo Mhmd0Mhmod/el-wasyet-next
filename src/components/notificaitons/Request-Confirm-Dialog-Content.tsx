@@ -127,11 +127,9 @@ function ApprovalPartialForm({
           id="remainingValue"
           value={remainingValue}
           onChange={(e) => setRemainingValue(e.target.value)}
-          type="number"
-          step="any"
+          type="text"
           placeholder="أدخل القيمة المتبقية"
           className="rounded border p-2"
-          min="0"
           autoFocus
         />
       </div>

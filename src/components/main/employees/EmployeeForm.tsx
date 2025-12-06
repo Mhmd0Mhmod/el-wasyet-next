@@ -30,66 +30,72 @@ import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+type EmployeFormProps = {
+  employeeId?: number;
+  disabled?: boolean;
+  managers: ShortManager[];
+  roles: Role[];
+};
+
 function EmployeeForm({
   employeeId,
   disabled = false,
   managers,
   roles,
-}: {
-  employeeId?: number;
-  disabled?: boolean;
-  managers: ShortManager[];
-  roles: Role[];
-}) {
-  const {
-    employee,
-    isFetched,
-    isLoading: isEmployeeLoading,
-    isFetching: isEmployeeFetching,
-  } = useEmployee(employeeId);
+}: EmployeFormProps) {
+  const { employee, isLoading, isFetching } = useEmployee(employeeId!);
+  const isEditMode = !!employeeId;
 
+  if (isLoading || isFetching) {
+    return <EmployeeFormSkeleton />;
+  }
+  return (
+    <EmployeeFormContent
+      employee={employee}
+      isEditMode={isEditMode}
+      disabled={disabled}
+      managers={managers}
+      roles={roles}
+    />
+  );
+}
+function EmployeeFormContent({
+  employee,
+  disabled = false,
+  managers,
+  roles,
+  isEditMode = !!employee?.id,
+}: EmployeFormProps & { isEditMode?: boolean; employee?: Employee }) {
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeFormSchema),
     disabled,
-    defaultValues: {
-      id: null,
-      name: "",
-      email: "",
-      phone: "",
-      roleId: "",
-      userName: "",
-      password: "",
-      managerId: null,
-      suspended: false,
-      abilityIds: [],
-      hasViewCashBoxAbility: false,
-    },
+    defaultValues: isEditMode
+      ? {
+          ...employee,
+          abilityIds: employee?.abilityDTOs.map((ability) => ability.id) || [],
+        }
+      : {
+          id: null,
+          name: "",
+          email: "",
+          phone: "",
+          roleId: "",
+          userName: "",
+          password: "",
+          managerId: null,
+          suspended: false,
+          abilityIds: [],
+          hasViewCashBoxAbility: false,
+        },
   });
 
   const selectedRoleId = form.watch("roleId");
   const selectedRole = roles.find(
     (role) => role.id.toString() === selectedRoleId,
   );
-
-  const { abilities, isLoading: isAbilitiesLoading } =
+  const { data: abilities, isLoading: isAbilitiesLoading } =
     useAbilities(selectedRole);
-  useEffect(() => {
-    if (isFetched && employee) {
-      form.reset({
-        id: employee.id,
-        name: employee.name,
-        email: employee.email,
-        phone: employee.phone,
-        roleId: employee.roleId,
-        userName: employee.userName,
-        password: "",
-        managerId: employee.managerId,
-        suspended: employee.suspended,
-        abilityIds: employee.abilityDTOs.map((ability) => ability.id),
-        hasViewCashBoxAbility: false,
-      });
-    }
-  }, [isFetched, employee]);
+
   useEffect(() => {
     if (abilities && !isAbilitiesLoading) {
       if (employee && selectedRole?.id.toString() === employee.roleId) {
@@ -106,14 +112,13 @@ function EmployeeForm({
         );
       }
     }
-  }, [selectedRole, form]);
-  console.log(form.getValues("abilityIds"));
+  }, [selectedRole, form, abilities, isAbilitiesLoading, employee]);
 
   const onSubmit = useCallback(
     async (data: EmployeeFormValues) => {
       const id = toast.loading("جاري الحفظ...");
       try {
-        if (employeeId) {
+        if (isEditMode) {
           const res = await updateEmployee(data);
           if (res.success) {
             toast.success("تم تعديل الموظف بنجاح", { id });
@@ -133,15 +138,8 @@ function EmployeeForm({
         toast.error("حدث خطأ غير متوقع", { id });
       }
     },
-    [employeeId, form],
+    [isEditMode, form],
   );
-
-  const isInitialLoading =
-    employeeId && (isEmployeeLoading || isEmployeeFetching);
-
-  if (isInitialLoading) {
-    return <EmployeeFormSkeleton />;
-  }
 
   return (
     <div dir="rtl">
@@ -210,7 +208,7 @@ function EmployeeForm({
                       onValueChange={(value) => field.onChange(value)}
                     >
                       <SelectTrigger className="w-full" dir="rtl">
-                        <SelectValue placeholder="اختر الوظيفة" {...field} />
+                        <SelectValue placeholder="اختر الوظيفة" />
                       </SelectTrigger>
                       <SelectContent dir="rtl">
                         {roles.map((role) => (
@@ -360,6 +358,7 @@ function EmployeeForm({
                           <FormItem className="flex items-center gap-2">
                             <FormControl>
                               <Checkbox
+                                disabled={field.disabled}
                                 checked={field.value?.includes(ability.id)}
                                 onCheckedChange={(checked: boolean) => {
                                   const newValue = checked
@@ -395,7 +394,7 @@ function EmployeeForm({
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting
                   ? "جاري الحفظ..."
-                  : employeeId
+                  : isEditMode
                     ? "تعديل"
                     : "إضافة"}
               </Button>
@@ -409,7 +408,7 @@ function EmployeeForm({
 
 export default EmployeeForm;
 
-function EmployeeFormSkeleton() {
+export function EmployeeFormSkeleton() {
   return (
     <div dir="rtl" className="space-y-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
