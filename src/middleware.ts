@@ -48,9 +48,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(dashboardUrl);
   }
 
-  // Redirect root to branches
+  // Redirect root to first ability page
   if (pathname === "/") {
-    const dashboardUrl = new URL("/branches", request.url);
+    const dashboardUrl = new URL(
+      session?.user.abilities.find((a) => a.href)?.href || "/login",
+      request.url,
+    );
     return NextResponse.redirect(dashboardUrl);
   }
 
