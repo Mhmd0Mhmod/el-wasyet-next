@@ -1,8 +1,10 @@
+import { checkAccess } from "@/actions/auth/actions";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ABILITY_IDS } from "@/constants/abilities";
 import { getCashierSummary } from "@/data/cashbox";
 import { formatCurrency } from "@/lib/helper";
+import { CreditCard, TrendingUp, Wallet } from "lucide-react";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Wallet, CreditCard, TrendingUp } from "lucide-react";
 
 async function Default() {
   return (
@@ -15,6 +17,8 @@ async function Default() {
 }
 
 async function FinancialSummary() {
+  const canView = await checkAccess(ABILITY_IDS.VIEW_CASH_BOX);
+  if (!canView) return null;
   const summary = await getCashierSummary();
   if (!summary) return null;
 

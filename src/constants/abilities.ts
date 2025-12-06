@@ -81,6 +81,8 @@ export const ABILITY_IDS = {
 
   // Transfers
   VIEW_TRANSFERS: 321,
+  // Cash Box
+  VIEW_CASH_BOX: 320,
 } as const;
 
 // Check if user has a specific ability
