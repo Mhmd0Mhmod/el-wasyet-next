@@ -26,6 +26,7 @@ import useAbilities from "@/hooks/useAbilities";
 import { useEmployee } from "@/hooks/useEmployee";
 import { EmployeeFormValues, employeeFormSchema } from "@/schema/employee";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -73,6 +74,7 @@ function EmployeeFormContent({
       ? {
           ...employee,
           abilityIds: employee?.abilityDTOs.map((ability) => ability.id) || [],
+          password: "",
         }
       : {
           id: null,
@@ -95,6 +97,7 @@ function EmployeeFormContent({
   );
   const { data: abilities, isLoading: isAbilitiesLoading } =
     useAbilities(selectedRole);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (abilities && !isAbilitiesLoading) {
@@ -122,6 +125,9 @@ function EmployeeFormContent({
           const res = await updateEmployee(data);
           if (res.success) {
             toast.success("تم تعديل الموظف بنجاح", { id });
+            queryClient.invalidateQueries({
+              queryKey: ["employee", data.id],
+            });
           } else {
             toast.error(res.message || "حدث خطأ أثناء تعديل الموظف", { id });
           }
@@ -138,7 +144,7 @@ function EmployeeFormContent({
         toast.error("حدث خطأ غير متوقع", { id });
       }
     },
-    [isEditMode, form],
+    [isEditMode, form, queryClient],
   );
 
   return (
@@ -250,6 +256,7 @@ function EmployeeFormContent({
                     <Input
                       type={"text"}
                       placeholder={"كلمة المرور"}
+                      autoComplete="off"
                       {...field}
                     />
                   </FormControl>
