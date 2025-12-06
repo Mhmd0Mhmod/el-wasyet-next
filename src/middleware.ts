@@ -42,25 +42,28 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  // If user is authenticated and trying to access auth pages, redirect to first accessible page
   if (session && isAuthPage) {
-    const dashboardUrl = new URL("/branches", request.url);
-    return NextResponse.redirect(dashboardUrl);
+    const firstPage =
+      session.user?.abilities?.find((a) => a.href)?.href || "/dashboard";
+    const redirectUrl = new URL(firstPage, request.url);
+    return NextResponse.redirect(redirectUrl);
   }
 
-  // Redirect root to first ability page
   if (pathname === "/") {
-    const dashboardUrl = new URL(
-      session?.user.abilities.find((a) => a.href)?.href || "/login",
-      request.url,
-    );
-    return NextResponse.redirect(dashboardUrl);
+    if (session) {
+      const firstPage =
+        session.user?.abilities?.find((a) => a.href)?.href || "/";
+      const redirectUrl = new URL(firstPage, request.url);
+      return NextResponse.redirect(redirectUrl);
+    } else {
+      const loginUrl = new URL("/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
-  // Check page permissions for authenticated users
   if (session) {
-    const userAbilityIds =
-      session.user?.abilities?.map((a: { id: number }) => a.id) || [];
+    const userAbilityIds = session.user?.abilities?.map((a) => a.id) || [];
 
     // Check if the page requires specific permission
     const requiredAbility = PAGE_PERMISSIONS[pathname];
