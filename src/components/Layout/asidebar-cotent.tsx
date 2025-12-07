@@ -20,8 +20,6 @@ function ASidebarContent({ user }: { user: User }) {
     userAbilityHrefs.has(link.href),
   );
 
-  console.log(user);
-
   return (
     <SidebarMenu className="space-y-1">
       {links.map((link) => {

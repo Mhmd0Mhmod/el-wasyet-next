@@ -33,6 +33,7 @@ async function page({ searchParams }: Props) {
   }
 
   const dashboardData = await getDashboardData(params);
+  const canReport = await checkAccess(ABILITY_IDS.VIEW_TRANSFERS);
 
   return (
     <PageLayout
@@ -50,9 +51,11 @@ async function page({ searchParams }: Props) {
         <OrdersByStatus data={dashboardData.ordersPerStatus} dates={params} />
         <ClientsByStatus data={dashboardData.clientsPerStatus} />
       </div>
-      <div className="flex justify-end">
-        <ReportsButton />
-      </div>
+      {canReport && (
+        <div className="flex justify-end">
+          <ReportsButton />
+        </div>
+      )}
     </PageLayout>
   );
 }

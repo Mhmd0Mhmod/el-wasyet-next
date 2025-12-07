@@ -22,6 +22,7 @@ export async function getStockDataById(id: string): Promise<StockItem | null> {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (!response.ok) {
       throw new Error(
         `Error fetching stock data by ID: ${response.statusText}`,
@@ -30,7 +31,6 @@ export async function getStockDataById(id: string): Promise<StockItem | null> {
     const stockItem: StockItem | null = await response.json();
     return stockItem || null;
   } catch (error) {
-    console.error("Error fetching stock data by ID:", error);
     throw error;
   }
 }

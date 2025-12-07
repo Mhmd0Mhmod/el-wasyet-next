@@ -256,18 +256,20 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
             >
               {isLoading ? "جاري الحفظ..." : "حفظ"}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isLoading}
-              className={cn(
-                "flex-1 rounded-lg py-3",
-                isLoading && "opacity-70",
-              )}
-            >
-              إلغاء
-            </Button>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                disabled={isLoading}
+                className={cn(
+                  "flex-1 rounded-lg py-3",
+                  isLoading && "opacity-70",
+                )}
+              >
+                إلغاء
+              </Button>
+            </DialogClose>
           </div>
         </form>
       </Form>
