@@ -63,6 +63,7 @@ function getFormStatus(isLowStock: boolean, quantity: number) {
 }
 async function page({ params }: PageProps) {
   const { id } = await params;
+  const canView = await checkAccess(ABILITY_IDS.VIEW_CUSTODY);
   const canManage = await checkAccess(ABILITY_IDS.MANAGE_CUSTODY);
   const stockData = await getStockDataById(id);
   if (!stockData) {
@@ -72,7 +73,7 @@ async function page({ params }: PageProps) {
     <PageLayout
       title={stockData.branchName || "المخازن"}
       description="حصر ومتابعة مصروفات المخازن"
-      extra={canManage && <TransferCovenant />}
+      extra={canView && <TransferCovenant />}
     >
       {canManage && (
         <div className="flex justify-end">
