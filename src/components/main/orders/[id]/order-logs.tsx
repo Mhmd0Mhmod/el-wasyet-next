@@ -86,7 +86,7 @@ function OrderLogs({ order }: { order: Order }) {
           <div className="text-muted-foreground p-4">لا توجد سجلات لعرضها.</div>
         ) : (
           <>
-            <div className="relative overflow-x-auto">
+            <div className="relative max-h-[40vh] overflow-auto p-4">
               <Table
                 columns={COLUMNS}
                 renderData={orderLogs?.map((log) => (
