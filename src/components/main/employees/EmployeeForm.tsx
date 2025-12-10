@@ -377,7 +377,7 @@ function EmployeeFormContent({
                                 }}
                               />
                             </FormControl>
-                            <FormLabel className="!mt-0 cursor-pointer text-sm font-normal">
+                            <FormLabel className="mt-0! cursor-pointer text-sm font-normal">
                               {ability.label || ability.abilityName}
                             </FormLabel>
                           </FormItem>

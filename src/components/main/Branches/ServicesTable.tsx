@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 
-import { ServicesTableHeaders } from "@/data/branch-services";
-import { Service } from "@/types/service";
-import { Edit2, Eye } from "lucide-react";
+import Dialog from "@/components/shared/Dialog";
 import Table from "@/components/shared/Table";
 import { TableCell, TableRow } from "@/components/ui/table";
-import Dialog from "@/components/shared/Dialog";
-import ServicesTabs from "./ServicesTabs";
+import { ServicesTableHeaders } from "@/data/branch-services";
 import { formatCurrency } from "@/lib/helper";
+import { Service } from "@/types/service";
+import { Eye } from "lucide-react";
+import ServicesTabs from "./ServicesTabs";
 
 function ServicesTable({ services }: { services: Service[] }) {
   return (
