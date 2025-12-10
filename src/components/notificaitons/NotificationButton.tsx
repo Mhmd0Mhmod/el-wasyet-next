@@ -1,4 +1,5 @@
 "use client";
+import { revalidateNotifications } from "@/actions/notifications/actions";
 import { NotificationsProvider } from "@/components/providers/NotficationsProvider";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -6,8 +7,6 @@ import { Notification } from "@/types/notification";
 import { BellIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import NotificationSheetContent from "./NotificationSheetContent";
-import { revalidateTag } from "next/cache";
-import { revalidateNotifications } from "@/actions/notifications/actions";
 function NotificationButton({
   notifications,
 }: {
