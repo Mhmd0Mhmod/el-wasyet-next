@@ -1,6 +1,6 @@
 "use client";
 import { OrderFormValues } from "@/schema/order";
-import { FileText, Trash2, Upload } from "lucide-react";
+import { FileText, Scroll, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Dialog from "../../shared/Dialog";
@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 function UploadDocumentButton() {
   const form = useFormContext<OrderFormValues>();
@@ -110,7 +111,7 @@ function UploadDocumentButton() {
           {/* Uploaded Files List */}
           <div className="space-y-2">
             <Label>الملفات المرفوعة</Label>
-            <div>
+            <ScrollArea className="max-h-50 overflow-auto rounded-md border p-2">
               <div className="space-y-4">
                 {fields.length > 0 ? (
                   <div className="space-y-3">
@@ -167,7 +168,7 @@ function UploadDocumentButton() {
                   </Card>
                 )}
               </div>
-            </div>
+            </ScrollArea>
           </div>
         </div>
       </Dialog.Content>

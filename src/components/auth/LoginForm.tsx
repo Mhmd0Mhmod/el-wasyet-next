@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import PassowrdInput from "./PassowrdInput";
+import PasswordInput from "./PasswordInput";
 
 function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const form = useForm<LoginFormValues>();
@@ -116,7 +116,7 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <PassowrdInput field={field} />
+                <PasswordInput field={field} />
               </FormControl>
               <FormDescription />
               <FormMessage />
