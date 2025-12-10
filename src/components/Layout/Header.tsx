@@ -21,7 +21,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NAVBARLINKS, NavLink } from "@/lib/helper";
-import { ChevronDownIcon, PanelLeftClose } from "lucide-react";
+import { BellIcon, ChevronDownIcon, PanelLeftClose } from "lucide-react";
 import NotificationButton from "../notificaitons/NotificationButton";
 import { ScrollArea } from "../ui/scroll-area";
 import Logo from "./Logo";
@@ -29,6 +29,8 @@ import LogoutButton from "./logout-button";
 import NavigationItem from "./NavigationItem";
 import UserProfileButton from "./UserProfileButton";
 import UserProfileDetails from "./UserProfileDetails";
+import { getNotifications } from "@/data/notifications";
+import { Suspense } from "react";
 
 async function Header() {
   const user = await getCurrentUser();
@@ -76,7 +78,17 @@ async function Header() {
         </nav>
 
         <div className="flex items-center">
-          <NotificationButton />
+          <Suspense
+            fallback={
+              <Button variant={"ghost"} size={"icon"}>
+                <div className="animate-pulse">
+                  <BellIcon />
+                </div>
+              </Button>
+            }
+          >
+            <NotficationsButtonWrapper />
+          </Suspense>
           <div className="hidden md:block">
             <UserProfileButton />
           </div>
@@ -89,6 +101,10 @@ async function Header() {
   );
 }
 export default Header;
+async function NotficationsButtonWrapper() {
+  const notifications = await getNotifications();
+  return <NotificationButton notifications={notifications} />;
+}
 
 function SheetButton({ navlinks }: { navlinks: NavLink[] }) {
   return (

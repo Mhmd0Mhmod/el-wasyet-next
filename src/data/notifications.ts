@@ -13,6 +13,7 @@ export async function getNotifications(): Promise<Notification[]> {
         },
         next: {
           tags: ["notifications"],
+          revalidate: 60,
         },
       },
     );
