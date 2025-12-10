@@ -1,7 +1,6 @@
 interface Employee extends ShortEmployee {
   roleId: string;
   abilityDTOs: Ability[];
-  hasViewCashBoxAbility: boolean;
 }
 interface ShortEmployee {
   id: number;

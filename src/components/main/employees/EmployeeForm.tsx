@@ -87,7 +87,6 @@ function EmployeeFormContent({
           managerId: null,
           suspended: false,
           abilityIds: [],
-          hasViewCashBoxAbility: false,
         },
   });
 
@@ -299,29 +298,8 @@ function EmployeeFormContent({
               control={form.control}
               name="suspended"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                <FormItem className="col-span-2 flex items-center justify-between rounded-lg border p-3">
                   <FormLabel className="cursor-pointer">موقوف</FormLabel>
-                  <FormControl>
-                    <Switch
-                      disabled={field.disabled}
-                      className="flex-row-reverse"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {/* عرض الصندوق */}
-            <FormField
-              control={form.control}
-              name="hasViewCashBoxAbility"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel className="cursor-pointer">
-                    صلاحية عرض الصندوق
-                  </FormLabel>
                   <FormControl>
                     <Switch
                       disabled={field.disabled}
