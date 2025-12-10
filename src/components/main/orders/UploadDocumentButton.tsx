@@ -1,6 +1,6 @@
 "use client";
 import { OrderFormValues } from "@/schema/order";
-import { FileText, Scroll, Trash2, Upload } from "lucide-react";
+import { FileText, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Dialog from "../../shared/Dialog";

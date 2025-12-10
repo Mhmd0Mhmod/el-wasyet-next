@@ -24,8 +24,8 @@ const PAGE_PERMISSIONS: Record<string, number> = {
   "/in-progress": ABILITY_IDS.VIEW_IN_PROGRESS,
   "/completed-orders": ABILITY_IDS.VIEW_COMPLETED_ORDERS,
   "/order-receipt": ABILITY_IDS.VIEW_ORDER_RECEIPT,
-  "/fulfillment": ABILITY_IDS.VIEW_CLIENT_FULFILLMENT,
-  "/client-fulfillment": ABILITY_IDS.VIEW_FULFILLMENT,
+  "/fulfillment": ABILITY_IDS.VIEW_FULFILLMENT,
+  "/client-fulfillment": ABILITY_IDS.VIEW_CLIENT_FULFILLMENT,
   "/certificate-fulfillment": ABILITY_IDS.VIEW_CERTIFICATE_FULFILLMENT,
   "/dashboard": ABILITY_IDS.VIEW_DASHBOARD,
   "/commissions": ABILITY_IDS.VIEW_COMMISSIONS,
@@ -67,7 +67,6 @@ export async function middleware(request: NextRequest) {
 
     // Check if the page requires specific permission
     const requiredAbility = PAGE_PERMISSIONS[pathname];
-
     if (requiredAbility && !can(userAbilityIds, requiredAbility)) {
       const unauthorizedUrl = new URL("/unauthorized", request.url);
       return NextResponse.redirect(unauthorizedUrl);
