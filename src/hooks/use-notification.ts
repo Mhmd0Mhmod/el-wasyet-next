@@ -8,6 +8,7 @@ function useNotification() {
   const query = useQuery({
     queryKey: ["notifications"],
     queryFn: getNotifications,
+    refetchInterval: 60000,
     initialData: [],
   });
   const mutation = useMutation({

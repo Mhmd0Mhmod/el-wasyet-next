@@ -65,14 +65,6 @@ export function NotificationsProvider({
     query: { data: notifications = [], isFetching, isLoading, refetch },
     mutation: { mutateAsync: markAllAsRead },
   } = useNotificationQuery();
-
-  // Refetch notifications when dialog opens
-  useEffect(() => {
-    if (open) {
-      refetch();
-    }
-  }, [open, refetch]);
-
   const [, startTransition] = useTransition();
   const [optimisticNotifications, setOptimisticNotifications] = useOptimistic(
     notifications,
@@ -157,6 +149,7 @@ export function NotificationsProvider({
     },
     [],
   );
+
   return (
     <NotificationContext.Provider
       value={{

@@ -14,7 +14,7 @@ function layout({
         <div className="sticky top-4 z-10 mr-auto w-fit p-2">
           {financialSummary}
         </div>
-        <div className="container mx-auto mb-10 max-w-full flex-grow px-4 sm:px-6 lg:max-w-[90%] xl:max-w-10/12">
+        <div className="container mx-auto mb-10 max-w-full grow px-4 sm:px-6 lg:max-w-[90%] xl:max-w-10/12">
           {children}
         </div>
       </div>

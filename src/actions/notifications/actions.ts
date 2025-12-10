@@ -136,3 +136,7 @@ export async function rejectRequestStockNotification({
     return handleErrorResponse(error);
   }
 }
+
+export const revalidateNotifications = async () => {
+  revalidateTag("notifications");
+};
