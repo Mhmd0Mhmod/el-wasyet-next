@@ -28,7 +28,11 @@ function ServiceTypeSelector() {
   }
   function onValueChange(value: string) {
     const serviceId = parseInt(value, 10);
+    const ClientId = form.getValues("ClientId");
+    form.getValues("AgentId");
+    form.reset();
     form.setValue("ServiceId", serviceId);
+    form.setValue("ClientId", ClientId);
   }
 
   return (

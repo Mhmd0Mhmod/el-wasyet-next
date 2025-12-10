@@ -5,7 +5,6 @@ const authFetch = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // 30 second timeout
 });
 
 authFetch.interceptors.request.use(async (config) => {
@@ -21,6 +20,5 @@ const fetch = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // 30 second timeout
 });
 export { authFetch, fetch };
