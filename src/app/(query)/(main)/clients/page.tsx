@@ -69,7 +69,7 @@ async function ClientsTableData({
                     <Dialog.Trigger>
                       <Edit2 size={16} />
                     </Dialog.Trigger>
-                    <Dialog.Content title="تفاصيل العميل">
+                    <Dialog.Content title="تعديل العميل" className="min-w-fit">
                       <ClientForm clientId={client.id} />
                     </Dialog.Content>
                   </Dialog>

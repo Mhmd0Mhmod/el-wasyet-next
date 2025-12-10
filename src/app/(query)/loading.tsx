@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function Loading() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto max-h-full max-w-full px-4 py-8">
       {/* Header Section */}
       <div className="mb-8">
         <Skeleton className="mb-2 h-8 w-[250px]" />
@@ -38,7 +38,7 @@ export default function Loading() {
                 <Skeleton className="h-4 w-[100px]" />
                 <Skeleton className="h-4 w-[150px]" />
                 <Skeleton className="h-4 w-[120px]" />
-                <Skeleton className="h-4 w-[80px]" />
+                <Skeleton className="h-4 w-20" />
               </div>
             ))}
           </div>

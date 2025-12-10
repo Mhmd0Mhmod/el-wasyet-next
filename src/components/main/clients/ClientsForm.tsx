@@ -84,13 +84,12 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
     [client, onFormSubmit, form],
   );
   if (isLoadingClient) {
-    return <Loading />;
+    return (
+      <div className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-4 shadow-sm sm:p-6">
+        <Loading />
+      </div>
+    );
   }
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    form.handleSubmit(handleSubmit)();
-  };
 
   const handleCancel = () => {
     form.reset();
@@ -105,10 +104,17 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
     const updatedClients = childClients.filter((_, i) => i !== index);
     form.setValue("childClients", updatedClients);
   };
+  const onRemoveUpdatedChildClient = (index: number) => {
+    const updatedChildClients = form.getValues("updateClientChildDTOs") || [];
+    const updatedClients = updatedChildClients.filter((_, i) => i !== index);
+    form.setValue("updateClientChildDTOs", updatedClients);
+  };
 
-  const childClients = [...(form.watch("updateClientChildDTOs") || [])].concat(
-    ...(form.watch("childClients") || []),
-  );
+  const childClients = form.watch("childClients") || [];
+  const updatedChildClients = form.watch("updateClientChildDTOs") || [];
+
+  console.log(form.getValues());
+
   const isLoading = form.formState.isSubmitting;
 
   return (
@@ -117,7 +123,7 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
       className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-4 shadow-sm sm:p-6"
     >
       <Form {...form}>
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* Main Customer Information */}
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -223,27 +229,36 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
               <DialogClose className="hidden" ref={dialogCloseRef} />
             </Dialog.Content>
           </Dialog>
-          {childClients.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-                  <User className="text-primary h-5 w-5" />
-                  العملاء الفرعيين ({childClients.length})
-                </h3>
-              </div>
-              <div className="grid gap-4">
-                {childClients.map((client, index) => (
-                  <BranchClientCard
-                    key={index}
-                    client={client}
-                    index={index}
-                    onRemove={onRemoveChildClient}
-                    isLoading={isLoading}
-                  />
-                ))}
-              </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
+                <User className="text-primary h-5 w-5" />
+                العملاء الفرعيين (
+                {childClients.length + updatedChildClients.length})
+              </h3>
             </div>
-          )}
+            <div className="grid gap-4">
+              {updatedChildClients.map((client, index) => (
+                <BranchClientCard
+                  key={index}
+                  client={client}
+                  index={index}
+                  onRemove={onRemoveUpdatedChildClient}
+                  isLoading={isLoading}
+                />
+              ))}
+              {childClients.map((client, index) => (
+                <BranchClientCard
+                  key={index}
+                  client={client}
+                  index={index}
+                  onRemove={onRemoveChildClient}
+                  isLoading={isLoading}
+                />
+              ))}
+            </div>
+          </div>
 
           <div className="flex gap-4 pt-6">
             <Button
