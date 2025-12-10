@@ -82,11 +82,10 @@ export const formatCount = (value: number): string =>
   Intl.NumberFormat("ar-EG").format(value);
 
 export const formatCurrency = (value: number): string => {
-  if (!value) return "0.00 ج.م";
   return Intl.NumberFormat("ar-EG", {
     style: "currency",
     currency: "EGP",
-  }).format(value);
+  }).format(value || 0);
 };
 
 export const formatDate = (

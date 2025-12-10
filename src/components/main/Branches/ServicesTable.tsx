@@ -7,6 +7,7 @@ import Table from "@/components/shared/Table";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Dialog from "@/components/shared/Dialog";
 import ServicesTabs from "./ServicesTabs";
+import { formatCurrency } from "@/lib/helper";
 
 function ServicesTable({ services }: { services: Service[] }) {
   return (
@@ -28,10 +29,9 @@ function ServicesTable({ services }: { services: Service[] }) {
             خطوات ({service.workflows.length})
           </TableCell>
           <TableCell>
-            {Intl.NumberFormat("ar-EG", {
-              style: "currency",
-              currency: "EGP",
-            }).format(service.bankFees)}
+            {formatCurrency(
+              service.overheads.reduce((acc, curr) => acc + curr.value, 0),
+            )}
           </TableCell>
           <TableCell>
             <div className="flex items-center gap-2">
@@ -41,13 +41,10 @@ function ServicesTable({ services }: { services: Service[] }) {
                     <Eye className="h-4 w-4" />
                   </Button>
                 </Dialog.Trigger>
-                <Dialog.Content title="تفاصيل الخدمة">
+                <Dialog.Content title="تفاصيل الخدمة" className="min-w-fit">
                   <ServicesTabs services={service} />
                 </Dialog.Content>
               </Dialog>
-              <Button variant="ghost" size="sm" aria-label="تعديل">
-                <Edit2 className="h-4 w-4" />
-              </Button>
             </div>
           </TableCell>
         </TableRow>
