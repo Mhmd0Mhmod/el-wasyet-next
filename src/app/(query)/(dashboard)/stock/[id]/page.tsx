@@ -63,8 +63,8 @@ function getFormStatus(isLowStock: boolean, quantity: number) {
 }
 async function page({ params }: PageProps) {
   const { id } = await params;
-  const canView = await checkAccess(ABILITY_IDS.VIEW_CUSTODY);
-  const canManage = await checkAccess(ABILITY_IDS.MANAGE_CUSTODY);
+  const canViewStock = await checkAccess(ABILITY_IDS.VIEW_CUSTODY);
+  const canAddANDEDIT = await checkAccess(ABILITY_IDS.MANAGE_CUSTODY);
   const stockData = await getStockDataById(id);
   if (!stockData) {
     notFound();
@@ -73,9 +73,9 @@ async function page({ params }: PageProps) {
     <PageLayout
       title={stockData.branchName || "المخازن"}
       description="حصر ومتابعة مصروفات المخازن"
-      extra={canView && <TransferCovenant />}
+      extra={canViewStock && <TransferCovenant />}
     >
-      {canManage && (
+      {canAddANDEDIT && (
         <div className="flex justify-end">
           <Dialog>
             <Dialog.Trigger>
@@ -100,43 +100,45 @@ async function page({ params }: PageProps) {
           </Alert>
         </div>
       )}
-      <Table
-        columns={COLUMNS}
-        renderData={stockData.forms.map((form, index) => (
-          <TableRow key={`${form.formId}-${index}`}>
-            <TableCell>{form.formId}</TableCell>
-            <TableCell>{form.formName}</TableCell>
-            <TableCell>{form.quantity}</TableCell>
-            <TableCell>
-              {getFormStatus(form.isLowStock, form.quantity)}
-            </TableCell>
-            <TableCell>
-              {canManage && (
-                <Dialog>
-                  <Dialog.Trigger>
-                    <Button variant="ghost" size="icon">
-                      <Edit3 size={16} />
-                    </Button>
-                  </Dialog.Trigger>
-                  <Dialog.Content title="تعديل بيانات الاستماره">
-                    <NewForm
-                      form={{
-                        formTypeId: form.formId,
-                        branchId: stockData.branchId,
-                        stockId: form.stockId,
-                        threshold: form.minimumThreshold,
-                        quantity: form.quantity,
-                        price: form.price,
-                        minimumThreshold: form.minimumThreshold,
-                      }}
-                    />
-                  </Dialog.Content>
-                </Dialog>
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      />
+      {canViewStock && (
+        <Table
+          columns={COLUMNS}
+          renderData={stockData.forms.map((form, index) => (
+            <TableRow key={`${form.formId}-${index}`}>
+              <TableCell>{form.formId}</TableCell>
+              <TableCell>{form.formName}</TableCell>
+              <TableCell>{form.quantity}</TableCell>
+              <TableCell>
+                {getFormStatus(form.isLowStock, form.quantity)}
+              </TableCell>
+              <TableCell>
+                {canAddANDEDIT && (
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant="ghost" size="icon">
+                        <Edit3 size={16} />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content title="تعديل بيانات الاستماره">
+                      <NewForm
+                        form={{
+                          formTypeId: form.formId,
+                          branchId: stockData.branchId,
+                          stockId: form.stockId,
+                          threshold: form.minimumThreshold,
+                          quantity: form.quantity,
+                          price: form.price,
+                          minimumThreshold: form.minimumThreshold,
+                        }}
+                      />
+                    </Dialog.Content>
+                  </Dialog>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        />
+      )}
     </PageLayout>
   );
 }
