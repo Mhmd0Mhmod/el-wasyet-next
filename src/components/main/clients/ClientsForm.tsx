@@ -113,8 +113,11 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
   const childClients = form.watch("childClients") || [];
   const updatedChildClients = form.watch("updateClientChildDTOs") || [];
 
-  console.log(form.getValues());
-
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    form.handleSubmit(handleSubmit)();
+  };
   const isLoading = form.formState.isSubmitting;
 
   return (
@@ -123,7 +126,7 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
       className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-4 shadow-sm sm:p-6"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-6">
           {/* Main Customer Information */}
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

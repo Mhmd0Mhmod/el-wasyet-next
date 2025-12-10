@@ -38,7 +38,11 @@ function AddBranchClient({
                 <FormItem>
                   <FormLabel className="text-right">الاسم الداخلي</FormLabel>
                   <FormControl>
-                    <Input {...field} className="text-right" />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      className="text-right"
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -56,7 +60,7 @@ function AddBranchClient({
                       {...field}
                       type="email"
                       className="text-right"
-                      value={field.value?.toString()}
+                      value={field.value || ""}
                     />
                   </FormControl>
                 </FormItem>
@@ -76,7 +80,7 @@ function AddBranchClient({
                       {...field}
                       type="tel"
                       className="text-right"
-                      value={field.value?.toString()}
+                      value={field.value || ""}
                     />
                   </FormControl>
                 </FormItem>
@@ -93,7 +97,7 @@ function AddBranchClient({
                       {...field}
                       type="tel"
                       className="text-right"
-                      value={field.value?.toString()}
+                      value={field.value || ""}
                     />
                   </FormControl>
                 </FormItem>
@@ -111,7 +115,7 @@ function AddBranchClient({
                   <Input
                     {...field}
                     className="text-right"
-                    value={field.value?.toString()}
+                    value={field.value || ""}
                   />
                 </FormControl>
               </FormItem>

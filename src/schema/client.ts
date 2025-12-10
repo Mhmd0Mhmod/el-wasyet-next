@@ -1,12 +1,15 @@
 import z from "zod";
 
 const branchClientSchema = z.object({
-  id: z.number().optional(),
-  name: z.string().optional(),
-  email: z.string().nullable().optional().or(z.literal("")),
-  phone1: z.string().nullable().optional(),
-  phone2: z.string().nullable().optional(),
-  address: z.string().nullable().optional(),
+  id: z.number().optional().nullable(),
+  name: z
+    .string()
+    .min(2, { message: "الاسم الكامل يجب أن يحتوي على حرفين على الأقل" })
+    .max(100, { message: "الاسم الكامل يجب ألا يزيد عن 100 حرف" }),
+  email: z.string().nullable().optional().or(z.literal("")).nullable(),
+  phone1: z.string().nullable().optional().nullable(),
+  phone2: z.string().nullable().optional().nullable(),
+  address: z.string().nullable().optional().nullable(),
 });
 const clientFormSchema = z.object({
   id: z.number().nullable().optional(),
