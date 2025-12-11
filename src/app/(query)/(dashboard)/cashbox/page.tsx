@@ -35,27 +35,31 @@ async function page() {
 
   const cashboxData = await getCashboxData();
   const user = await getCurrentUser();
-  // const isAccountant = user.roles;
+  const isAccountant =
+    user?.roleName === "Accounting Manager - مدير حسابات" ||
+    user?.roleName === "Accounting Assistant - مساعد محاسب";
   return (
     <PageLayout title="الخزنه" description="تحليل وإدارة عمليات الخزنة">
       <FinincialReports data={cashboxData} />
       <TransactionsTable data={cashboxData} />
       <div className="flex justify-end">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button className="w-full sm:w-auto">طلب تحويل للحسابات</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader className="sm:text-right">
-              <AlertDialogTitle>
-                هل أنت متأكد من تنفيذ طلب التحويل؟
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AccountTransactionActions />
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {isAccountant && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="w-full sm:w-auto">طلب تحويل للحسابات</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader className="sm:text-right">
+                <AlertDialogTitle>
+                  هل أنت متأكد من تنفيذ طلب التحويل؟
+                </AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AccountTransactionActions />
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
     </PageLayout>
   );

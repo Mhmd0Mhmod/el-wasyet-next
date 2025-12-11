@@ -22,6 +22,7 @@ declare module "next-auth" {
     branchId: number;
     message: string | null;
     abilities: Ability[];
+    roleName: string;
   }
 }
 class CustomError extends CredentialsSignin {
@@ -91,6 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.branchId = user.branchId;
         token.message = user.message;
         token.abilities = user.abilities;
+        token.roleName = user.roleName;
       }
       return token;
     },
@@ -103,6 +105,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.branchId = token.branchId as number;
       session.user.message = token.message as string | null;
       session.user.abilities = token.abilities as Ability[];
+      session.user.roleName = token.roleName as string;
       return session;
     },
   },

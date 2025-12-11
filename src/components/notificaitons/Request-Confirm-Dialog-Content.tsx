@@ -66,7 +66,6 @@ function RequestConfirmDialogContent({
   const cantPartial =
     notification.message.includes("رد مصاريف") ||
     notification.message.includes("تحصيل مصاريف");
-  console.log(cantPartial);
 
   return (
     <div className="grid gap-4 pt-4">
