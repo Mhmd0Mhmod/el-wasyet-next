@@ -11,9 +11,10 @@ export async function GET(
     if (!id) {
       return new NextResponse("Bad Request", { status: 400 });
     }
+
     const { data } = await fetch.get<StockItem[]>("/Stock/getall", {
       headers: {
-        Authorization: `Bearer ${request.headers.get("Authorization")}`,
+        Authorization: request.headers.get("Authorization"),
       },
     });
     const stockItem = data.find((item) => item.branchId === Number(id));
