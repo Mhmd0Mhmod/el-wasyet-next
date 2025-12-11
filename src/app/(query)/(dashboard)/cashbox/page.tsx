@@ -17,7 +17,7 @@ import { getCashboxData } from "@/data/cashbox";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { CashboxDetails } from "@/types/cashbox";
 import Link from "next/link";
-import { checkAccess } from "@/actions/auth/actions";
+import { checkAccess, getCurrentUser } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
 
 async function page() {
@@ -34,6 +34,8 @@ async function page() {
   }
 
   const cashboxData = await getCashboxData();
+  const user = await getCurrentUser();
+  // const isAccountant = user.roles;
   return (
     <PageLayout title="الخزنه" description="تحليل وإدارة عمليات الخزنة">
       <FinincialReports data={cashboxData} />

@@ -303,10 +303,6 @@ export function getOrderActions({
   }
   if (path.includes("in-progress")) {
     const response = [OrderAction.COMPLETED, OrderAction.STEFA_SGL];
-    if (canSelectAll) {
-      return response;
-    }
-    response.push(OrderAction.RETURN);
     return response;
   }
   if (path.includes("completed-orders")) {

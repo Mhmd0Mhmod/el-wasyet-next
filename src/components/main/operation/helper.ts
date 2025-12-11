@@ -1,4 +1,4 @@
-import { Clock, AlertCircle, Bell } from "lucide-react";
+import { AlertCircle, Bell, Clock } from "lucide-react";
 export const getRemainingDaysStyle = (dueDate: number) => {
   if (dueDate === 0) {
     return {
@@ -41,7 +41,7 @@ export const translateToArabic = (text: string): string => {
     stefaclient: "استيفاء عميل",
     stefacertificate: "استيفاء شهادة",
     stefacertifacte: "استيفاء شهادة",
-    return: "إرجاع",
+    return: "رد نقديه",
     completed: "مكتمل",
     stefasgl: "استيفاء السجل ",
     contacted: "تم الاتصال",

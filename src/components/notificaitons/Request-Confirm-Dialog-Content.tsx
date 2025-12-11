@@ -63,11 +63,22 @@ function RequestConfirmDialogContent({
     );
   }
 
+  const cantPartial =
+    notification.message.includes("رد مصاريف") ||
+    notification.message.includes("تحصيل مصاريف");
+  console.log(cantPartial);
+
   return (
     <div className="grid gap-4 pt-4">
-      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-        <Button onClick={handleFullAcceptance}>قبول كلي</Button>
-        <Button onClick={() => setDialog("partial")}>قبول جزئي</Button>
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+        <Button className="grow" onClick={handleFullAcceptance}>
+          قبول كلي
+        </Button>
+        {!cantPartial && (
+          <Button className="grow" onClick={() => setDialog("partial")}>
+            قبول جزئي
+          </Button>
+        )}
       </div>
       <Button variant="outline" onClick={() => setDialog("reason")}>
         رفض

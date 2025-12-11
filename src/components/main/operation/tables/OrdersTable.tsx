@@ -1,19 +1,19 @@
 import ClientDetails from "@/components/main/clients/ClientDetails";
+import { OperationsProvider } from "@/components/providers/OperationsProvider";
 import Dialog from "@/components/shared/Dialog";
 import Table from "@/components/shared/Table";
-import { OperationsProvider } from "@/components/providers/OperationsProvider";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/helper";
+import { cn } from "@/lib/utils";
 import { OrderByStatus } from "@/types/order";
 import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
-import Actions from "../actions/Actions";
-import SelectOrderCheckbox from "./SelectOrderCheckbox";
-import SelectAll from "./SelectAll";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { getRemainingDaysStyle } from "../helper";
+import Actions from "../actions/Actions";
 import AddNote from "../actions/add-note";
+import { getRemainingDaysStyle } from "../helper";
+import SelectAll from "./SelectAll";
+import SelectOrderCheckbox from "./SelectOrderCheckbox";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "actions", label: "إدارة ألاجراءات" },
@@ -49,7 +49,7 @@ function OrdersTable({
                   "bg-yellow-200": order.closeAskExpense,
                 })}
               >
-                <TableCell className="!px-2">
+                <TableCell className="px-2!">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
                 <TableCell>

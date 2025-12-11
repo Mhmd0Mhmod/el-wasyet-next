@@ -24,8 +24,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { translateToArabic } from "../helper";
-
+import { translateToArabic } from "@/components/main/operation/helper";
 function Actions({ order }: { order: OrderByStatus }) {
   const pathname = usePathname();
   const { operations, addOperation } = useOperations();
