@@ -36,6 +36,9 @@ export async function updateStockItem(
 ): Promise<APIResponse> {
   try {
     const response = await authFetch.put("/Stock/UpdateFormInStock", data);
+    console.log(data);
+
+    revalidatePath(`/stock/${data.branchId}`);
     revalidatePath("/stock");
     return { success: true, data: response.data };
   } catch (error) {

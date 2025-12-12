@@ -1,17 +1,18 @@
+import { checkAccess } from "@/actions/auth/actions";
+import DialogNewFormWrapper from "@/components/(dashboard)/stock/DialogNewFormWrapper";
 import NewForm from "@/components/(dashboard)/stock/new-form";
 import TransferCovenant from "@/components/(dashboard)/stock/transfer-convenant-button";
+import PageLayout from "@/components/Layout/PageLayout";
 import Dialog from "@/components/shared/Dialog";
 import Table from "@/components/shared/Table";
-import PageLayout from "@/components/Layout/PageLayout";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { ABILITY_IDS } from "@/constants/abilities";
 import { getStockDataById } from "@/data/stock";
 import { cn } from "@/lib/utils";
-import { Bell, CheckCircle, Edit3, Plus, XCircle } from "lucide-react";
+import { Bell, CheckCircle, Plus, XCircle } from "lucide-react";
 import { notFound } from "next/navigation";
-import { checkAccess } from "@/actions/auth/actions";
-import { ABILITY_IDS } from "@/constants/abilities";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,7 @@ async function page({ params }: PageProps) {
   if (!stockData) {
     notFound();
   }
+
   return (
     <PageLayout
       title={stockData.branchName || "المخازن"}
@@ -113,26 +115,10 @@ async function page({ params }: PageProps) {
               </TableCell>
               <TableCell>
                 {canAddANDEDIT && (
-                  <Dialog>
-                    <Dialog.Trigger>
-                      <Button variant="ghost" size="icon">
-                        <Edit3 size={16} />
-                      </Button>
-                    </Dialog.Trigger>
-                    <Dialog.Content title="تعديل بيانات الاستماره">
-                      <NewForm
-                        form={{
-                          formTypeId: form.formId,
-                          branchId: stockData.branchId,
-                          stockId: form.stockId,
-                          threshold: form.minimumThreshold,
-                          quantity: form.quantity,
-                          price: form.price,
-                          minimumThreshold: form.minimumThreshold,
-                        }}
-                      />
-                    </Dialog.Content>
-                  </Dialog>
+                  <DialogNewFormWrapper
+                    form={form}
+                    branchId={stockData.branchId}
+                  />
                 )}
               </TableCell>
             </TableRow>

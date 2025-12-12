@@ -55,7 +55,6 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
           const response = await updateStockItem(data);
           if (response.success) {
             toast.success("تم التحديث بنجاح", { id });
-            form.reset();
           } else {
             toast.error(`حدث خطأ: ${response.message}`, { id });
           }

@@ -1,10 +1,10 @@
 interface StockItem {
   branchId: number;
   branchName: string;
-  forms: StockItemForm[];
+  forms: StockFormItem[];
   withWho: string;
 }
-interface StockItemForm {
+export interface StockFormItem {
   stockId: number;
   formId: number;
   formName: string;

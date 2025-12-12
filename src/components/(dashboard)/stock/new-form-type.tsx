@@ -80,7 +80,9 @@ function NewFormType({ onAdded }: NewFormTypeProps) {
                   type="text"
                   placeholder="اكتب سعر الاستمارة"
                   {...field}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    field.onChange(parseFloat(e.target.value) || 0)
+                  }
                 />
               </FormControl>
               <FormMessage />

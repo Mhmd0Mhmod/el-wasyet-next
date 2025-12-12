@@ -38,12 +38,14 @@ async function page() {
   const isAccountant =
     user?.roleName === "Accounting Manager - مدير حسابات" ||
     user?.roleName === "Accounting Assistant - مساعد محاسب";
+  console.log(isAccountant);
+
   return (
     <PageLayout title="الخزنه" description="تحليل وإدارة عمليات الخزنة">
       <FinincialReports data={cashboxData} />
       <TransactionsTable data={cashboxData} />
       <div className="flex justify-end">
-        {isAccountant && (
+        {!isAccountant && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="w-full sm:w-auto">طلب تحويل للحسابات</Button>
