@@ -36,7 +36,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
       branchId: undefined,
       formTypeId: undefined,
       quantity: 0,
-      threshold: 0,
+      minimumThreshold: 0,
     },
   });
   const { data: stockBranches, isLoading: isLoadingBranches } =
@@ -188,10 +188,12 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
             />
             <FormField
               control={form.control}
-              name="threshold"
+              name="minimumThreshold"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="threshold">الحد الأدنى للتنبيه</FormLabel>
+                  <FormLabel htmlFor="minimumThreshold">
+                    الحد الأدنى للتنبيه
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -202,7 +204,7 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
                       onChange={(value) =>
                         field.onChange(parseFloat(value.target.value))
                       }
-                      id="threshold"
+                      id="minimumThreshold"
                     />
                   </FormControl>
                   <FormMessage />
