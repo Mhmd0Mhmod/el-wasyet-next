@@ -141,8 +141,9 @@ function useCalculateOverheadsTotal(
     ((service?.defaultFees || 0) * (offerPercentage || 0)) / 100;
   const agentCommission =
     ((service?.defaultFees || 0) * (agentPercentage || 0)) / 100;
+  const quantity = form.watch("Quantity") || 1;
 
-  return baseAmount - offerDiscount + agentCommission;
+  return (baseAmount - offerDiscount + agentCommission) * quantity;
 }
 
 export default OrderFromProvider;
