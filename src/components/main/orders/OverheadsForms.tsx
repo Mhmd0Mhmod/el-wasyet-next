@@ -173,6 +173,7 @@ function OverheadsForms() {
               <TableCell>
                 <div className="flex items-center gap-4 ps-2">
                   <Checkbox
+                    defaultChecked={checked}
                     onCheckedChange={() =>
                       onOverheadChange(overhead.id, !checked)
                     }

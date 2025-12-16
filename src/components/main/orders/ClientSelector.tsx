@@ -29,7 +29,7 @@ function ClientSelector({
   placeholder = "اختر عميل...",
   className,
 }: ClientSelectorProps = {}) {
-  const { form } = useOrderForm();
+  const { form, isEditMode } = useOrderForm();
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { clients, isLoadingClients, refetchClients } = useClients(searchTerm);
@@ -49,6 +49,7 @@ function ClientSelector({
       <FormField
         control={form.control}
         name="ClientId"
+        disabled={isEditMode}
         render={({ field }) => {
           const selectedClient = clients.find(
             (client) => client.id === field.value,
@@ -63,6 +64,7 @@ function ClientSelector({
                       role="combobox"
                       aria-expanded={open}
                       className="w-full justify-between"
+                      disabled={isEditMode}
                     >
                       <span className="truncate">
                         {selectedClient ? selectedClient.name : placeholder}
@@ -147,7 +149,10 @@ function ClientSelector({
           );
         }}
       />
-      <Input value={selectedClient?.name || ""} disabled />
+      <Input
+        value={isEditMode ? "لا يمكن تغيير العميل" : selectedClient?.name}
+        disabled
+      />
     </>
   );
 }

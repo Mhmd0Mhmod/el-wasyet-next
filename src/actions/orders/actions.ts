@@ -50,14 +50,14 @@ export async function updateOrder(
 
 function generateFormData(formData: OrderFormValues): FormData {
   const form = new FormData();
-  form.append("ClientId", formData.ClientId.toString());
+  form.append("ClientId", formData.ClientId?.toString());
   form.append("RequiredChange", formData.RequiredChange);
-  form.append("ServiceId", formData.ServiceId.toString());
-  form.append("Cash", formData.Cash.toString());
-  form.append("Credit", formData.Credit.toString());
-  form.append("Amount", formData.Amount.toString());
-  form.append("ServiceFees", formData.ServiceFees.toString());
-  form.append("IsPending", formData.IsPending.toString());
+  form.append("ServiceId", formData.ServiceId?.toString());
+  form.append("Cash", formData.Cash?.toString());
+  form.append("Credit", formData.Credit?.toString());
+  form.append("Amount", formData.Amount?.toString());
+  form.append("ServiceFees", formData.ServiceFees?.toString());
+  form.append("IsPending", formData.IsPending?.toString());
 
   // Add optional fields
   if (formData.Notes) {
@@ -70,23 +70,23 @@ function generateFormData(formData: OrderFormValues): FormData {
     form.append("BirthDate", formData.BirthDate);
   }
   if (formData.Quantity) {
-    form.append("Quantity", formData.Quantity.toString());
+    form.append("Quantity", formData.Quantity?.toString());
   }
   if (formData.OfferId) {
-    form.append("OfferId", formData.OfferId.toString());
+    form.append("OfferId", formData.OfferId?.toString());
     form.append("ImageUrlForOffer", formData.ImageUrlForOffer as Blob);
   }
   if (formData.AgentId) {
-    form.append("AgentId", formData.AgentId.toString());
+    form.append("AgentId", formData.AgentId?.toString());
   }
 
   // Add arrays
   formData.Documents.forEach((docId, index) => {
-    form.append(`Documents[${index}]`, docId.toString());
+    form.append(`Documents[${index}]`, docId?.toString());
   });
 
-  formData.OverheadIds.forEach((overheadId, index) => {
-    form.append(`OverheadIds[${index}]`, overheadId.toString());
+  formData.OverheadIds?.forEach((overheadId, index) => {
+    form.append(`OverheadIds[${index}]`, overheadId?.toString());
   });
 
   // Add custom documents
@@ -108,47 +108,50 @@ function generateFormData(formData: OrderFormValues): FormData {
         `CustomOverheads[${index}].description`,
         overhead.description,
       );
-      form.append(`CustomOverheads[${index}].value`, overhead.value.toString());
+      form.append(
+        `CustomOverheads[${index}].value`,
+        overhead.value?.toString(),
+      );
       if (overhead.penalty) {
         form.append(
           `CustomOverheads[${index}].penalty`,
-          overhead.penalty.toString(),
+          overhead.penalty?.toString(),
         );
       }
       if (overhead.forms) {
         form.append(
           `CustomOverheads[${index}].forms`,
-          overhead.forms.toString(),
+          overhead.forms?.toString(),
         );
       }
       if (overhead.adminFees) {
         form.append(
           `CustomOverheads[${index}].adminFees`,
-          overhead.adminFees.toString(),
+          overhead.adminFees?.toString(),
         );
       }
       if (overhead.penaltyBankFeePrecentage) {
         form.append(
           `CustomOverheads[${index}].penaltyBankFeePrecentage`,
-          overhead.penaltyBankFeePrecentage.toString(),
+          overhead.penaltyBankFeePrecentage?.toString(),
         );
       }
       if (overhead.penaltyExtraFee) {
         form.append(
           `CustomOverheads[${index}].penaltyExtraFee`,
-          overhead.penaltyExtraFee.toString(),
+          overhead.penaltyExtraFee?.toString(),
         );
       }
       if (overhead.relatedAgent) {
         form.append(
           `CustomOverheads[${index}].relatedAgent`,
-          overhead.relatedAgent.toString(),
+          overhead.relatedAgent?.toString(),
         );
       }
       if (overhead.formTypeID && overhead.formTypeID !== null) {
         form.append(
           `CustomOverheads[${index}].formTypeID`,
-          overhead.formTypeID.toString(),
+          overhead.formTypeID?.toString(),
         );
       }
     });
@@ -159,13 +162,13 @@ function generateFormData(formData: OrderFormValues): FormData {
     formData.CreateFiles.forEach((fileData, index) => {
       form.append(
         `CreateFiles[${index}].FileTypeId`,
-        fileData.FileTypeId.toString(),
+        fileData.FileTypeId?.toString(),
       );
-      form.append(`CreateFiles[${index}].File`, fileData.File);
+      form.append(`CreateFiles[${index}].File`, fileData.File!);
       if (fileData.OrderId) {
         form.append(
           `CreateFiles[${index}].OrderId`,
-          fileData.OrderId.toString(),
+          fileData.OrderId?.toString(),
         );
       }
     });

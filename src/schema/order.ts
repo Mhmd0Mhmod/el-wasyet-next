@@ -1,9 +1,9 @@
-import { OrderDetails } from "@/types/order";
 import { z } from "zod";
 import { overheadSchema } from "./service";
 
 // Custom document schema to match CreateCustomDocumentDTO
 const customDocumentSchema = z.object({
+  id: z.number().optional(),
   Description: z
     .string()
     .optional()
@@ -16,7 +16,11 @@ const customDocumentSchema = z.object({
 const createFileSchema = z.object({
   OrderId: z.number().min(1, { message: "يجب اختيار طلب" }).optional(),
   FileTypeId: z.number().min(1, { message: "يجب اختيار نوع الملف" }),
-  File: z.instanceof(File, { message: "يجب اختيار ملف" }),
+  File: z.instanceof(File, { message: "يجب اختيار ملف" }).optional(),
+  fileUrl: z.string().optional(),
+  fileExtension: z.string().optional(),
+  fileTypeName: z.string().nullable().optional(),
+  id: z.number().optional(),
 });
 
 export const orderFormSchema = z.object({
@@ -36,6 +40,7 @@ export const orderFormSchema = z.object({
   Quantity: z
     .number()
     .min(1, { message: "يجب ان تكون الكمية على الاقل 1" })
+    .nullable()
     .optional(),
   ServiceId: z.number().min(1, { message: "يجب اختيار نوع الخدمة" }),
   Cash: z.number().min(0, { message: "يجب ان يكون المبلغ النقدي على الاقل 0" }),
@@ -50,38 +55,14 @@ export const orderFormSchema = z.object({
     .min(0, { message: "يجب ان تكون مصاريف الخدمة على الاقل 0" }),
   Documents: z.array(z.number().min(1, { message: "يجب اختيار مستند" })),
   CustomDocuments: z.array(customDocumentSchema).optional(),
-  OverheadIds: z.array(z.number().min(1, { message: "يجب اختيار مصاريف" })),
+  OverheadIds: z.array(z.number()).optional(),
   CustomOverheads: z.array(overheadSchema).optional(),
   CreateFiles: z.array(createFileSchema).optional(),
   IsPending: z.boolean(),
   OfferId: z.number().min(1, { message: "يجب اختيار عرض سعر" }).optional(),
   ImageUrlForOffer: z.file().optional(),
+  imageurlStringForOffer: z.string().optional(),
   AgentId: z.number().min(1, { message: "يجب اختيار وكيل" }).optional(),
 });
 
 export type OrderFormValues = z.infer<typeof orderFormSchema>;
-
-export function generateOrderDefaultValues(
-  order?: Partial<OrderDetails>,
-): Partial<OrderFormValues> {
-  return {
-    ClientId: 0,
-    RequiredChange: order?.requiredChange || "",
-    Notes: order?.notes || "",
-    DeliveryAddress: order?.deliveryAddress || "",
-    BirthDate: null,
-    Quantity: undefined,
-    Cash: order?.cash || 0,
-    Credit: order?.credit || 0,
-    Amount: order?.amount || 0,
-    ServiceFees: 0,
-    Documents: order?.documents?.map((doc) => doc.id) || [],
-    CustomDocuments: [],
-    OverheadIds: order?.overheads?.map((overhead) => overhead.overheadID) || [],
-    CustomOverheads: [],
-    CreateFiles: [],
-    IsPending: false,
-    OfferId: undefined,
-    AgentId: order?.agentId ? Number(order.agentId) : undefined,
-  };
-}

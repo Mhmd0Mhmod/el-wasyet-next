@@ -19,7 +19,7 @@ import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import { Order } from "@/types/order";
-import { ClipboardIcon, Plus, X } from "lucide-react";
+import { ClipboardIcon, Edit3, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
@@ -113,18 +113,22 @@ async function OrdersTable({
           <PopoverContent>{order.notes}</PopoverContent>
         </Popover>
       </TableCell>
-      <TableCell className="space-x-2">
+      <TableCell>
         <Dialog>
           <Dialog.Trigger>
-            <Button variant="ghost" size="icon">
-              <ClipboardIcon className="inline-block" size={16} />
+            <Button variant="ghost" size="icon-sm">
+              <ClipboardIcon className="inline-block" size={12} />
             </Button>
           </Dialog.Trigger>
           <Dialog.Content title="سجل الامر" className="sm:max-w-fit">
             <OrderLogs order={order} />
           </Dialog.Content>
         </Dialog>
-
+        <Button variant="ghost" size="icon-sm" asChild>
+          <Link href={`/orders/${order.id}/edit`}>
+            <Edit3 className="inline-block" size={12} />
+          </Link>
+        </Button>
         <OrderTableDropDownMenu order={order} />
       </TableCell>
     </TableRow>

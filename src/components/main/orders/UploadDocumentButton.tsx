@@ -129,15 +129,22 @@ function UploadDocumentButton() {
                                 <FileText className="text-primary h-8 w-8" />
                                 <div className="flex-1 space-y-2">
                                   <div className="text-sm font-medium">
-                                    {field.File.name}
+                                    {field.File && field.File.name}
+                                    {!field.File && field.fileUrl && (
+                                      <span>
+                                        {field.fileUrl.split("/").pop()}
+                                      </span>
+                                    )}
                                   </div>
                                   <div className="flex items-center gap-2 text-sm">
                                     <Badge variant={badgeVariant}>
                                       {fileTypeLabel}
                                     </Badge>
-                                    <span className="text-muted-foreground text-xs">
-                                      {(field.File.size / 1024).toFixed(1)} KB
-                                    </span>
+                                    {field.File && (
+                                      <span>
+                                        {(field.File.size / 1024).toFixed(2)} KB
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
                               </div>

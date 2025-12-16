@@ -4,6 +4,7 @@ function useService(serviceId: number) {
   const {
     data: service,
     isLoading,
+    isFetching,
     error,
   } = useQuery({
     queryKey: ["service", serviceId],
@@ -11,6 +12,6 @@ function useService(serviceId: number) {
     enabled: !!serviceId,
   });
 
-  return { service, isLoading, error };
+  return { service, isLoading: isLoading || isFetching, error };
 }
 export { useService };

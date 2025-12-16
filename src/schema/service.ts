@@ -26,6 +26,7 @@ const ERROR_MESSAGES = {
 
 // Document schema
 const documentSchema = z.object({
+  id: z.number().nullable().optional(),
   description: z.string().min(1, ERROR_MESSAGES.REQUIRED_DOCUMENT_DESCRIPTION),
 });
 
@@ -131,6 +132,7 @@ const validateExclusiveOptions = (
 
 export const overheadSchema = z
   .object({
+    id: z.number().nullable().optional(),
     value: z.number().min(0, ERROR_MESSAGES.INVALID_VALUE),
     description: z.string().min(1, ERROR_MESSAGES.REQUIRED_DESCRIPTION),
     penalty: z.boolean().optional(),

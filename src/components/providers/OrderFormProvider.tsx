@@ -1,16 +1,11 @@
 "use client";
 
-import { createOrder } from "@/actions/orders/actions";
+import { createOrder, updateOrder } from "@/actions/orders/actions";
 import { Form } from "@/components/ui/form";
 import { useAgents } from "@/hooks/useAgents";
 import { useOffers } from "@/hooks/useOffers";
 import { useService } from "@/hooks/useService";
-import {
-  generateOrderDefaultValues,
-  orderFormSchema,
-  OrderFormValues,
-} from "@/schema/order";
-import { OrderDetails } from "@/types/order";
+import { orderFormSchema, OrderFormValues } from "@/schema/order";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext } from "react";
@@ -26,6 +21,7 @@ interface OrderFormContextProps {
   offers?: ReturnType<typeof useOffers>["offers"];
   agents?: ReturnType<typeof useAgents>["agents"];
   service?: ReturnType<typeof useService>["service"];
+  isEditMode: boolean;
 }
 
 const OrderContext = createContext<OrderFormContextProps>({
@@ -37,47 +33,89 @@ const OrderContext = createContext<OrderFormContextProps>({
   offers: [],
   agents: [],
   service: undefined,
+  isEditMode: false,
 });
 
 function OrderFromProvider({
   orderDetails,
   children,
 }: {
-  orderDetails?: Partial<OrderDetails>;
+  orderDetails?: Partial<OrderFormValues> & {
+    id: number;
+  };
   children: React.ReactNode;
 }) {
+  const isEditMode = Boolean(orderDetails?.id);
   const form = useForm<OrderFormValues>({
     resolver: zodResolver(orderFormSchema),
-    defaultValues: generateOrderDefaultValues(orderDetails),
+    defaultValues: orderDetails || {
+      ClientId: 0,
+      RequiredChange: "",
+      Notes: "",
+      DeliveryAddress: "",
+      BirthDate: null,
+      Quantity: undefined,
+      Cash: 0,
+      Credit: 0,
+      Amount: 0,
+      ServiceFees: 0,
+      Documents: [],
+      CustomDocuments: [],
+      OverheadIds: [],
+      CustomOverheads: [],
+      CreateFiles: [],
+      IsPending: false,
+      OfferId: undefined,
+      AgentId: undefined,
+    },
   });
   const router = useRouter();
   const onSubmit = useCallback(
     async (data: OrderFormValues) => {
-      const toastId = toast.loading("جاري إنشاء الأمر...");
-      try {
-        const response = await createOrder(data);
-        if (response.success) {
-          toast.success("تم إنشاء الأمر بنجاح!", { id: toastId });
-          form.reset();
-          router.push(`/orders/${response.data}`);
-        } else {
-          toast.error(
-            response.message || "حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.",
-            { id: toastId },
-          );
+      if (isEditMode) {
+        const id = toast.loading("جاري تحديث الأمر...");
+        try {
+          const response = await updateOrder(orderDetails!.id, data);
+          if (!response.success) {
+            toast.error(
+              response.message || "حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.",
+              { id },
+            );
+            return;
+          }
+          toast.success("تم تحديث الأمر بنجاح!", { id });
+        } catch (error) {
+          toast.error("حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.", { id });
+          console.error(error);
         }
-      } catch (error) {
-        toast.error("حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.", {
-          id: toastId,
-        });
-        console.error(error);
+      } else {
+        const toastId = toast.loading("جاري إنشاء الأمر...");
+        try {
+          const response = await createOrder(data);
+          if (response.success) {
+            toast.success("تم إنشاء الأمر بنجاح!", { id: toastId });
+            form.reset();
+            router.push(`/orders/${response.data}`);
+          } else {
+            toast.error(
+              response.message || "حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.",
+              { id: toastId },
+            );
+          }
+        } catch (error) {
+          toast.error("حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.", {
+            id: toastId,
+          });
+          console.error(error);
+        }
       }
     },
-    [form, router],
+    [form, router, isEditMode, orderDetails],
   );
   const selectedService = form.watch("ServiceId");
   const { service, isLoading: isLoadingService } = useService(selectedService);
   const { offers, isLoadingOffers } = useOffers();
+
   const { agents, isLoadingAgents } = useAgents();
   const totalAmount = useCalculateOverheadsTotal(service, offers, agents, form);
 
@@ -92,6 +130,7 @@ function OrderFromProvider({
         isLoadingService,
         isLoadingOffers,
         isLoadingAgents,
+        isEditMode,
       }}
     >
       <FormProvider {...form}>

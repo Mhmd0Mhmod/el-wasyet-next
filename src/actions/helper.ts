@@ -13,15 +13,20 @@ export const handleErrorResponse = <T>(
     returnError.message = error.message;
   }
   if (error instanceof AxiosError) {
-    const errors = Object.values(error.response?.data.errors || {});
+    const responseData = error.response?.data;
+    const errors = Object.values(responseData?.errors || {});
     if (errors.length > 0) {
       returnError.message = errors.join(" ");
     } else {
-      returnError.message =
-        error.response?.data.message ||
-        error.response?.data ||
+      // Handle different error response formats
+      // Priority: message > title (Problem Details format) > statusText > generic error message
+      const message =
+        responseData?.message ||
+        responseData?.title || // ASP.NET Problem Details format
+        (typeof responseData === "string" ? responseData : null) ||
         error.response?.statusText ||
         error.message;
+      returnError.message = message;
     }
   } else if (error instanceof Error) {
     returnError.message = error.message;

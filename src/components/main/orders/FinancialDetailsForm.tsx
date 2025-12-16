@@ -1,5 +1,7 @@
 "use client";
 
+import { getFullURL } from "@/lib/helper";
+import Link from "next/link";
 import { useOrderForm } from "../../providers/OrderFormProvider";
 import { Button } from "../../ui/button";
 import {
@@ -99,6 +101,15 @@ function FinancialDetailsForm() {
               </FormItem>
             )}
           />
+          {form.getValues("imageurlStringForOffer") && (
+            <Link
+              href={getFullURL(form.getValues("imageurlStringForOffer")!)}
+              target="_blank"
+              className="text-primary text-sm underline"
+            >
+              عرض الصوره
+            </Link>
+          )}
         </div>
       )}
       <div>
