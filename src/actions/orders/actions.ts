@@ -50,6 +50,7 @@ export async function updateOrder(
 
 function generateFormData(formData: OrderFormValues): FormData {
   const form = new FormData();
+
   form.append("ClientId", formData.ClientId?.toString());
   form.append("RequiredChange", formData.RequiredChange);
   form.append("ServiceId", formData.ServiceId?.toString());
@@ -74,7 +75,10 @@ function generateFormData(formData: OrderFormValues): FormData {
   }
   if (formData.OfferId) {
     form.append("OfferId", formData.OfferId?.toString());
-    form.append("ImageUrlForOffer", formData.ImageUrlForOffer as Blob);
+    form.append(
+      "ImageUrlForOffer",
+      (formData.ImageUrlForOffer as Blob) || formData.imageurlStringForOffer,
+    );
   }
   if (formData.AgentId) {
     form.append("AgentId", formData.AgentId?.toString());

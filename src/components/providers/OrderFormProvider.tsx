@@ -6,6 +6,7 @@ import { useAgents } from "@/hooks/useAgents";
 import { useOffers } from "@/hooks/useOffers";
 import { useService } from "@/hooks/useService";
 import { orderFormSchema, OrderFormValues } from "@/schema/order";
+import { Agent, Offer } from "@/types/order";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext } from "react";
@@ -16,10 +17,8 @@ interface OrderFormContextProps {
   form: ReturnType<typeof useForm<OrderFormValues>>;
   totalAmount: number;
   isLoadingService: boolean;
-  isLoadingOffers: boolean;
-  isLoadingAgents: boolean;
-  offers?: ReturnType<typeof useOffers>["offers"];
-  agents?: ReturnType<typeof useAgents>["agents"];
+  offers?: Offer[];
+  agents?: Agent[];
   service?: ReturnType<typeof useService>["service"];
   isEditMode: boolean;
 }
@@ -28,8 +27,6 @@ const OrderContext = createContext<OrderFormContextProps>({
   form: {} as ReturnType<typeof useForm<OrderFormValues>>,
   totalAmount: 0,
   isLoadingService: false,
-  isLoadingOffers: false,
-  isLoadingAgents: false,
   offers: [],
   agents: [],
   service: undefined,
@@ -38,14 +35,18 @@ const OrderContext = createContext<OrderFormContextProps>({
 
 function OrderFromProvider({
   orderDetails,
+  offers,
+  agents,
   children,
 }: {
   orderDetails?: Partial<OrderFormValues> & {
-    id: number;
+    OrderId: number;
   };
   children: React.ReactNode;
+  offers: Offer[];
+  agents: Agent[];
 }) {
-  const isEditMode = Boolean(orderDetails?.id);
+  const isEditMode = Boolean(orderDetails?.OrderId);
   const form = useForm<OrderFormValues>({
     resolver: zodResolver(orderFormSchema),
     defaultValues: orderDetails || {
@@ -69,55 +70,52 @@ function OrderFromProvider({
       AgentId: undefined,
     },
   });
+
   const router = useRouter();
-  const onSubmit = useCallback(
-    async (data: OrderFormValues) => {
-      if (isEditMode) {
-        const id = toast.loading("جاري تحديث الأمر...");
-        try {
-          const response = await updateOrder(orderDetails!.id, data);
-          if (!response.success) {
-            toast.error(
-              response.message || "حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.",
-              { id },
-            );
-            return;
-          }
-          toast.success("تم تحديث الأمر بنجاح!", { id });
-        } catch (error) {
-          toast.error("حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.", { id });
-          console.error(error);
+  const onSubmit = useCallback(async () => {
+    const data = form.getValues();
+    if (isEditMode) {
+      const id = toast.loading("جاري تحديث الأمر...");
+      try {
+        const response = await updateOrder(orderDetails!.OrderId, data);
+        if (!response.success) {
+          toast.error(
+            response.message || "حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.",
+            { id },
+          );
+          return;
         }
-      } else {
-        const toastId = toast.loading("جاري إنشاء الأمر...");
-        try {
-          const response = await createOrder(data);
-          if (response.success) {
-            toast.success("تم إنشاء الأمر بنجاح!", { id: toastId });
-            form.reset();
-            router.push(`/orders/${response.data}`);
-          } else {
-            toast.error(
-              response.message || "حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.",
-              { id: toastId },
-            );
-          }
-        } catch (error) {
-          toast.error("حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.", {
-            id: toastId,
-          });
-          console.error(error);
-        }
+        toast.success("تم تحديث الأمر بنجاح!", { id });
+      } catch (error) {
+        toast.error("حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.", { id });
+        console.error(error);
       }
-    },
-    [form, router, isEditMode, orderDetails],
-  );
+    } else {
+      const toastId = toast.loading("جاري إنشاء الأمر...");
+      try {
+        const response = await createOrder(data);
+        if (response.success) {
+          toast.success("تم إنشاء الأمر بنجاح!", { id: toastId });
+          form.reset();
+          router.push(`/orders/${response.data}`);
+        } else {
+          toast.error(
+            response.message || "حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.",
+            { id: toastId },
+          );
+        }
+      } catch (error) {
+        toast.error("حدث خطأ أثناء إنشاء الأمر. حاول مرة أخرى.", {
+          id: toastId,
+        });
+        console.error(error);
+      }
+    }
+  }, [form, router, isEditMode, orderDetails]);
   const selectedService = form.watch("ServiceId");
   const { service, isLoading: isLoadingService } = useService(selectedService);
-  const { offers, isLoadingOffers } = useOffers();
-
-  const { agents, isLoadingAgents } = useAgents();
   const totalAmount = useCalculateOverheadsTotal(service, offers, agents, form);
+  console.log(form.formState.errors);
 
   return (
     <OrderContext.Provider
@@ -128,16 +126,12 @@ function OrderFromProvider({
         totalAmount,
         service,
         isLoadingService,
-        isLoadingOffers,
-        isLoadingAgents,
         isEditMode,
       }}
     >
-      <FormProvider {...form}>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
-        </Form>
-      </FormProvider>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
+      </Form>
     </OrderContext.Provider>
   );
 }

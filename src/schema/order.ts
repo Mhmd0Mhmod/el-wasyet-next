@@ -53,7 +53,7 @@ export const orderFormSchema = z.object({
   ServiceFees: z
     .number()
     .min(0, { message: "يجب ان تكون مصاريف الخدمة على الاقل 0" }),
-  Documents: z.array(z.number().min(1, { message: "يجب اختيار مستند" })),
+  Documents: z.array(z.number()),
   CustomDocuments: z.array(customDocumentSchema).optional(),
   OverheadIds: z.array(z.number()).optional(),
   CustomOverheads: z.array(overheadSchema).optional(),
@@ -61,7 +61,7 @@ export const orderFormSchema = z.object({
   IsPending: z.boolean(),
   OfferId: z.number().min(1, { message: "يجب اختيار عرض سعر" }).optional(),
   ImageUrlForOffer: z.file().optional(),
-  imageurlStringForOffer: z.string().optional(),
+  imageurlStringForOffer: z.string().nullable().optional(),
   AgentId: z.number().min(1, { message: "يجب اختيار وكيل" }).optional(),
 });
 

@@ -173,3 +173,4 @@ export const generateServiceSchema = (workFlows: ShortWorkFlow[]) =>
   });
 
 export type ServiceValues = z.infer<ReturnType<typeof generateServiceSchema>>;
+export type OverheadValues = z.infer<typeof overheadSchema>;

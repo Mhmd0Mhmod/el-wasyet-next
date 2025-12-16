@@ -11,10 +11,23 @@ import SubmitButton from "@/components/main/orders/SubmitButton";
 import UploadDocumentButton from "@/components/main/orders/UploadDocumentButton";
 import OrderFormProvider from "@/components/providers/OrderFormProvider";
 import { Label } from "@/components/ui/label";
+import { getAgents, getOffers } from "@/data/orders";
 import { authFetch } from "@/lib/axios";
+import { OrderFormValues } from "@/schema/order";
+import { OverheadValues } from "@/schema/service";
 import { OrderDocument, OrderFile, OrderOverhead } from "@/types/order";
 import { notFound } from "next/navigation";
-
+interface OVERHEAD {
+  id: number;
+  overheadID: number;
+  description: string;
+  value: number;
+  penalty: boolean;
+  forms: boolean;
+  adminFees: boolean;
+  formTypeId: number;
+  penaltyExtraFee: number;
+}
 interface OrderDetails {
   id: number;
   isPending: boolean;
@@ -25,7 +38,7 @@ interface OrderDetails {
   amount: number;
   cash: number;
   credit: number;
-  imageUrlForOffer: string;
+  imageUrlForOffer?: string;
   comments_id_Wife_Mother: string;
   quantity: number;
   deliveryAddress: string;
@@ -37,8 +50,8 @@ interface OrderDetails {
   agentName: string;
   offerId: number;
   offerName: string;
-  orderoverheads: OrderOverhead[];
-  customOverheads: OrderOverhead[];
+  orderoverheads: OVERHEAD[];
+  customOverheads: OVERHEAD[];
   documents: OrderDocument[];
   customDocuments: OrderDocument[];
   files: OrderFile[];
@@ -64,46 +77,51 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   if (!orderDetails) {
     notFound();
   }
+  const offers = await getOffers();
+  const agents = await getAgents();
+  const orderFormData: OrderFormValues & {
+    OrderId: number;
+  } = {
+    OrderId: orderDetails.id,
+    ClientId: orderDetails.clientId,
+    AgentId: orderDetails.agentId || undefined,
+    OfferId: orderDetails.offerId || undefined,
+    ServiceFees: orderDetails.serviceFees,
+    ServiceId: orderDetails.serviceID,
+    IsPending: orderDetails.isPending,
+    Amount: orderDetails.amount,
+    Cash: orderDetails.cash,
+    Credit: orderDetails.credit,
+    DeliveryAddress: orderDetails.deliveryAddress,
+    BirthDate: orderDetails.birthDate,
+    RequiredChange: orderDetails.requiredChange_forthName_Husbend,
+    Quantity: orderDetails.quantity,
+    Documents: orderDetails.documents.map((doc) => doc.id),
+    CustomDocuments: orderDetails.customDocuments.map((doc) => ({
+      id: doc.id,
+      Description: doc.documentName,
+    })),
+    OverheadIds: orderDetails.orderoverheads.map(
+      (overhead) => overhead.overheadID,
+    ),
+    CustomOverheads: orderDetails.customOverheads,
+    Notes: orderDetails.comments_id_Wife_Mother,
+    imageurlStringForOffer: orderDetails.imageUrlForOffer,
+    CreateFiles: orderDetails.files.map((file) => ({
+      id: file.id,
+      fileUrl: file.fileUrl,
+      fileExtension: file.fileExtension,
+      FileTypeId: file.fileTypeID,
+      fileTypeName: file.fileTypeName,
+    })),
+  };
+  console.log(orderDetails);
+
   return (
     <OrderFormProvider
-      orderDetails={{
-        AgentId: orderDetails.agentId,
-        OfferId: orderDetails.offerId,
-        ServiceFees: orderDetails.serviceFees,
-        ServiceId: orderDetails.serviceID,
-        IsPending: orderDetails.isPending,
-        Amount: orderDetails.amount,
-        Cash: orderDetails.cash,
-        Credit: orderDetails.credit,
-        DeliveryAddress: orderDetails.deliveryAddress,
-        BirthDate: orderDetails.birthDate,
-        RequiredChange: orderDetails.requiredChange_forthName_Husbend,
-        Quantity: orderDetails.quantity,
-        Documents: orderDetails.documents.map((doc) => doc.id),
-        CustomDocuments: orderDetails.customDocuments.map((doc) => ({
-          id: doc.id,
-          Description: doc.documentName,
-        })),
-        OverheadIds: orderDetails.orderoverheads.map(
-          (overhead) => overhead.overheadID,
-        ),
-        CustomOverheads: orderDetails.customOverheads.map((overhead) => ({
-          id: overhead.overheadID,
-          value: overhead.value,
-          description: overhead.description,
-        })),
-        Notes: orderDetails.comments_id_Wife_Mother,
-        imageurlStringForOffer: orderDetails.imageUrlForOffer,
-        id: orderDetails.id,
-        ClientId: orderDetails.clientId,
-        CreateFiles: orderDetails.files.map((file) => ({
-          id: file.id,
-          fileUrl: file.fileUrl,
-          fileExtension: file.fileExtension,
-          FileTypeId: file.fileTypeID,
-          fileTypeName: file.fileTypeName,
-        })),
-      }}
+      agents={agents}
+      offers={offers}
+      orderDetails={orderFormData}
     >
       <PageLayout
         title="تفاصيل الأوامر"

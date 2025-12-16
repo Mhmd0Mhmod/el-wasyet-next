@@ -122,7 +122,7 @@ function OverheadsForms() {
                 <div className="relative">
                   <Input
                     type="number"
-                    step={"any"}
+                    step={"0.01"}
                     {...field}
                     value={field.value?.toString()}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}

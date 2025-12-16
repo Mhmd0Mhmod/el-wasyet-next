@@ -1,3 +1,4 @@
+import { checkAccess } from "@/actions/auth/actions";
 import PageLayout from "@/components/Layout/PageLayout";
 import ClientSelector from "@/components/main/orders/ClientSelector";
 import DocumentSelector from "@/components/main/orders/DocumentSelector";
@@ -11,8 +12,8 @@ import SubmitButton from "@/components/main/orders/SubmitButton";
 import UploadDocumentButton from "@/components/main/orders/UploadDocumentButton";
 import OrderFormProvider from "@/components/providers/OrderFormProvider";
 import { Label } from "@/components/ui/label";
-import { checkAccess } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
+import { getAgents, getOffers } from "@/data/orders";
 import { redirect } from "next/navigation";
 async function page() {
   const canCreate = await checkAccess(ABILITY_IDS.CREATE_ORDER);
@@ -20,9 +21,10 @@ async function page() {
   if (!canCreate) {
     redirect("/orders");
   }
-
+  const offers = await getOffers();
+  const agents = await getAgents();
   return (
-    <OrderFormProvider>
+    <OrderFormProvider agents={agents} offers={offers}>
       <PageLayout
         title="تفاصيل الأوامر"
         description="إدارة أوامر العملاء ومتابعة حالة الخدمات"

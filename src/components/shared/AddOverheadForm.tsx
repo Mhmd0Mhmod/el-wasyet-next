@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { OverheadValues } from "@/schema/service";
 
 interface AddOverheadFormProps {
   name: string;
@@ -30,11 +31,8 @@ function AddOverheadForm({
   penaltyBankFeePrecentage = true,
 }: AddOverheadFormProps) {
   const form = useFormContext();
-  const {
-    fields: overheadFields,
-    remove: removeOverhead,
-    append: appendOverhead,
-  } = useFieldArray({
+  const overheadFields: OverheadValues[] = form.watch(name);
+  const { remove: removeOverhead, append: appendOverhead } = useFieldArray({
     control: form.control,
     name,
   });
@@ -51,6 +49,7 @@ function AddOverheadForm({
       formTypeID: null,
     });
   }
+  console.log(overheadFields);
 
   return (
     <Card>
