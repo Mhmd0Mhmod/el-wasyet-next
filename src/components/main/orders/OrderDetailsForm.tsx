@@ -1,4 +1,5 @@
 "use client";
+import { Calendar } from "@/components/ui/calendar";
 import { useOrderForm } from "../../providers/OrderFormProvider";
 import {
   FormControl,
@@ -11,6 +12,16 @@ import {
 import { Input } from "../../ui/input";
 import { Skeleton } from "../../ui/skeleton";
 import { Textarea } from "../../ui/textarea";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ar } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 function OrderDetailsForm() {
   const { service, isLoadingService, form } = useOrderForm();
@@ -33,15 +44,40 @@ function OrderDetailsForm() {
             control={form.control}
             name="BirthDate"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>تاريخ الميلاد</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    value={field.value ? field.value : ""}
-                  />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-right font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: ar })
+                        ) : (
+                          <span>اختر التاريخ</span>
+                        )}
+                        <CalendarIcon className="mr-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ?? undefined}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                      locale={ar}
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormDescription />
                 <FormMessage />
               </FormItem>

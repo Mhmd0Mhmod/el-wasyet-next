@@ -49,8 +49,6 @@ function AddOverheadForm({
       formTypeID: null,
     });
   }
-  console.log(overheadFields);
-
   return (
     <Card>
       <CardHeader>

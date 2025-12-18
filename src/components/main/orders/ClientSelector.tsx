@@ -23,9 +23,11 @@ import ClientForm from "../clients/ClientsForm";
 interface ClientSelectorProps {
   placeholder?: string;
   className?: string;
+  clientName?: string;
 }
 
 function ClientSelector({
+  clientName,
   placeholder = "اختر عميل...",
   className,
 }: ClientSelectorProps = {}) {
@@ -146,7 +148,7 @@ function ClientSelector({
         )}
       />
       <Input
-        value={isEditMode ? "لا يمكن تغيير العميل" : selectedClient?.name || ""}
+        value={isEditMode ? clientName : selectedClient?.name || ""}
         disabled
       />
     </>

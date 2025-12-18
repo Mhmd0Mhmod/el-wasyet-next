@@ -36,7 +36,7 @@ export const orderFormSchema = z.object({
     .string()
     .max(255, { message: "يجب ان لا يزيد عنوان التسليم عن 255 حرف" })
     .optional(),
-  BirthDate: z.string().nullable().optional(),
+  BirthDate: z.date().nullable().optional(),
   Quantity: z
     .number()
     .min(1, { message: "يجب ان تكون الكمية على الاقل 1" })

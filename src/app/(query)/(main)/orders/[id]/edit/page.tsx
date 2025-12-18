@@ -31,6 +31,7 @@ interface OVERHEAD {
 interface OrderDetails {
   id: number;
   isPending: boolean;
+  clientName: string;
   serviceID: number;
   clientId: number;
   serviceName: string;
@@ -42,6 +43,7 @@ interface OrderDetails {
   comments_id_Wife_Mother: string;
   quantity: number;
   deliveryAddress: string;
+
   birthDate: string;
   requiredChange_forthName_Husbend: string;
   currentStatusId: number;
@@ -88,12 +90,12 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
     OfferId: orderDetails.offerId || undefined,
     ServiceFees: orderDetails.serviceFees,
     ServiceId: orderDetails.serviceID,
-    IsPending: orderDetails.isPending,
+    IsPending: orderDetails.currentStatusId === 1,
     Amount: orderDetails.amount,
     Cash: orderDetails.cash,
     Credit: orderDetails.credit,
     DeliveryAddress: orderDetails.deliveryAddress,
-    BirthDate: orderDetails.birthDate,
+    BirthDate: orderDetails.birthDate ? new Date(orderDetails.birthDate) : null,
     RequiredChange: orderDetails.requiredChange_forthName_Husbend,
     Quantity: orderDetails.quantity,
     Documents: orderDetails.documents.map((doc) => doc.id),
@@ -115,8 +117,6 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
       fileTypeName: file.fileTypeName,
     })),
   };
-  console.log(orderDetails);
-
   return (
     <OrderFormProvider
       agents={agents}
@@ -141,7 +141,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
             <div className="space-y-2">
               <h4>العميل والخدمة</h4>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-                <ClientSelector />
+                <ClientSelector clientName={orderDetails.clientName} />
                 <ServiceTypeSelector />
               </div>
             </div>
