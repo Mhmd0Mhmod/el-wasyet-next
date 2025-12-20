@@ -19,7 +19,7 @@ import { Skeleton } from "../../ui/skeleton";
 
 function ServiceTypeSelector() {
   const { services, isLoadingServices } = useServices();
-  const { form } = useOrderForm();
+  const { form, isEditMode } = useOrderForm();
 
   if (isLoadingServices) {
     return (
@@ -39,6 +39,7 @@ function ServiceTypeSelector() {
     <FormField
       control={form.control}
       name="ServiceId"
+      disabled={isEditMode}
       render={({ field }) => (
         <FormItem>
           <FormControl>
