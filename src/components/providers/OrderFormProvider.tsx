@@ -86,6 +86,7 @@ function OrderFromProvider({
           return;
         }
         toast.success("تم تحديث الأمر بنجاح!", { id });
+        router.push(`/orders/${orderDetails!.OrderId}`);
       } catch (error) {
         toast.error("حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.", { id });
         console.error(error);
