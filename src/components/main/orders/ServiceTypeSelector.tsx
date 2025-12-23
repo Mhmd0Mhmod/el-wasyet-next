@@ -47,7 +47,12 @@ function ServiceTypeSelector() {
               value={field.value?.toString() || ""}
               onValueChange={onValueChange}
             >
-              <SelectTrigger className="w-full" size="default" dir="rtl">
+              <SelectTrigger
+                className="w-full"
+                size="default"
+                disabled={isEditMode}
+                dir="rtl"
+              >
                 <SelectValue placeholder="أختر الخدمه" />
               </SelectTrigger>
               <SelectContent>
