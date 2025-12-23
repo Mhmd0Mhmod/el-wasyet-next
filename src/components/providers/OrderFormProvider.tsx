@@ -77,7 +77,9 @@ function OrderFromProvider({
     if (isEditMode) {
       const id = toast.loading("جاري تحديث الأمر...");
       try {
+        console.log(data);
         const response = await updateOrder(orderDetails!.OrderId, data);
+
         if (!response.success) {
           toast.error(
             response.message || "حدث خطأ أثناء تحديث الأمر. حاول مرة أخرى.",
@@ -116,6 +118,8 @@ function OrderFromProvider({
   const selectedService = form.watch("ServiceId");
   const { service, isLoading: isLoadingService } = useService(selectedService);
   const totalAmount = useCalculateOverheadsTotal(service, offers, agents, form);
+  console.log(form.formState.errors);
+
   return (
     <OrderContext.Provider
       value={{

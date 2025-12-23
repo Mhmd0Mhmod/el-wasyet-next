@@ -103,7 +103,6 @@ const validatePenaltyRequirements = (
       message: ERROR_MESSAGES.REQUIRED_PENALTY_EXTRA_FEE,
       optional: true,
     },
-    { field: "relatedAgent", message: ERROR_MESSAGES.REQUIRED_RELATED_AGENT },
   ];
 
   penaltyValidations.forEach(({ field, message, optional }) => {
