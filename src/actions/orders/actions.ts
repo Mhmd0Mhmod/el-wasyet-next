@@ -96,6 +96,12 @@ function generateFormData(formData: OrderFormValues): FormData {
   // Add custom documents
   if (formData.CustomDocuments) {
     formData.CustomDocuments.forEach((customDoc, index) => {
+      if (customDoc.id) {
+        form.append(
+          `CustomDocuments[${index}].documentId`,
+          customDoc.id.toString(),
+        );
+      }
       if (customDoc.Description) {
         form.append(
           `CustomDocuments[${index}].Description`,
@@ -108,6 +114,9 @@ function generateFormData(formData: OrderFormValues): FormData {
   // Add custom overheads
   if (formData.CustomOverheads) {
     formData.CustomOverheads.forEach((overhead, index) => {
+      if (overhead.id) {
+        form.append(`CustomOverheads[${index}].id`, overhead.id.toString());
+      }
       form.append(
         `CustomOverheads[${index}].description`,
         overhead.description,
@@ -164,6 +173,9 @@ function generateFormData(formData: OrderFormValues): FormData {
   // Add files
   if (formData.CreateFiles) {
     formData.CreateFiles.forEach((fileData, index) => {
+      if (fileData.id) {
+        form.append(`CreateFiles[${index}].id`, fileData.id.toString());
+      }
       form.append(
         `CreateFiles[${index}].FileTypeId`,
         fileData.FileTypeId?.toString(),

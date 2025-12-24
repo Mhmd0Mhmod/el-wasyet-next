@@ -63,7 +63,7 @@ function AddOverheadForm({
           {overheadFields.map((field, index) => (
             <Overhead
               index={index}
-              key={field.id}
+              key={field.id || index}
               name={name}
               removeOverhead={removeOverhead}
               penaltyExtraFee={penaltyExtraFee}

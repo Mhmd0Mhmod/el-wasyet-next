@@ -14,8 +14,7 @@ import { Label } from "@/components/ui/label";
 import { getAgents, getOffers } from "@/data/orders";
 import { authFetch } from "@/lib/axios";
 import { OrderFormValues } from "@/schema/order";
-import { OverheadValues } from "@/schema/service";
-import { OrderDocument, OrderFile, OrderOverhead } from "@/types/order";
+import { OrderDocument, OrderFile } from "@/types/order";
 import { notFound } from "next/navigation";
 interface OVERHEAD {
   id: number;
@@ -55,7 +54,9 @@ interface OrderDetails {
   orderoverheads: OVERHEAD[];
   customOverheads: OVERHEAD[];
   documents: OrderDocument[];
-  customDocuments: OrderDocument[];
+  customDocuments: (OrderDocument & {
+    documentId: number;
+  })[];
   files: OrderFile[];
 }
 async function getOrderForUpdateById(id: string) {
@@ -100,7 +101,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
     Quantity: orderDetails.quantity,
     Documents: orderDetails.documents.map((doc) => doc.id),
     CustomDocuments: orderDetails.customDocuments.map((doc) => ({
-      id: doc.id,
+      id: doc.documentId,
       Description: doc.documentName,
     })),
     OverheadIds: orderDetails.orderoverheads.map(
