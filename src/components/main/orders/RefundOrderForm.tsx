@@ -1,6 +1,7 @@
 "use client";
 import { refundOrder } from "@/actions/reports/actions";
 import { Button } from "@/components/ui/button";
+import { DialogClose } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -116,14 +117,16 @@ function RefundOrderForm({ orderId }: { orderId: number }) {
         <Button type="submit" className="sm:col-span-1">
           ارسال
         </Button>
-        <Button
-          variant="outline"
-          type="button"
-          onClick={() => form.reset()}
-          className="sm:col-span-1"
-        >
-          الغاء
-        </Button>
+        <DialogClose asChild>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => form.reset()}
+            className="sm:col-span-1"
+          >
+            الغاء
+          </Button>
+        </DialogClose>
       </form>
     </Form>
   );

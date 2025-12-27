@@ -54,6 +54,8 @@ async function OrdersTable({
   const { items, pageNumber, totalPages } = await getOrders({
     searchParams,
   });
+  const canEdit = await checkAccess(ABILITY_IDS.UPDATE_ORDER);
+
   const renderOrderRows = items.map((order: Order) => (
     <TableRow
       key={order.id}
@@ -124,11 +126,13 @@ async function OrdersTable({
             <OrderLogs order={order} />
           </Dialog.Content>
         </Dialog>
-        <Button variant="ghost" size="icon-sm" asChild>
-          <Link href={`/orders/${order.id}/edit`}>
-            <Edit3 className="inline-block" size={12} />
-          </Link>
-        </Button>
+        {canEdit && (
+          <Button variant="ghost" size="icon-sm" asChild>
+            <Link href={`/orders/${order.id}/edit`}>
+              <Edit3 className="inline-block" size={12} />
+            </Link>
+          </Button>
+        )}
         <OrderTableDropDownMenu order={order} />
       </TableCell>
     </TableRow>
