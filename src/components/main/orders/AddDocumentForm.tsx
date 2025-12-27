@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { Button } from "../../ui/button";
 import {
   Collapsible,
@@ -13,20 +13,19 @@ function AddDocumentForm({
 }: {
   onSubmit: (formData: FormData) => void;
 }) {
-  const form = useForm({
-    defaultValues: { description: "" },
-  });
+  const [description, setDescription] = useState("");
   const onAddDocument = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    form.handleSubmit((data) => {
-      const formData = new FormData();
-      formData.append("description", data.description);
-      onSubmit(formData);
-      form.reset();
-    })();
+
+    const formData = new FormData();
+    formData.append("description", description);
+    onSubmit(formData);
+    setDescription("");
   };
-  const disabled = !form.watch("description");
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
+  };
   return (
     <Collapsible className="space-y-4">
       <CollapsibleTrigger className="w-full" asChild>
@@ -39,14 +38,15 @@ function AddDocumentForm({
         <div className="max-w-sm space-y-2">
           <Input
             placeholder="أدخل اسم المستند"
-            {...form.register("description")}
+            value={description}
+            onChange={handleDescriptionChange}
           />
           <Button
             onClick={onAddDocument}
             variant="outline"
             size="sm"
             className="mr-auto flex"
-            disabled={disabled}
+            disabled={!description}
           >
             <Plus className="ml-2 h-4 w-4" />
             <span>إضافة</span>

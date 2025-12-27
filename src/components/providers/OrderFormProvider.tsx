@@ -118,7 +118,6 @@ function OrderFromProvider({
   const selectedService = form.watch("ServiceId");
   const { service, isLoading: isLoadingService } = useService(selectedService);
   const totalAmount = useCalculateOverheadsTotal(service, offers, agents, form);
-  console.log(form.formState.errors);
 
   return (
     <OrderContext.Provider
