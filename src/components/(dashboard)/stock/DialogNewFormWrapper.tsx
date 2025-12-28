@@ -24,7 +24,6 @@ function DialogNewFormWrapper({
             formTypeId: form.formId,
             branchId: branchId,
             stockId: form.stockId,
-            threshold: form.minimumThreshold,
             quantity: form.quantity,
             price: form.price,
             minimumThreshold: form.minimumThreshold,
