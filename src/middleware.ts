@@ -28,7 +28,7 @@ const PAGE_PERMISSIONS: Record<string, number> = {
   "/client-fulfillment": ABILITY_IDS.VIEW_CLIENT_FULFILLMENT,
   "/certificate-fulfillment": ABILITY_IDS.VIEW_CERTIFICATE_FULFILLMENT,
   "/dashboard": ABILITY_IDS.VIEW_DASHBOARD,
-  "/commissions": ABILITY_IDS.VIEW_COMMISSIONS,
+  "/commissions": ABILITY_IDS.MANAGE_COMMISSIONS,
 };
 
 export async function middleware(request: NextRequest) {

@@ -62,7 +62,6 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
           const response = await createNewStockItem(data);
           if (response.success) {
             toast.success("تم الحفظ بنجاح", { id });
-            form.reset();
           } else {
             toast.error(`حدث خطأ: ${response.message}`, { id });
           }
@@ -82,7 +81,6 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
     },
     [refetchForms],
   );
-  console.log(form.formState.errors);
 
   return (
     <div className="space-y-6">

@@ -11,7 +11,7 @@ import { checkAccess } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
 
 async function page() {
-  const canView = await checkAccess(ABILITY_IDS.VIEW_CUSTODY);
+  const canView = await checkAccess(ABILITY_IDS.VIEW_STOCK);
 
   if (!canView) {
     return (

@@ -64,7 +64,7 @@ function getFormStatus(isLowStock: boolean, quantity: number) {
 }
 async function page({ params }: PageProps) {
   const { id } = await params;
-  const canViewStock = await checkAccess(ABILITY_IDS.VIEW_CUSTODY);
+  const canViewStock = await checkAccess(ABILITY_IDS.VIEW_STOCK);
   const canAddANDEDIT = await checkAccess(ABILITY_IDS.MANAGE_CUSTODY);
   const stockData = await getStockDataById(id);
   if (!stockData) {

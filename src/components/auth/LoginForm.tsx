@@ -32,12 +32,6 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const router = useRouter();
   const onSubmit = useCallback(
     (data: LoginFormValues) => {
-      const branchId = data.branchId;
-      if (!branchId) {
-        form.setError("branchId", { message: "يجب اختيار فرع" });
-        return;
-      }
-
       setIsLoading(true);
       Login(data)
         .then((res) => {
