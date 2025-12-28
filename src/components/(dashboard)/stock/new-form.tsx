@@ -82,6 +82,8 @@ function NewForm({ form: initialForm }: { form?: StockItemForm }) {
     },
     [refetchForms],
   );
+  console.log(form.formState.errors);
+
   return (
     <div className="space-y-6">
       <Dialog>
