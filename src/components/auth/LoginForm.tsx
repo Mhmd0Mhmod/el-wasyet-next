@@ -27,7 +27,13 @@ import { toast } from "sonner";
 import PasswordInput from "./PasswordInput";
 
 function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
-  const form = useForm<LoginFormValues>();
+  const form = useForm<LoginFormValues>({
+    defaultValues: {
+      branchId: "0",
+      usernameOrEmail: "",
+      password: "",
+    },
+  });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const onSubmit = useCallback(
