@@ -94,6 +94,7 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
                     <SelectValue placeholder="اختر الفرع" />
                   </SelectTrigger>
                   <SelectContent dir="rtl">
+                    <SelectItem value="0">اختر الفرع</SelectItem>
                     {branches?.map((branch) => (
                       <SelectItem
                         key={branch.branchId}
