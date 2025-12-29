@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getBranchesAuth } from "@/data/branches";
+export const dynamic = "force-dynamic";
 async function Page() {
   const branches = await getBranchesAuth();
 
