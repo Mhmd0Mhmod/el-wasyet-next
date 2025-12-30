@@ -46,3 +46,18 @@ export async function updateService(
     return handleErrorResponse(error);
   }
 }
+
+export async function toggleServiceStatus(
+  id: number,
+): Promise<APIResponse<null>> {
+  try {
+    const { data } = await authFetch.put<null>(`/Service/change-status/${id}`);
+    revalidatePath("/services");
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    return handleErrorResponse(error);
+  }
+}

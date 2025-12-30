@@ -11,11 +11,23 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { ServicesTableHeaders } from "@/data/branch-services";
 import { getServices, getWorkFlows } from "@/data/services";
 import { formatCurrency } from "@/lib/helper";
-import { Edit2, Eye, Plus } from "lucide-react";
+import { Edit2, Eye, Lock, LockIcon, Plus, UnlockIcon } from "lucide-react";
 import { Suspense } from "react";
 import ExportButton from "@/components/shared/export-button";
 import { checkAccess } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import ToggleServiceStatusAction from "@/components/main/services/ToggleServiceStatusAction";
 
 const serviceColumns = [
   ...ServicesTableHeaders.slice(0, -1),
@@ -64,16 +76,57 @@ async function ServicesTable({
                 </Dialog.Content>
               </Dialog>
               {canEdit && (
-                <Dialog>
-                  <Dialog.Trigger>
-                    <Button variant="ghost" size="sm">
-                      <Edit2 size={20} />
-                    </Button>
-                  </Dialog.Trigger>
-                  <Dialog.Content title="تعديل الخدمة">
-                    <ServiceForm service={service} workFlows={workFlows} />
-                  </Dialog.Content>
-                </Dialog>
+                <>
+                  <Dialog>
+                    <Dialog.Trigger>
+                      <Button variant="ghost" size="sm">
+                        <Edit2 size={20} />
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content title="تعديل الخدمة">
+                      <ServiceForm service={service} workFlows={workFlows} />
+                    </Dialog.Content>
+                  </Dialog>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        {service.suspended ? (
+                          <LockIcon size={20} />
+                        ) : (
+                          <UnlockIcon size={20} />
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader className="sm:text-right">
+                        <AlertDialogTitle>
+                          {service.suspended
+                            ? "هل أنت متأكد من تفعيل هذه الخدمة؟"
+                            : "هل أنت متأكد من إيقاف هذه الخدمة؟"}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          هذا الإجراء سيؤثر على توافر الخدمة في جميع الفروع. هل
+                          أنت متأكد من المتابعة؟
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <ToggleServiceStatusAction
+                          serviceId={service.id}
+                          suspended={service.suspended}
+                        >
+                          <AlertDialogAction className="bg-red-600 hover:bg-red-700 focus:ring-red-600">
+                            {service.suspended ? <UnlockIcon /> : <Lock />}
+                            {service.suspended
+                              ? "تفعيل الخدمة"
+                              : "إيقاف الخدمة"}
+                          </AlertDialogAction>
+                        </ToggleServiceStatusAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </>
               )}
             </TableCell>
           </TableRow>
