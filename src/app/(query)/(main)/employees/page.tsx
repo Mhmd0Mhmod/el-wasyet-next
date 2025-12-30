@@ -56,17 +56,16 @@ async function EmployeesTable({
 }) {
   const canEdit = await checkAccess(ABILITY_IDS.UPDATE_EMPLOYEE);
 
-  const {
-    items: employees,
-    pageNumber,
-    totalPages,
-  } = await getEmployees({
-    search: searchParams.search || "",
-    page: parseInt(searchParams.page || "1", 10),
-  });
+  const [managersBranches, roles, pageContent] = await Promise.all([
+    getManagersBranches(),
+    getRoles(),
+    getEmployees({
+      search: searchParams.search || "",
+      page: parseInt(searchParams.page || "1", 10),
+    }),
+  ]);
+  const { items: employees, pageNumber, totalPages } = pageContent;
 
-  const managersBranches = await getManagersBranches();
-  const roles = await getRoles();
   return (
     <>
       <Table
@@ -154,8 +153,10 @@ async function page({
 }) {
   const params = await searchParams;
   const canCreate = await checkAccess(ABILITY_IDS.CREATE_EMPLOYEE);
-  const managersBranches = await getManagersBranches();
-  const roles = await getRoles();
+  const [managersBranches, roles] = await Promise.all([
+    getManagersBranches(),
+    getRoles(),
+  ]);
   return (
     <PageLayout
       title="الموظفين"

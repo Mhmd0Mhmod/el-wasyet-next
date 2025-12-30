@@ -77,7 +77,6 @@ function OrderFromProvider({
     if (isEditMode) {
       const id = toast.loading("جاري تحديث الأمر...");
       try {
-        console.log(data);
         const response = await updateOrder(orderDetails!.OrderId, data);
 
         if (!response.success) {

@@ -29,7 +29,6 @@ import PasswordInput from "./PasswordInput";
 function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const form = useForm<LoginFormValues>({
     defaultValues: {
-      branchId: "0",
       usernameOrEmail: "",
       password: "",
     },
@@ -38,6 +37,10 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
   const router = useRouter();
   const onSubmit = useCallback(
     (data: LoginFormValues) => {
+      if (!data.branchId) {
+        form.setError("branchId", { message: "يجب اختيار الفرع" });
+        return;
+      }
       setIsLoading(true);
       Login(data)
         .then((res) => {
@@ -94,7 +97,6 @@ function LoginForm({ branches }: { branches?: ShortBranch[] | null }) {
                     <SelectValue placeholder="اختر الفرع" />
                   </SelectTrigger>
                   <SelectContent dir="rtl">
-                    <SelectItem value="0">اختر الفرع</SelectItem>
                     {branches?.map((branch) => (
                       <SelectItem
                         key={branch.branchId}

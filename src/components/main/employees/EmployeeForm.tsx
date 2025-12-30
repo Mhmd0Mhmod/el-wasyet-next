@@ -75,6 +75,7 @@ function EmployeeFormContent({
           ...employee,
           abilityIds: employee?.abilityDTOs.map((ability) => ability.id) || [],
           password: "",
+          managerId: employee?.managerId,
         }
       : {
           id: null,
@@ -145,7 +146,6 @@ function EmployeeFormContent({
     },
     [isEditMode, form, queryClient],
   );
-
   return (
     <div dir="rtl">
       <Form {...form}>
@@ -272,7 +272,11 @@ function EmployeeFormContent({
                 <FormItem className="col-span-2">
                   <FormLabel>المدير المباشر</FormLabel>
                   <FormControl>
-                    <Select {...field} value={field.value?.toString() || ""}>
+                    <Select
+                      {...field}
+                      value={field.value?.toString() || ""}
+                      onValueChange={(value) => field.onChange(Number(value))}
+                    >
                       <SelectTrigger className="w-full" dir="rtl">
                         <SelectValue placeholder="اختر المدير المباشر" />
                       </SelectTrigger>
