@@ -18,6 +18,7 @@ import {
 import { ChevronDownIcon, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
+import { ScrollArea } from "../ui/scroll-area";
 
 type SelectItem = {
   label: string;
@@ -118,29 +119,31 @@ function Select({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-3" align="start">
-          <div className="space-y-2">
-            {selectItems.map((item) => {
-              const isChecked = selectedValues.includes(String(item.value));
-              return (
-                <div key={item.value} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`${name}-${item.value}`}
-                    checked={isChecked}
-                    onCheckedChange={(checked) =>
-                      handleMultipleValueChange(String(item.value), !!checked)
-                    }
-                  />
-                  <Label
-                    htmlFor={`${name}-${item.value}`}
-                    className="cursor-pointer text-sm font-normal"
-                  >
-                    {item.label}
-                  </Label>
-                </div>
-              );
-            })}
-          </div>
+        <PopoverContent className="w-full p-3" align="start" side="bottom">
+          <ScrollArea dir="rtl" className="h-64 pl-5">
+            <div className="space-y-2">
+              {selectItems.map((item) => {
+                const isChecked = selectedValues.includes(String(item.value));
+                return (
+                  <div key={item.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`${name}-${item.value}`}
+                      checked={isChecked}
+                      onCheckedChange={(checked) =>
+                        handleMultipleValueChange(String(item.value), !!checked)
+                      }
+                    />
+                    <Label
+                      htmlFor={`${name}-${item.value}`}
+                      className="cursor-pointer text-sm font-normal"
+                    >
+                      {item.label}
+                    </Label>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
         </PopoverContent>
       </Popover>
     );
