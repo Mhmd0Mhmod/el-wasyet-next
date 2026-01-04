@@ -1,11 +1,5 @@
 import { getCurrentUser } from "@/actions/auth/actions";
-import Link from "@/components/shared/Link";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -20,17 +14,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getNotifications } from "@/data/notifications";
 import { NAVBARLINKS, NavLink } from "@/lib/helper";
-import { BellIcon, ChevronDownIcon, PanelLeftClose } from "lucide-react";
+import { BellIcon, PanelLeftClose } from "lucide-react";
+import { Suspense } from "react";
 import NotificationButton from "../notificaitons/NotificationButton";
 import { ScrollArea } from "../ui/scroll-area";
+import HeaderNavItem from "./header-nav-item";
 import Logo from "./Logo";
 import LogoutButton from "./logout-button";
 import NavigationItem from "./NavigationItem";
 import UserProfileButton from "./UserProfileButton";
 import UserProfileDetails from "./UserProfileDetails";
-import { getNotifications } from "@/data/notifications";
-import { Suspense } from "react";
 
 async function Header() {
   const user = await getCurrentUser();
@@ -124,34 +119,9 @@ function SheetButton({ navlinks }: { navlinks: NavLink[] }) {
         <Separator />
         <ScrollArea dir="rtl" className="h-72 overflow-auto">
           <div className="flex flex-col gap-4 p-4">
-            {navlinks.map((link) =>
-              link.href ? (
-                <Link key={link.href} href={link?.href}>
-                  {link.label}
-                </Link>
-              ) : (
-                <Collapsible key={link.label}>
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="w-full justify-between p-0 underline"
-                    >
-                      {link.label}
-                      <ChevronDownIcon />
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="flex flex-col gap-2">
-                      {link?.children?.map((sublink) => (
-                        <Link key={sublink.href} href={sublink.href}>
-                          {sublink.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              ),
-            )}
+            {navlinks.map((link) => (
+              <HeaderNavItem key={link.label} link={link} />
+            ))}
           </div>
         </ScrollArea>
         <Separator />
