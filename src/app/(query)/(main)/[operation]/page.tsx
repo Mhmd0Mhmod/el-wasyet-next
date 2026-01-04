@@ -232,7 +232,6 @@ async function LoadTable({
             <SearchInput title="بحث" />
             <Select
               name="serviceId"
-              value={searchParams.serviceId || ""}
               placeholder="تصفيه بالخدمه"
               selectItems={services.map((service) => ({
                 value: service.id.toString(),
