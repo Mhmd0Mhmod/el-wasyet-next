@@ -6,8 +6,8 @@ export async function ExportDailyReport(params: DateRange) {
     const { data: blob } = await authFetch.get<Blob>(
       "/Report/Advanced/export",
       {
-        responseType: "blob",
         params,
+        responseType: "blob",
       },
     );
 

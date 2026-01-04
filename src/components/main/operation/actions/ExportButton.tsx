@@ -1,54 +1,65 @@
 "use client";
+import { handleErrorResponse } from "@/actions/helper";
 import { Button } from "@/components/ui/button";
-import { OrderByStatus } from "@/types/order";
+import { authFetch } from "@/lib/axios";
 import { CloudDownload } from "lucide-react";
-import Papa from "papaparse";
 import { toast } from "sonner";
+async function exportOrders(
+  params: {
+    orderStatusIds: number[];
+    IsCertificate?: boolean | null;
+    searchTerm?: string;
+    pageNumber?: number;
+    serviceId?: string;
+  },
+  name: string,
+) {
+  try {
+    const { data } = await authFetch.get("OperationLog/Orders/Export", {
+      params,
+      responseType: "blob",
+    });
+    const timestamp = new Date().toISOString().split("T")[0];
+    const filename = `${name}_${timestamp}.xlsx`;
+    const url = URL.createObjectURL(data);
+    const link = Object.assign(document.createElement("a"), {
+      href: url,
+      download: filename,
+    });
 
-function ExportButton({ orders }: { orders: OrderByStatus[] }) {
-  const handleDownload = () => {
+    link.click();
+    URL.revokeObjectURL(url);
+    return { success: true, data: undefined };
+  } catch (err) {
+    return handleErrorResponse(err);
+  }
+}
+
+function ExportButton({
+  params,
+  name,
+}: {
+  params: {
+    orderStatusIds: number[];
+    IsCertificate?: boolean | null;
+    searchTerm?: string;
+    pageNumber?: number;
+    serviceId?: string;
+  };
+  name: string;
+}) {
+  const handleDownload = async () => {
     const id = toast.loading("جاري التصدير...");
     try {
-      if (orders.length === 0) {
-        toast.error("لا توجد بيانات للتصدير", { id });
+      const response = (await exportOrders(
+        params,
+        name,
+      )) as APIResponse<undefined>;
+
+      if (response && !response.success) {
+        toast.error(response.message || "حدث خطأ أثناء التصدير", { id });
         return;
       }
-
-      // Remove unwanted columns
-      const filteredOrders = orders.map(
-        ({
-          closeAskExpense: _closeAskExpense,
-          isStefaClient: _isStefaClient,
-          isStefaSGL: _isStefaSGL,
-          isStefaCertifacte: _isStefaCertifacte,
-          color: _color,
-          ...rest
-        }) => rest,
-      );
-
-      // Convert data to CSV with proper formatting
-      const csv = Papa.unparse(filteredOrders, {
-        header: true,
-      });
-
-      // Add BOM for proper UTF-8 encoding in Excel
-      const BOM = "\uFEFF";
-      const csvWithBOM = BOM + csv;
-
-      // Create blob with proper Excel MIME type
-      const blob = new Blob([csvWithBOM], {
-        type: "text/csv;charset=utf-8;",
-      });
-
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `orders-${new Date().toISOString().split("T")[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
 
       toast.success("تم التصدير بنجاح", { id });
     } catch (error) {
@@ -58,7 +69,7 @@ function ExportButton({ orders }: { orders: OrderByStatus[] }) {
   };
 
   return (
-    <Button onClick={handleDownload} disabled={orders.length === 0}>
+    <Button onClick={handleDownload}>
       <CloudDownload />
       تصدير
     </Button>

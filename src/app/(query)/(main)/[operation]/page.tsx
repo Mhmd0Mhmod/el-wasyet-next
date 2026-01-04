@@ -5,12 +5,15 @@ import ExportButton from "@/components/main/operation/actions/ExportButton";
 import CertificatesTable from "@/components/main/operation/tables/CertificatesTable";
 import OrderReceiptTable from "@/components/main/operation/tables/OrderReceiptTable";
 import OrdersTable from "@/components/main/operation/tables/OrdersTable";
-import { getOrdersByStatusIds } from "@/data/orders";
+import { getOrdersByStatusIds, getServices } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { checkAccess } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
+import SearchInput from "@/components/shared/SearchInput";
+import Select from "@/components/shared/Select";
+import { Service } from "@/types/service";
 
 export const dynamic = "force-dynamic";
 
@@ -150,6 +153,7 @@ interface PageProps {
   searchParams: Promise<{
     search?: string;
     page?: string;
+    serviceId?: string;
   }>;
 }
 
@@ -160,7 +164,6 @@ async function page({ params, searchParams }: PageProps) {
   }
   const config = OPERATION_CONFIGS[operation as OperationType];
 
-  // Check ability if abilityId is defined
   if (config.abilityId) {
     const canView = await checkAccess(config.abilityId);
     if (!canView) {
@@ -173,6 +176,7 @@ async function page({ params, searchParams }: PageProps) {
       );
     }
   }
+  const services = await getServices();
 
   const searchParameters = await searchParams;
   return (
@@ -182,7 +186,11 @@ async function page({ params, searchParams }: PageProps) {
           fallback={<TableSkeleton rows={5} columns={7} />}
           key={`${JSON.stringify(searchParameters)} - ${Object.values(config).join(",")}`}
         >
-          <LoadTable config={config} searchParams={searchParameters} />
+          <LoadTable
+            config={config}
+            searchParams={searchParameters}
+            services={services}
+          />
         </Suspense>
       </>
     </PageLayout>
@@ -194,12 +202,15 @@ export default page;
 async function LoadTable({
   config,
   searchParams,
+  services,
 }: {
   config: OperationConfig;
   searchParams: {
     search?: string;
     page?: string;
+    serviceId?: string;
   };
+  services: Service[];
 }) {
   try {
     const { Component, statusIds, isCertificate } = config;
@@ -209,15 +220,35 @@ async function LoadTable({
       IsCertificate: isCertificate,
       searchTerm: searchParams.search,
       pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
+      serviceId: searchParams.serviceId,
     });
     const { items, pageNumber, totalPages } = result;
     console.log(items);
 
     return (
       <>
-        <div className="flex">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <SearchInput title="بحث" />
+            <Select
+              name="serviceId"
+              value={searchParams.serviceId || ""}
+              placeholder="تصفيه بالخدمه"
+              selectItems={services.map((service) => ({
+                value: service.id.toString(),
+                label: service.name,
+              }))}
+            />
+          </div>
           <div className="mr-auto">
-            <ExportButton orders={items.orders} />
+            <ExportButton
+              params={{
+                ...searchParams,
+                orderStatusIds: statusIds,
+                IsCertificate: isCertificate,
+              }}
+              name={config.title}
+            />
           </div>
         </div>
         <Component orders={items.orders} />

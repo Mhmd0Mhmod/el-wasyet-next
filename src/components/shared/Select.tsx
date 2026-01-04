@@ -33,6 +33,7 @@ interface SelectProps {
   className?: string;
   size?: "sm" | "default";
   multiple?: boolean;
+  value: string | number;
 }
 
 function Select({
@@ -41,6 +42,7 @@ function Select({
   selectItems = [],
   disabled,
   className,
+  value,
   size = "default",
   multiple = false,
 }: SelectProps) {
@@ -51,6 +53,13 @@ function Select({
     const param = searchParamsValues.get(name);
     return param ? param.split(",").filter(Boolean) : [];
   });
+
+  const currentValue = React.useMemo(() => {
+    if (multiple) {
+      return selectedValues.join(",");
+    }
+    return value;
+  }, [multiple, selectedValues, value]);
 
   const handleSingleValueChange = (value: string) => {
     const searchParams = new URLSearchParams(searchParamsValues);
@@ -151,6 +160,7 @@ function Select({
 
   return (
     <SelectRoot
+      value={currentValue.toString()}
       disabled={disabled}
       onValueChange={handleSingleValueChange}
       dir={"rtl"}

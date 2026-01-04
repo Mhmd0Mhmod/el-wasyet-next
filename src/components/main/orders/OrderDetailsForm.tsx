@@ -46,38 +46,13 @@ function OrderDetailsForm() {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>تاريخ الميلاد</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-right font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: ar })
-                        ) : (
-                          <span>اختر التاريخ</span>
-                        )}
-                        <CalendarIcon className="mr-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value ?? undefined}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      locale={ar}
-                    />
-                  </PopoverContent>
-                </Popover>
+                <FormControl>
+                  <Input
+                    type="date"
+                    {...field}
+                    value={field.value?.toString() || ""}
+                  />
+                </FormControl>
                 <FormDescription />
                 <FormMessage />
               </FormItem>

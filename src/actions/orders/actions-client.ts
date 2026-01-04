@@ -1,21 +1,21 @@
-"use server";
-
-import { authFetch } from "@/lib/axios";
 import { handleErrorResponse } from "@/actions/helper";
+import { fetch } from "@/lib/axios";
 import { OrderFormValues } from "@/schema/order";
 import { Order } from "@/types/order";
 
 export async function createOrder(
   formData: OrderFormValues,
+  { token }: { token: string },
 ): Promise<APIResponse<number>> {
   try {
     const form = generateFormData(formData);
-    const res = await authFetch.post<{
+    const res = await fetch.post<{
       message: string;
       orderId: number;
     }>("Order/create", form, {
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     });
     return {
@@ -31,12 +31,14 @@ export async function createOrder(
 export async function updateOrder(
   id: number,
   formData: OrderFormValues,
+  { token }: { token: string },
 ): Promise<APIResponse<Order>> {
   try {
     const form = generateFormData(formData);
-    const res = await authFetch.put<Order>(`Order/update/${id}`, form, {
+    const res = await fetch.put<Order>(`Order/update/${id}`, form, {
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     });
     return {

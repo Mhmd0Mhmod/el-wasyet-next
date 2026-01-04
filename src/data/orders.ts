@@ -227,11 +227,13 @@ export async function getOrdersByStatusIds({
   IsCertificate,
   searchTerm,
   pageNumber,
+  serviceId,
 }: {
   orderStatusIds: number[];
   IsCertificate?: boolean | null;
   searchTerm?: string;
   pageNumber?: number;
+  serviceId?: string;
 }): Promise<
   Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {
     items: {
@@ -252,6 +254,7 @@ export async function getOrdersByStatusIds({
       params: {
         orderStatusIds: orderStatusIds.join(","),
         IsCertificate: IsCertificate ?? null,
+        serviceId: serviceId ?? null,
         searchTerm: searchTerm ?? undefined,
         pageNumber: pageNumber ?? 1,
         PageSize: defaults.pageSize,
