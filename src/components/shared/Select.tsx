@@ -57,7 +57,7 @@ function Select({
       return selectedValues.join(",");
     }
     return searchParamsValues.get(name) || "";
-  }, [multiple, selectedValues]);
+  }, [multiple, selectedValues, name, searchParamsValues]);
 
   const handleSingleValueChange = (value: string) => {
     const searchParams = new URLSearchParams(searchParamsValues);

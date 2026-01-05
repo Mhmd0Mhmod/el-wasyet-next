@@ -5,6 +5,9 @@ const authFetch = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  paramsSerializer: {
+    indexes: null,
+  },
 });
 
 authFetch.interceptors.request.use(async (config) => {
@@ -19,6 +22,9 @@ const fetch = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
+  },
+  paramsSerializer: {
+    indexes: null,
   },
 });
 export { authFetch, fetch };

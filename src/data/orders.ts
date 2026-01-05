@@ -222,18 +222,12 @@ export async function getOrderLogs({
   }
 }
 
-export async function getOrdersByStatusIds({
-  orderStatusIds,
-  IsCertificate,
-  searchTerm,
-  pageNumber,
-  serviceId,
-}: {
+export async function getOrdersByStatusIds(params: {
   orderStatusIds: number[];
   IsCertificate?: boolean | null;
   searchTerm?: string;
   pageNumber?: number;
-  serviceId?: string;
+  serviceIds?: string[];
 }): Promise<
   Omit<PaginatedResponse<OrderByStatus[]>, "items"> & {
     items: {
@@ -251,14 +245,7 @@ export async function getOrdersByStatusIds({
         };
       }
     >(`/Order/GetBy-Status`, {
-      params: {
-        orderStatusIds: orderStatusIds.join(","),
-        IsCertificate: IsCertificate ?? null,
-        serviceId: serviceId ?? null,
-        searchTerm: searchTerm ?? undefined,
-        pageNumber: pageNumber ?? 1,
-        PageSize: defaults.pageSize,
-      },
+      params,
     });
     return data;
   } catch (err) {

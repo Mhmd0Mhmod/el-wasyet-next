@@ -153,7 +153,7 @@ interface PageProps {
   searchParams: Promise<{
     search?: string;
     page?: string;
-    serviceId?: string;
+    serviceIds?: string;
   }>;
 }
 
@@ -208,19 +208,21 @@ async function LoadTable({
   searchParams: {
     search?: string;
     page?: string;
-    serviceId?: string;
+    serviceIds?: string;
   };
   services: Service[];
 }) {
   try {
     const { Component, statusIds, isCertificate } = config;
-
+    const serviceIds = searchParams.serviceIds
+      ?.split(",")
+      .filter((id) => id.trim() !== "");
     const result = await getOrdersByStatusIds({
       orderStatusIds: statusIds,
       IsCertificate: isCertificate,
       searchTerm: searchParams.search,
       pageNumber: searchParams.page ? parseInt(searchParams.page) : 1,
-      serviceId: searchParams.serviceId,
+      serviceIds: serviceIds,
     });
     const { items, pageNumber, totalPages } = result;
     console.log(items);
@@ -231,12 +233,13 @@ async function LoadTable({
           <div className="flex items-center gap-2">
             <SearchInput title="بحث" />
             <Select
-              name="serviceId"
+              name="serviceIds"
               placeholder="تصفيه بالخدمه"
               selectItems={services.map((service) => ({
                 value: service.id.toString(),
                 label: service.name,
               }))}
+              multiple
             />
           </div>
           <div className="mr-auto">
@@ -245,6 +248,7 @@ async function LoadTable({
                 ...searchParams,
                 orderStatusIds: statusIds,
                 IsCertificate: isCertificate,
+                serviceIds: serviceIds,
               }}
               name={config.title}
             />

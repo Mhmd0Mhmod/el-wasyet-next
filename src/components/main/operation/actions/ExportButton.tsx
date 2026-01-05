@@ -10,25 +10,15 @@ async function exportOrders(
     IsCertificate?: boolean | null;
     searchTerm?: string;
     pageNumber?: number;
-    serviceId?: string;
+    serviceIds?: string[];
   },
   name: string,
 ) {
   try {
-    const { data } = await authFetch.get(
-      `OperationLog/Orders/Export?${params.orderStatusIds
-        .map((id) => `orderStatusIds=${id}`)
-        .join("&")}${
-        params.IsCertificate !== undefined
-          ? `&IsCertificate=${params.IsCertificate}`
-          : ""
-      }${params.searchTerm ? `&searchTerm=${params.searchTerm}` : ""}${
-        params.pageNumber ? `&pageNumber=${params.pageNumber}` : ""
-      }${params.serviceId ? `&serviceId=${params.serviceId}` : ""}`,
-      {
-        responseType: "blob",
-      },
-    );
+    const { data } = await authFetch.get(`OperationLog/Orders/Export`, {
+      responseType: "blob",
+      params,
+    });
     const timestamp = new Date().toISOString().split("T")[0];
     const filename = `${name}_${timestamp}.xlsx`;
     const url = URL.createObjectURL(data);
@@ -54,7 +44,7 @@ function ExportButton({
     IsCertificate?: boolean | null;
     searchTerm?: string;
     pageNumber?: number;
-    serviceId?: string;
+    serviceIds?: string[];
   };
   name: string;
 }) {
