@@ -36,7 +36,7 @@ function SearchInput({ title }: { title: string }) {
 
   return (
     <Input
-      container="max-w-sm"
+      container="sm:max-w-sm max-w-fit"
       Icon={Search}
       props={{
         name: "search",

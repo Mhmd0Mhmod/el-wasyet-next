@@ -179,8 +179,25 @@ async function page({ params, searchParams }: PageProps) {
   const services = await getServices();
 
   const searchParameters = await searchParams;
+  const serviceIds = searchParameters.serviceIds
+    ?.split(",")
+    .filter((id) => id.trim() !== "");
   return (
-    <PageLayout title={config.title} description={config.description}>
+    <PageLayout
+      title={config.title}
+      description={config.description}
+      extra={
+        <ExportButton
+          params={{
+            ...searchParameters,
+            orderStatusIds: config.statusIds,
+            IsCertificate: config.isCertificate,
+            serviceIds: serviceIds,
+          }}
+          name={config.title}
+        />
+      }
+    >
       <>
         <Suspense
           fallback={<TableSkeleton rows={5} columns={7} />}
@@ -230,7 +247,7 @@ async function LoadTable({
     return (
       <>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-start gap-2 md:flex-row md:items-center">
             <SearchInput title="بحث" />
             <Select
               name="serviceIds"
@@ -239,18 +256,8 @@ async function LoadTable({
                 value: service.id.toString(),
                 label: service.name,
               }))}
+              className="flex w-48 sm:w-xs"
               multiple
-            />
-          </div>
-          <div className="mr-auto">
-            <ExportButton
-              params={{
-                ...searchParams,
-                orderStatusIds: statusIds,
-                IsCertificate: isCertificate,
-                serviceIds: serviceIds,
-              }}
-              name={config.title}
             />
           </div>
         </div>

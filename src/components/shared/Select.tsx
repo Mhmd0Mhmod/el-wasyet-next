@@ -105,9 +105,9 @@ function Select({
             className={`${className} h-fit max-w-sm flex-wrap justify-start font-normal`}
           >
             {selectedValues.length === 0 ? (
-              <div className="text-muted-foreground flex min-w-xs items-center justify-between">
+              <div className="text-muted-foreground flex flex-1 items-center justify-between">
                 <span>{placeholder}</span>
-                <ChevronDownIcon className="ml-2 size-4" />
+                <ChevronDownIcon className="size-4" />
               </div>
             ) : (
               <div className="flex flex-wrap gap-1">
