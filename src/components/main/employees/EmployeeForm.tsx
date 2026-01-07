@@ -269,7 +269,7 @@ function EmployeeFormContent({
               control={form.control}
               name="managerId"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-1 md:col-span-2">
                   <FormLabel>المدير المباشر</FormLabel>
                   <FormControl>
                     <Select
@@ -302,7 +302,7 @@ function EmployeeFormContent({
               control={form.control}
               name="suspended"
               render={({ field }) => (
-                <FormItem className="col-span-2 flex items-center justify-between rounded-lg border p-3">
+                <FormItem className="col-span-1 flex items-center justify-between rounded-lg border p-3 md:col-span-2">
                   <FormLabel className="cursor-pointer">موقوف</FormLabel>
                   <FormControl>
                     <Switch
@@ -374,13 +374,21 @@ function EmployeeFormContent({
           />
 
           {!disabled && (
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
               <DialogClose asChild>
-                <Button type="button" variant="outline">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
                   إلغاء
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button
+                type="submit"
+                disabled={form.formState.isSubmitting}
+                className="w-full sm:w-auto"
+              >
                 {form.formState.isSubmitting
                   ? "جاري الحفظ..."
                   : isEditMode

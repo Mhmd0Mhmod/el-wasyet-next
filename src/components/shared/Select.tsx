@@ -114,12 +114,13 @@ function Select({
                 {getSelectedLabels().map((label, index) => (
                   <Badge key={index} variant="secondary" className="gap-1">
                     {label}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
+                    <button
                       onClick={(e) =>
                         handleRemoveValue(selectedValues[index], e)
                       }
-                    />
+                    >
+                      <X className="ml-auto h-3 w-3 cursor-pointer" />
+                    </button>
                   </Badge>
                 ))}
               </div>

@@ -160,11 +160,9 @@ export const overheadSchema = z
 export const generateServiceSchema = (workFlows: ShortWorkFlow[]) =>
   z.object({
     Name: z.string().min(1, ERROR_MESSAGES.REQUIRED_NAME),
-    defaultFees: z.number().min(0, ERROR_MESSAGES.INVALID_DEFAULT_FEES),
-    validityPeriodDays: z
-      .number()
-      .min(0, ERROR_MESSAGES.INVALID_VALIDITY_PERIOD),
-    expiryPeriodYears: z.number().min(0, ERROR_MESSAGES.INVALID_EXPIRY_PERIOD),
+    defaultFees: z.number(),
+    validityPeriodDays: z.number(),
+    expiryPeriodYears: z.number(),
     isCertificate: z.boolean(),
     documents: z.array(documentSchema),
     Workflows: z.array(createWorkflowSchema(workFlows)),

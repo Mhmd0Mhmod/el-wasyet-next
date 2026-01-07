@@ -21,8 +21,7 @@ async function page() {
   if (!canCreate) {
     redirect("/orders");
   }
-  const offers = await getOffers();
-  const agents = await getAgents();
+  const [agents, offers] = await Promise.all([getAgents(), getOffers()]);
   return (
     <OrderFormProvider agents={agents} offers={offers}>
       <PageLayout
@@ -58,10 +57,10 @@ async function page() {
             <OverheadsForms />
           </div>
         </div>
-        <div className="mt-10 flex justify-end gap-4">
+        <div className="mt-10 flex flex-col justify-end gap-4 md:flex-row">
+          <SubmitButton />
           <ResetButton />
           <UploadDocumentButton />
-          <SubmitButton />
         </div>
       </PageLayout>
     </OrderFormProvider>

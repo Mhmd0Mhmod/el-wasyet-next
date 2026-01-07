@@ -34,7 +34,7 @@ function NewEmployeeButton({
       </Dialog.Trigger>
       <Dialog.Content
         title="إضافة موظف جديد"
-        className="mx-auto max-h-[80vh] min-w-2xl overflow-y-auto"
+        className="mx-auto max-h-[80vh] overflow-y-auto"
       >
         <EmployeeForm managers={managersBranches} roles={roles} />
       </Dialog.Content>

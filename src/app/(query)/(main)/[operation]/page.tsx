@@ -1,19 +1,18 @@
-import Pagination from "@/components/shared/Pagination";
-import TableSkeleton from "@/components/shared/TableSkeleton";
+import { checkAccess } from "@/actions/auth/actions";
 import PageLayout from "@/components/Layout/PageLayout";
 import ExportButton from "@/components/main/operation/actions/ExportButton";
 import CertificatesTable from "@/components/main/operation/tables/CertificatesTable";
 import OrderReceiptTable from "@/components/main/operation/tables/OrderReceiptTable";
 import OrdersTable from "@/components/main/operation/tables/OrdersTable";
+import Pagination from "@/components/shared/Pagination";
+import SearchInput from "@/components/shared/SearchInput";
+import Select from "@/components/shared/Select";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import { ABILITY_IDS } from "@/constants/abilities";
 import { getOrdersByStatusIds, getServices } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { checkAccess } from "@/actions/auth/actions";
-import { ABILITY_IDS } from "@/constants/abilities";
-import SearchInput from "@/components/shared/SearchInput";
-import Select from "@/components/shared/Select";
-import { Service } from "@/types/service";
 
 export const dynamic = "force-dynamic";
 
@@ -199,15 +198,24 @@ async function page({ params, searchParams }: PageProps) {
       }
     >
       <>
+        <div className="flex flex-col items-start gap-2 md:flex-row md:items-center">
+          <SearchInput title="بحث" />
+          <Select
+            name="serviceIds"
+            placeholder="تصفيه بالخدمه"
+            selectItems={services.map((service) => ({
+              value: service.id.toString(),
+              label: service.name,
+            }))}
+            className="flex w-48 sm:w-xs"
+            multiple
+          />
+        </div>
         <Suspense
           fallback={<TableSkeleton rows={5} columns={7} />}
           key={`${JSON.stringify(searchParameters)} - ${Object.values(config).join(",")}`}
         >
-          <LoadTable
-            config={config}
-            searchParams={searchParameters}
-            services={services}
-          />
+          <LoadTable config={config} searchParams={searchParameters} />
         </Suspense>
       </>
     </PageLayout>
@@ -219,7 +227,6 @@ export default page;
 async function LoadTable({
   config,
   searchParams,
-  services,
 }: {
   config: OperationConfig;
   searchParams: {
@@ -227,7 +234,6 @@ async function LoadTable({
     page?: string;
     serviceIds?: string;
   };
-  services: Service[];
 }) {
   try {
     const { Component, statusIds, isCertificate } = config;
@@ -246,21 +252,6 @@ async function LoadTable({
 
     return (
       <>
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col items-start gap-2 md:flex-row md:items-center">
-            <SearchInput title="بحث" />
-            <Select
-              name="serviceIds"
-              placeholder="تصفيه بالخدمه"
-              selectItems={services.map((service) => ({
-                value: service.id.toString(),
-                label: service.name,
-              }))}
-              className="flex w-48 sm:w-xs"
-              multiple
-            />
-          </div>
-        </div>
         <Component orders={items.orders} />
         <Pagination
           page={pageNumber}

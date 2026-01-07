@@ -25,23 +25,23 @@ function UploadDocumentButton() {
     name: "CreateFiles",
   });
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedFileType, setSelectedFileType] = useState<string>("");
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    setSelectedFiles(files);
   };
 
-  const handleAddFile = () => {
-    if (selectedFile && selectedFileType) {
-      append({
-        FileTypeId: parseInt(selectedFileType),
-        File: selectedFile,
+  const handleAddFiles = () => {
+    if (selectedFiles.length > 0 && selectedFileType) {
+      selectedFiles.forEach((file) => {
+        append({
+          FileTypeId: parseInt(selectedFileType),
+          File: file,
+        });
       });
-      setSelectedFile(null);
+      setSelectedFiles([]);
       setSelectedFileType("");
       if (fileRef.current) {
         fileRef.current.value = "";
@@ -52,7 +52,23 @@ function UploadDocumentButton() {
   const handleRemoveFile = (index: number) => {
     remove(index);
   };
-
+  const handleRemovePreivewFile = (
+    index: number,
+    e: React.MouseEvent<HTMLSpanElement>,
+  ) => {
+    e.stopPropagation();
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    const selectedPreivewRefFiles = fileRef.current?.files;
+    if (selectedPreivewRefFiles) {
+      const dataTransfer = new DataTransfer();
+      Array.from(selectedPreivewRefFiles)
+        .filter((_, i) => i !== index)
+        .forEach((file) => dataTransfer.items.add(file));
+      if (fileRef.current) {
+        fileRef.current.files = dataTransfer.files;
+      }
+    }
+  };
   return (
     <Dialog>
       <Dialog.Trigger>
@@ -65,45 +81,66 @@ function UploadDocumentButton() {
           {/* File Upload Section using shadcn Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">إضافة ملف جديد</CardTitle>
+              <CardTitle className="text-lg">إضافة صور جديدة</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid w-full grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="file-input">اختر الملف</Label>
+                  <Label htmlFor="file-input">اختر الصور</Label>
                   <Input
                     id="file-input"
                     type="file"
                     ref={fileRef}
                     onChange={handleFileSelect}
-                    accept="*/*"
+                    accept="image/*"
+                    multiple
                   />
+                  {selectedFiles.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedFiles.map((file, idx) => (
+                        <Badge
+                          key={idx}
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
+                          {file.name}
+                          <span
+                            className="text-muted-foreground hover:text-destructive ml-1 cursor-pointer"
+                            title="إزالة الصورة"
+                            onClick={(e) => handleRemovePreivewFile(idx, e)}
+                          >
+                            ×
+                          </span>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label>نوع الملف</Label>
+                  <Label>نوع الصور</Label>
                   <Select
                     value={selectedFileType}
                     onValueChange={setSelectedFileType}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="اختر نوع الملف" />
+                      <SelectValue placeholder="اختر نوع الصور" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">ملف مدخل</SelectItem>
-                      <SelectItem value="2">ملف مخرج</SelectItem>
+                      <SelectItem value="1">ملف مدخل (كل الصور)</SelectItem>
+                      <SelectItem value="2">ملف مخرج (كل الصور)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <Button
                 type="button"
-                onClick={handleAddFile}
-                disabled={!selectedFile || !selectedFileType}
+                onClick={handleAddFiles}
+                disabled={selectedFiles.length === 0 || !selectedFileType}
                 className="w-full"
               >
                 <Upload className="ml-2 h-4 w-4" />
-                إضافة الملف
+                إضافة الصور
               </Button>
             </CardContent>
           </Card>
