@@ -8,8 +8,9 @@ import { Button } from "../ui/button";
 type ExportButtonProps = {
   url: string;
   params?: Record<string, string | number | boolean>;
+  filename?: string;
 };
-function ExportButton({ url, params }: ExportButtonProps) {
+function ExportButton({ url, params, filename }: ExportButtonProps) {
   const onClick = useCallback(async () => {
     const id = toast.loading("جاري تجهيز الملف...");
     try {
@@ -19,11 +20,13 @@ function ExportButton({ url, params }: ExportButtonProps) {
       });
 
       const timestamp = new Date().toISOString().split("T")[0];
-      const filename = `تقرير_الطلبات_الداخلية_${timestamp}.xlsx`;
+      const filenameToUse = filename
+        ? `${filename}_${timestamp}.xlsx`
+        : `تقرير_الطلبات_الداخلية_${timestamp}.xlsx`;
       const fileUrl = URL.createObjectURL(blob);
       const link = Object.assign(document.createElement("a"), {
         href: fileUrl,
-        download: filename,
+        download: filenameToUse,
       });
 
       link.click();

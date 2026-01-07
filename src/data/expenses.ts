@@ -11,19 +11,22 @@ export async function getExpenses({
   fromDate,
   toDate,
   page,
-}: expenseParams): Promise<PaginatedResponse<Expense>> {
+}: expenseParams): Promise<
+  PaginatedResponse<Expense> & { totalAmount: number }
+> {
   try {
-    const { data } = await authFetch.get<PaginatedResponse<Expense>>(
-      "/Expense/all",
-      {
-        params: {
-          fromDate,
-          toDate,
-          pageNumber: page,
-          pageSize: defaults.pageSize,
-        },
+    const { data } = await authFetch.get<
+      PaginatedResponse<Expense> & {
+        totalAmount: number;
+      }
+    >("/Expense/all", {
+      params: {
+        fromDate,
+        toDate,
+        pageNumber: page,
+        pageSize: defaults.pageSize,
       },
-    );
+    });
     return data;
   } catch (error) {
     throw error;

@@ -19,6 +19,7 @@ import { CashboxDetails } from "@/types/cashbox";
 import Link from "next/link";
 import { checkAccess, getCurrentUser } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
+import ExportButton from "@/components/shared/export-button";
 
 async function page() {
   const canView = await checkAccess(ABILITY_IDS.VIEW_CASH_BOX);
@@ -39,7 +40,13 @@ async function page() {
     user?.roleName === "Accounting Manager - مدير حسابات" ||
     user?.roleName === "Accounting Assistant - مساعد محاسب";
   return (
-    <PageLayout title="الخزنه" description="تحليل وإدارة عمليات الخزنة">
+    <PageLayout
+      title="الخزنه"
+      description="تحليل وإدارة عمليات الخزنة"
+      extra={
+        <ExportButton url="Cashier/Cashier/Export" filename="تقارير الخزنه" />
+      }
+    >
       <FinincialReports data={cashboxData} />
       <TransactionsTable data={cashboxData} />
       <div className="flex justify-end">

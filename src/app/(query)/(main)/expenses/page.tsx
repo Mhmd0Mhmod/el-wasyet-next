@@ -58,7 +58,6 @@ async function DataTable({ searchParams }: Props) {
 
   const response = await getExpenses(params);
   const { items, pageNumber, totalPages } = response;
-  const total = items?.reduce((sum, item) => sum + item.amount, 0) || 0;
   return (
     <>
       <Table
@@ -97,7 +96,7 @@ async function DataTable({ searchParams }: Props) {
           <Label className={"text-nowrap"}>إجمالي المصروفات: </Label>
           <Input
             disabled
-            value={formatCurrency(total)}
+            value={formatCurrency(response.totalAmount)}
             type={"text"}
             className={"bg-gray-300"}
           />
