@@ -132,21 +132,13 @@ const validateExclusiveOptions = (
 export const overheadSchema = z
   .object({
     id: z.number().nullable().optional(),
-    value: z.number().min(0, ERROR_MESSAGES.INVALID_VALUE),
+    value: z.number(),
     description: z.string().min(1, ERROR_MESSAGES.REQUIRED_DESCRIPTION),
     penalty: z.boolean().optional(),
     forms: z.boolean().optional(),
     adminFees: z.boolean().optional(),
-    penaltyBankFeePrecentage: z
-      .number()
-      .min(0, ERROR_MESSAGES.INVALID_PENALTY_BANK_FEE)
-      .nullable()
-      .optional(),
-    penaltyExtraFee: z
-      .number()
-      .min(0, ERROR_MESSAGES.INVALID_PENALTY_EXTRA_FEE)
-      .nullable()
-      .optional(),
+    penaltyBankFeePrecentage: z.number().nullable().optional(),
+    penaltyExtraFee: z.number().nullable().optional(),
     relatedAgent: z.boolean().optional(),
     formTypeID: z.number().nullable().optional(),
   })
@@ -160,9 +152,11 @@ export const overheadSchema = z
 export const generateServiceSchema = (workFlows: ShortWorkFlow[]) =>
   z.object({
     Name: z.string().min(1, ERROR_MESSAGES.REQUIRED_NAME),
-    defaultFees: z.number(),
-    validityPeriodDays: z.number(),
-    expiryPeriodYears: z.number(),
+    defaultFees: z.number().min(0, ERROR_MESSAGES.INVALID_DEFAULT_FEES),
+    validityPeriodDays: z
+      .number()
+      .min(0, ERROR_MESSAGES.INVALID_VALIDITY_PERIOD),
+    expiryPeriodYears: z.number().min(0, ERROR_MESSAGES.INVALID_EXPIRY_PERIOD),
     isCertificate: z.boolean(),
     documents: z.array(documentSchema),
     Workflows: z.array(createWorkflowSchema(workFlows)),

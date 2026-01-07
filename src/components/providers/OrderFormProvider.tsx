@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 interface OrderFormContextProps {
@@ -120,10 +120,12 @@ function OrderFromProvider({
       }
     }
   }, [form, router, isEditMode, orderDetails, session]);
-  const selectedService = form.watch("ServiceId");
+  const selectedService = useWatch({
+    control: form.control,
+    name: "ServiceId",
+  });
   const { service, isLoading: isLoadingService } = useService(selectedService);
   const totalAmount = useCalculateOverheadsTotal(service, offers, agents, form);
-
   return (
     <OrderContext.Provider
       value={{

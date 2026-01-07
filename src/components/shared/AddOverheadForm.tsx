@@ -255,7 +255,6 @@ function PenaltyComponent({
             id={`${name}.${index}.penaltyExtraFee`}
             type="text"
             placeholder="الرسوم الإضافية"
-            min="0"
             {...form.register(`${name}.${index}.penaltyExtraFee`, {
               setValueAs: (value) => (value === "" ? 0 : Number(value)),
             })}
@@ -271,8 +270,6 @@ function PenaltyComponent({
             id={`${name}.${index}.penaltyBankFeePrecentage`}
             type="text"
             placeholder="نسبة الرسوم البنكيه%"
-            min="0"
-            max="100"
             {...form.register(`${name}.${index}.penaltyBankFeePrecentage`, {
               setValueAs: (value) => (value === "" ? 0 : Number(value)),
             })}

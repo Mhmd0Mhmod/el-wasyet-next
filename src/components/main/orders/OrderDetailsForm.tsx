@@ -1,5 +1,4 @@
 "use client";
-import { Calendar } from "@/components/ui/calendar";
 import { useOrderForm } from "../../providers/OrderFormProvider";
 import {
   FormControl,
@@ -12,16 +11,6 @@ import {
 import { Input } from "../../ui/input";
 import { Skeleton } from "../../ui/skeleton";
 import { Textarea } from "../../ui/textarea";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 function OrderDetailsForm() {
   const { service, isLoadingService, form } = useOrderForm();
