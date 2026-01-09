@@ -96,7 +96,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
     Cash: orderDetails.cash,
     Credit: orderDetails.credit,
     DeliveryAddress: orderDetails.deliveryAddress,
-    BirthDate: orderDetails.birthDate ? new Date(orderDetails.birthDate) : null,
+    BirthDate: orderDetails.birthDate ? orderDetails.birthDate : null,
     RequiredChange: orderDetails.requiredChange_forthName_Husbend,
     Quantity: orderDetails.quantity,
     Documents: orderDetails.documents.map((doc) => doc.id),
