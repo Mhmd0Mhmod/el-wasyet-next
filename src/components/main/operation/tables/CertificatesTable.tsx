@@ -23,7 +23,7 @@ const columns = [
   { id: "date", label: "التاريخ" },
   { id: "employee", label: "الموظف" },
   { id: "birthDate", label: "تاريخ الميلاد" },
-  { id: "id", label: "رقم قومي" },
+  { id: "required-change", label: "المطلوب تغييره" },
   { id: "fines-real-cost", label: "المصاريف" },
   { id: "fines", label: "الغرامات" },
   { id: "remaining", label: "يتبقى على الانتهاء" },
@@ -53,7 +53,7 @@ function CertificatesTable({
                   "bg-yellow-200": order.closeAskExpense,
                 })}
               >
-                <TableCell className="!px-2">
+                <TableCell className="px-2!">
                   <SelectOrderCheckbox orderId={order.orderId} />
                 </TableCell>
                 <TableCell>
@@ -91,7 +91,7 @@ function CertificatesTable({
                     ? formatDate(order.birthDate, "date")
                     : "غير محدد"}
                 </TableCell>
-                <TableCell>{order.comments_id_Wife_Mother}</TableCell>
+                <TableCell>{order.requiredChange_forthName_Husbend}</TableCell>
                 <TableCell>{formatCurrency(order.finesRealCost)}</TableCell>
                 <TableCell>
                   <Dialog>

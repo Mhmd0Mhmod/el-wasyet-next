@@ -5,10 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_STORAGE_BASE_URL?.replace(
-          /^https?:\/\//,
-          "",
-        ) as string,
+        hostname: "*",
       },
     ],
   },
