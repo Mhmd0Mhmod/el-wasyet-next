@@ -70,7 +70,7 @@ function generateFormData(formData: OrderFormValues): FormData {
     form.append("DeliveryAddress", formData.DeliveryAddress);
   }
   if (formData.BirthDate) {
-    form.append("BirthDate", formData.BirthDate.toISOString());
+    form.append("BirthDate", formData.BirthDate.toString());
   }
   if (formData.Quantity) {
     form.append("Quantity", formData.Quantity?.toString());
