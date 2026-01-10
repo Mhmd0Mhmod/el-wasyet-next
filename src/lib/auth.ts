@@ -112,7 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 5 * 60, // 5 minutes maximum session age
+    maxAge: 15 * 60, // 15 minutes maximum session age
     updateAge: 0, // Update session on every request to track activity
   },
 });

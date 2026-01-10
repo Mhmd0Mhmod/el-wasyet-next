@@ -245,7 +245,10 @@ export async function getOrdersByStatusIds(params: {
         };
       }
     >(`/Order/GetBy-Status`, {
-      params,
+      params: {
+        ...params,
+        pageSize: 30,
+      },
     });
     return data;
   } catch (err) {
