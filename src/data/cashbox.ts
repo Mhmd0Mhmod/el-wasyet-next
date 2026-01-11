@@ -2,10 +2,17 @@ import { getToken } from "@/actions/auth/actions";
 import { authFetch } from "@/lib/axios";
 import { CashboxDetails } from "@/types/cashbox";
 
-export async function getCashboxData(): Promise<CashboxDetails> {
+export async function getCashboxData(
+  page: string = "1",
+): Promise<PaginatedResponse<CashboxDetails>> {
   try {
-    const { data } = await authFetch.get<CashboxDetails>(
+    const { data } = await authFetch.get<PaginatedResponse<CashboxDetails>>(
       "Cashier/employee/details",
+      {
+        params: {
+          pageNumber: page,
+        },
+      },
     );
     return data;
   } catch (error) {

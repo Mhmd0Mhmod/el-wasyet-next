@@ -31,7 +31,8 @@ function AddNewExpense() {
     resolver: zodResolver(expenseSchema),
     defaultValues: {
       entryDate: "",
-      amount: 0,
+      amountInCash: 0,
+      amountInCredit: 0,
     },
   });
   const { data: branches, isFetching: isLoading } = useBranches();
@@ -56,7 +57,7 @@ function AddNewExpense() {
     <div>
       <Form {...form}>
         <form
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 md:gap-5"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-4 md:gap-5"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -74,10 +75,28 @@ function AddNewExpense() {
           />
           <FormField
             control={form.control}
-            name="amount"
+            name="amountInCash"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>المبلغ</FormLabel>
+                <FormLabel>المبلغ كاش</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step={"any"}
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="amountInCredit"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>المبلغ كريديت</FormLabel>
                 <FormControl>
                   <Input
                     type="number"

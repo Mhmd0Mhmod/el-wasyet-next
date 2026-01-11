@@ -20,8 +20,13 @@ import Link from "next/link";
 import { checkAccess, getCurrentUser } from "@/actions/auth/actions";
 import { ABILITY_IDS } from "@/constants/abilities";
 import ExportButton from "@/components/shared/export-button";
+import Pagination from "@/components/shared/Pagination";
 
-async function page() {
+async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const canView = await checkAccess(ABILITY_IDS.VIEW_CASH_BOX);
 
   if (!canView) {
@@ -33,8 +38,9 @@ async function page() {
       </PageLayout>
     );
   }
+  const params = await searchParams;
 
-  const cashboxData = await getCashboxData();
+  const cashboxData = await getCashboxData(params.page);
   const user = await getCurrentUser();
   const isAccountant =
     user?.roleName === "Accounting Manager - مدير حسابات" ||
@@ -47,9 +53,14 @@ async function page() {
         <ExportButton url="Cashier/Cashier/Export" filename="تقارير الخزنه" />
       }
     >
-      <FinincialReports data={cashboxData} />
-      <TransactionsTable data={cashboxData} />
-      <div className="flex justify-end">
+      <FinincialReports data={cashboxData.items.at(0)!} />
+      <TransactionsTable data={cashboxData.items.at(0)!} />
+      <div className="flex">
+        <Pagination
+          searchParams={params}
+          page={cashboxData.pageNumber}
+          totalPages={cashboxData.totalPages}
+        />
         {!isAccountant && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
