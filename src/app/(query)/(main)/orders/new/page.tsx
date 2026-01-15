@@ -37,7 +37,7 @@ async function page() {
         }
         backButton
       >
-        <div className="md:gap-6 xl:grid xl:grid-cols-[1fr_auto] xl:items-start">
+        <div className="md:gap-6 xl:grid xl:grid-cols-[1fr_400px] xl:items-start">
           <div className="space-y-6">
             <div className="space-y-2">
               <h4>العميل والخدمة</h4>

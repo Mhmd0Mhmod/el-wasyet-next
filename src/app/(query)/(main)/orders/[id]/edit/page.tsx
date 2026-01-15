@@ -137,7 +137,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
         }
         backButton
       >
-        <div className="md:gap-6 xl:grid xl:grid-cols-[1fr_auto] xl:items-start">
+        <div className="md:gap-6 xl:grid xl:grid-cols-[1fr_400px] xl:items-start">
           <div className="space-y-6">
             <div className="space-y-2">
               <h4>العميل والخدمة</h4>
@@ -157,10 +157,10 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
             <OverheadsForms />
           </div>
         </div>
-        <div className="mt-10 flex justify-end gap-4">
+        <div className="mt-10 flex flex-col justify-end gap-4 md:flex-row">
+          <SubmitButton />
           <ResetButton />
           <UploadDocumentButton />
-          <SubmitButton />
         </div>
       </PageLayout>
     </OrderFormProvider>

@@ -63,7 +63,7 @@ function DocumentSelector() {
   const { documents: documentsServcie } = service || { documents: [] };
 
   return (
-    <Card className="max-w-sm min-w-sm">
+    <Card>
       <CardHeader>
         <CardTitle>المستندات</CardTitle>
       </CardHeader>

@@ -36,7 +36,7 @@ function Table({
         <TableHeader>
           <TableRow>
             {selectAll && (
-              <TableHead className="!px-2 text-center">
+              <TableHead className="px-2! text-center">
                 <Checkbox
                   defaultChecked={selected}
                   onCheckedChange={onSelectAllChange}
