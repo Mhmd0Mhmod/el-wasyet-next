@@ -70,15 +70,14 @@ export interface OrderByStatusShortOrder {
 }
 
 interface Order
-  extends BaseEntity,
-    OrderCommonFields,
-    ClientFields,
-    OrderIdentification {
+  extends BaseEntity, OrderCommonFields, ClientFields, OrderIdentification {
   orderDate: string;
   notes: string;
   isRelatedToOffer: boolean;
   isFromApp: boolean;
   recevingStatues: string;
+  receivedByWho: string;
+  receivedByWhoUrl: string;
 }
 
 interface OrderDetails extends Order, Omit<FinancialFields, "amount"> {
@@ -115,7 +114,8 @@ interface OrderService extends Omit<Service, "documents" | "overheads"> {
 }
 
 interface OrderLog
-  extends BaseEntity,
+  extends
+    BaseEntity,
     ClientFields,
     Pick<OrderCommonFields, "serviceName" | "amount" | "requiredChange"> {
   actionDate: string;
@@ -130,7 +130,8 @@ interface OrderLog
 }
 
 interface OrderByStatus
-  extends Pick<ClientFields, "clientName" | "clientId">,
+  extends
+    Pick<ClientFields, "clientName" | "clientId">,
     Pick<OrderCommonFields, "serviceName" | "orderStatus"> {
   orderId: number;
   orderCode: string;

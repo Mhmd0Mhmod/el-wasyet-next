@@ -7,9 +7,16 @@ import ExportReceiptButton from "@/components/main/orders/ExportReceiptButton";
 import NotesCard from "@/components/main/orders/NotesCard";
 import OrderDetailsCard from "@/components/main/orders/OrderDetailsCard";
 import OrderSummaryCard from "@/components/main/orders/OrderSummaryCard";
+import RecipientDataCard from "@/components/main/orders/RecipientDataCard";
 import RequiredChangesCard from "@/components/main/orders/RequiredChangesCard";
 import UploadedFilesCard from "@/components/main/orders/UploadedFilesCard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getOrderById } from "@/data/orders";
 import { getFullURL } from "@/lib/helper";
@@ -106,17 +113,22 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
             الملفات المحملة
           </CardTitle>
         </CardHeader>
+        <Separator />
         <CardContent className="space-y-6">
           {/* Uploaded Files Card */}
           <UploadedFilesCard files={orderDetails.files || []} />
-          <Separator />
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
-            <ExportReceiptButton orderId={orderDetails.id} />
-            <DownloadPDF orderId={orderDetails.id} />
-            <WhatsAppShareButton orderId={orderDetails.id} />
-          </div>
+          {orderDetails.files.length > 0 &&
+            orderDetails.receivedByWhoUrl &&
+            orderDetails.receivedByWho && <Separator />}
+          {/* Recipient Data Card */}
+          <RecipientDataCard orderDetails={orderDetails} />
         </CardContent>
+        <Separator />
+        <CardFooter className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+          <ExportReceiptButton orderId={orderDetails.id} />
+          <DownloadPDF orderId={orderDetails.id} />
+          <WhatsAppShareButton orderId={orderDetails.id} />
+        </CardFooter>
       </Card>
     </PageLayout>
   );

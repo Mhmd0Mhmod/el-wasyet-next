@@ -172,3 +172,24 @@ export async function addNote(
     return handleErrorResponse(err);
   }
 }
+
+export async function addRecipientData(
+  formData: FormData,
+): Promise<APIResponse<null>> {
+  try {
+    const { data } = await authFetch.post(
+      "OperationLog/upload-reciver-order-data",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return data.success
+      ? { success: true, data: null, message: "تم إضافة بيانات المستلم بنجاح" }
+      : { success: false, message: data.message || "حدث خطأ ما" };
+  } catch (err) {
+    return handleErrorResponse(err);
+  }
+}

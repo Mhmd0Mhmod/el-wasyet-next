@@ -9,6 +9,7 @@ import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import ClientDetails from "../../clients/ClientDetails";
 import AddNote from "../actions/add-note";
+import AddRecipientDataForm from "../actions/AddRecipientDataForm";
 import SendCodeButton from "../actions/send-code-button";
 import { getRemainingDaysStyle } from "../helper";
 
@@ -51,6 +52,7 @@ const ORDER_TABLE_COLUMNS = [
     id: "code_status",
     label: "حالة الكود",
   },
+  { id: "recipient_data", label: "بيانات المستلم " },
   { id: "branch", label: "الفرع" },
 
   {
@@ -137,6 +139,19 @@ function OrderReceiptTable({ orders }: { orders: OrderByStatus[] }) {
             </TableCell>
             <TableCell>
               <SendCodeButton order={order}>إرسال كود</SendCodeButton>
+            </TableCell>
+            <TableCell>
+              <Dialog>
+                <Dialog.Trigger>
+                  <Button variant="outline" size="sm" className="w-full">
+                    <Plus className="mr-2 h-4 w-4" />
+                    إضافه
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content title="إضافة بيانات المستلم">
+                  <AddRecipientDataForm orderId={order.orderId} />
+                </Dialog.Content>
+              </Dialog>{" "}
             </TableCell>
             <TableCell>{order.branchName}</TableCell>
             <TableCell>
