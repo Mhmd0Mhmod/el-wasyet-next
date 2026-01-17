@@ -3,6 +3,8 @@ import { authFetch } from "../axios";
 export type AccountantRequestsParams = {
   fromDate?: string;
   toDate?: string;
+  employeeid?: string;
+  accountantid?: string;
 };
 export interface AccountantRequest {
   requests: AccountantRequestItem[];
@@ -24,6 +26,10 @@ export interface AccountantRequestItem {
   fromEmployeeName: string;
   toEmployeeName: string;
 }
+export interface Employee {
+  id: number;
+  name: string;
+}
 export enum RequestType {
   AskExpense = "طلب تحصيل مصاريف",
   RefundExpense = "طلب رد مصاريف",
@@ -42,6 +48,26 @@ export class AccountantRequestsAPI {
       >("/Request/AccountantRequests", {
         params,
       });
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getEmployees(): Promise<Employee[]> {
+    try {
+      const { data } = await authFetch.get<Employee[]>(
+        "/Request/employees/without-accountants",
+      );
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getAccountants(): Promise<Employee[]> {
+    try {
+      const { data } = await authFetch.get<Employee[]>(
+        "/Request/GetAccoutantEmployees",
+      );
       return data;
     } catch (error) {
       throw error;

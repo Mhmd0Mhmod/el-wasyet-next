@@ -40,7 +40,7 @@ function FilterSection() {
   );
   return (
     <form
-      className="grid grid-cols-3 justify-items-start gap-4"
+      className="grid grid-cols-1 justify-items-start gap-4 md:grid-cols-3"
       onSubmit={form.handleSubmit(onSubmit)}
     >
       <div className="w-full space-y-2">
