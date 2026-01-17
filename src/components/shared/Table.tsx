@@ -44,7 +44,7 @@ function Table({
               </TableHead>
             )}
             {selectAllComponent && (
-              <TableHead className="!px-2 text-center">
+              <TableHead className="px-2! text-center">
                 {React.createElement(selectAllComponent)}
               </TableHead>
             )}
