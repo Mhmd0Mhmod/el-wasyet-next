@@ -22,7 +22,7 @@ export interface AccountantRequestItem {
   amountInCash: number;
   amountInCredit: number;
   requestStatusName: string;
-  requestTypeName: string;
+  requestTypeName: keyof typeof RequestType;
   fromEmployeeName: string;
   toEmployeeName: string;
 }

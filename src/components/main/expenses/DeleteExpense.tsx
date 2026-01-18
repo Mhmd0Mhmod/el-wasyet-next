@@ -3,6 +3,7 @@ import { deleteExpense } from "@/actions/expenses/action";
 import {
   ButtonHTMLAttributes,
   cloneElement,
+  createElement,
   isValidElement,
   useCallback,
 } from "react";
@@ -31,8 +32,9 @@ function DeleteExpense({
   if (!isValidElement(children)) {
     throw new Error("Child must be a valid React element");
   }
-  return cloneElement(children, {
+  return createElement(children.type, {
+    ...(children.props as ButtonHTMLAttributes<HTMLButtonElement>),
     onClick: handleDelete,
-  } as ButtonHTMLAttributes<HTMLButtonElement>);
+  });
 }
 export default DeleteExpense;

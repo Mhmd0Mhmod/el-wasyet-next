@@ -85,13 +85,7 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
                 <TableCell>{formatCurrency(request.amount)}</TableCell>
                 <TableCell>{request.toEmployeeName}</TableCell>
                 <TableCell>{request.fromEmployeeName}</TableCell>
-                <TableCell>
-                  {
-                    RequestType[
-                      request.requestTypeName as keyof typeof RequestType
-                    ]
-                  }
-                </TableCell>
+                <TableCell>{RequestType[request.requestTypeName]}</TableCell>
                 <TableCell>
                   {formatDate(request.requestDate, "datetime")}
                 </TableCell>
