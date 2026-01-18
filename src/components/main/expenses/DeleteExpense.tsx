@@ -25,6 +25,10 @@ function DeleteExpense({
     }
   }, [expenseId]);
 
-  return <Button onClick={handleDelete}>{children}</Button>;
+  return (
+    <Button onClick={handleDelete} asChild variant={"ghost"}>
+      {children}
+    </Button>
+  );
 }
 export default DeleteExpense;
