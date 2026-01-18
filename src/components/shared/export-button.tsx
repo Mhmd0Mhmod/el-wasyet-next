@@ -35,7 +35,7 @@ function ExportButton({ url, params, filename }: ExportButtonProps) {
     } catch {
       toast.error("حدث خطأ أثناء تجهيز الملف", { id });
     }
-  }, [url, params]);
+  }, [url, params, filename]);
   return (
     <Button onClick={onClick}>
       <CloudDownload className="mr-2 h-4 w-4" />

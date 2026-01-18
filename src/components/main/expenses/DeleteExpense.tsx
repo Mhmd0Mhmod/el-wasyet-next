@@ -1,12 +1,7 @@
 "use client";
 import { deleteExpense } from "@/actions/expenses/action";
-import {
-  ButtonHTMLAttributes,
-  cloneElement,
-  createElement,
-  isValidElement,
-  useCallback,
-} from "react";
+import { Button } from "@/components/ui/button";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 function DeleteExpense({
@@ -29,12 +24,7 @@ function DeleteExpense({
       toast.error("حدث خطأ أثناء حذف المصروف", { id });
     }
   }, [expenseId]);
-  if (!isValidElement(children)) {
-    throw new Error("Child must be a valid React element");
-  }
-  return createElement(children.type, {
-    ...(children.props as ButtonHTMLAttributes<HTMLButtonElement>),
-    onClick: handleDelete,
-  });
+
+  return <Button onClick={handleDelete}>{children}</Button>;
 }
 export default DeleteExpense;

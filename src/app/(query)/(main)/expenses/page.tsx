@@ -76,6 +76,7 @@ async function DataTable({ searchParams }: Props) {
                     variant="ghost"
                     className="hover:text-red-400"
                     size="icon"
+                    asChild
                   >
                     <Trash2Icon />
                   </Button>
