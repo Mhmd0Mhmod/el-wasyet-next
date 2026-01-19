@@ -1,5 +1,9 @@
 export const ACCOUNTANT_REQUESTS_COLUMNS = [
   {
+    label: "الإجراءات",
+    id: "actions",
+  },
+  {
     label: "الحالة",
     id: "requestStatusName",
   },

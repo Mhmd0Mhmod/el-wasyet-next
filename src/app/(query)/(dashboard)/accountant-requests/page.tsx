@@ -76,7 +76,6 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
     <>
       <AccountantRequestsProvider data={itemsData?.requests || []}>
         <Table
-          selectAllComponent={SelectAll}
           columns={ACCOUNTANT_REQUESTS_COLUMNS}
           renderData={
             <>

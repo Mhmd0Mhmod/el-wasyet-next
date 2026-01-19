@@ -57,6 +57,7 @@ function PartialAcceptDialog({
             id="amount"
             type="number"
             placeholder="أدخل المبلغ..."
+            step={"any"}
             {...form.register("amount")}
           />
           <DialogFooter>

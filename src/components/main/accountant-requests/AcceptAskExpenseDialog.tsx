@@ -61,6 +61,7 @@ function AcceptAskExpenseDialog({
           <Input
             id="cash"
             type="number"
+            step="any"
             {...form.register("cash")}
             placeholder="أدخل المبلغ كاش..."
           />
@@ -70,6 +71,7 @@ function AcceptAskExpenseDialog({
           <Input
             id="credit"
             type="number"
+            step="any"
             {...form.register("credit")}
             placeholder="أدخل مبلغ كريديت..."
           />

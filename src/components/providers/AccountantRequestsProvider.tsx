@@ -160,6 +160,9 @@ function AccountantRequestsProvider({
     setAcceptedItems((prev) =>
       prev.filter((item) => item.requestId !== requestId),
     );
+    setAskExpenseItems((prev) =>
+      prev.filter((item) => item.requestId !== requestId),
+    );
     setRejectedItems((prev) =>
       prev.filter((item) => item.requestId !== requestId),
     );
@@ -190,6 +193,7 @@ function AccountantRequestsProvider({
           toast.error(response.message || "حدث خطأ أثناء حفظ الإجراء");
         }
       });
+      resetActions();
     } catch {
       toast.error("حدث خطأ أثناء حفظ الإجراءات");
     }
