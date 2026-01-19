@@ -1,4 +1,3 @@
-import { getToken } from "@/actions/auth/actions";
 import { authFetch } from "@/lib/axios";
 import { StockItem } from "@/types/stock-item";
 
@@ -13,22 +12,8 @@ export async function getStockData(): Promise<StockItem[]> {
 }
 export async function getStockDataById(id: string): Promise<StockItem | null> {
   try {
-    const token = await getToken();
-    if (!token) {
-      throw new Error("Missing authentication token");
-    }
-    const response = await fetch(`${process.env.HOST_URL}/api/stock/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching stock data by ID: ${response.statusText}`,
-      );
-    }
-    const stockItem: StockItem | null = await response.json();
+    const { data } = await authFetch.get<StockItem[]>("/Stock/getall");
+    const stockItem = data.find((item) => item.branchId === Number(id));
     return stockItem || null;
   } catch (error) {
     throw error;
