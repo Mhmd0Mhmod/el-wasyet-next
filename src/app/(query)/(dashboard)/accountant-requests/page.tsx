@@ -67,7 +67,11 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
   const data = await AccountantRequestsAPI.fetchAccountantRequests(params);
 
   const itemsData = data.items.at(0);
-
+  const rowsColors = {
+    Pending: "bg-yellow-100",
+    Approved: "bg-green-100",
+    Rejected: "bg-red-100",
+  };
   return (
     <>
       <AccountantRequestsProvider data={itemsData?.requests || []}>
@@ -77,10 +81,17 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
           renderData={
             <>
               {data.items.at(0)?.requests.map((request) => (
-                <TableRow key={request.requestId}>
+                <TableRow
+                  key={request.requestId}
+                  className={
+                    rowsColors[
+                      request.requestStatusName as keyof typeof rowsColors
+                    ]
+                  }
+                >
                   <TableCell>
                     <AccountRequestActions
-                      disabled={request.requestStatusName === "Pending"}
+                      disabled={request.requestStatusName !== "Pending"}
                       requestId={request.requestId}
                     />
                   </TableCell>
