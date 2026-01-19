@@ -1,8 +1,11 @@
 "use client";
 import { AccountantRequestItem } from "@/lib/api/accountant-requests";
 import { createContext, useContext, useMemo, useState } from "react";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { submitAccountantRequest } from "@/actions/dashboard/actions";
 
-type ExtendedAccountantRequestItem = AccountantRequestItem &
+export type ExtendedAccountantRequestItem = AccountantRequestItem &
   (
     | {
         action: "accept";
@@ -29,7 +32,7 @@ interface AccountantRequestsContextType {
   rejectedItems: { reason: string; requestId: number }[];
   acceptRequest: (requestId: number, amount?: number) => void;
   rejectRequest: (requestId: number, reason: string) => void;
-  acceptAskExpenseRequest?: (
+  acceptAskExpenseRequest: (
     requestId: number,
     cash: number,
     credit: number,
@@ -171,9 +174,30 @@ function AccountantRequestsProvider({
     }
   };
 
-  const submitActions = async () => {
-    // TODO: Implement API call to submit actions
+  const resetActions = () => {
+    setAcceptedItems([]);
+    setRejectedItems([]);
+    setAskExpenseItems([]);
   };
+  const submitActions = async () => {
+    try {
+      const filterItems = items.filter((item) => item.action !== "none");
+      const responses = await submitAccountantRequest(filterItems);
+      responses.forEach((response) => {
+        if (response.success) {
+          toast.success(response.message || "تم حفظ الإجراء بنجاح");
+        } else {
+          toast.error(response.message || "حدث خطأ أثناء حفظ الإجراء");
+        }
+      });
+    } catch {
+      toast.error("حدث خطأ أثناء حفظ الإجراءات");
+    }
+  };
+  const isActionsPending =
+    acceptedItems.length > 0 ||
+    rejectedItems.length > 0 ||
+    askExpenseItems.length > 0;
 
   return (
     <AccountantRequestsContext.Provider
@@ -191,6 +215,14 @@ function AccountantRequestsProvider({
       }}
     >
       {children}
+      {isActionsPending && (
+        <div className="mr-auto w-fit space-x-4">
+          <Button onClick={resetActions} variant={"outline"}>
+            مسح الإجراءات
+          </Button>
+          <Button onClick={submitActions}>حفظ الإجراءات</Button>
+        </div>
+      )}
     </AccountantRequestsContext.Provider>
   );
 }

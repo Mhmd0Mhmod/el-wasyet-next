@@ -69,31 +69,35 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
   const itemsData = data.items.at(0);
 
   return (
-    <AccountantRequestsProvider data={itemsData?.requests || []}>
-      <Table
-        selectAllComponent={SelectAll}
-        columns={ACCOUNTANT_REQUESTS_COLUMNS}
-        renderData={
-          <>
-            {data.items.at(0)?.requests.map((request) => (
-              <TableRow key={request.requestId}>
-                <TableCell>
-                  <AccountRequestActions requestId={request.requestId} />
-                </TableCell>
-                <TableCell>{formatCurrency(request.amountInCash)}</TableCell>
-                <TableCell>{formatCurrency(request.amountInCredit)}</TableCell>
-                <TableCell>{formatCurrency(request.amount)}</TableCell>
-                <TableCell>{request.toEmployeeName}</TableCell>
-                <TableCell>{request.fromEmployeeName}</TableCell>
-                <TableCell>{RequestType[request.requestTypeName]}</TableCell>
-                <TableCell>
-                  {formatDate(request.requestDate, "datetime")}
-                </TableCell>
-              </TableRow>
-            ))}
-          </>
-        }
-      />
+    <>
+      <AccountantRequestsProvider data={itemsData?.requests || []}>
+        <Table
+          selectAllComponent={SelectAll}
+          columns={ACCOUNTANT_REQUESTS_COLUMNS}
+          renderData={
+            <>
+              {data.items.at(0)?.requests.map((request) => (
+                <TableRow key={request.requestId}>
+                  <TableCell>
+                    <AccountRequestActions requestId={request.requestId} />
+                  </TableCell>
+                  <TableCell>{formatCurrency(request.amountInCash)}</TableCell>
+                  <TableCell>
+                    {formatCurrency(request.amountInCredit)}
+                  </TableCell>
+                  <TableCell>{formatCurrency(request.amount)}</TableCell>
+                  <TableCell>{request.toEmployeeName}</TableCell>
+                  <TableCell>{request.fromEmployeeName}</TableCell>
+                  <TableCell>{RequestType[request.requestTypeName]}</TableCell>
+                  <TableCell>
+                    {formatDate(request.requestDate, "datetime")}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </>
+          }
+        />
+      </AccountantRequestsProvider>
       <Pagination
         page={data.pageNumber}
         searchParams={params}
@@ -138,7 +142,7 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
           </div>
         </CardContent>
       </Card>
-    </AccountantRequestsProvider>
+    </>
   );
 }
 

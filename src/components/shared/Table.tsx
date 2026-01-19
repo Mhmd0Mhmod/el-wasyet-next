@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ClassNameValue } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 type Column = {
   id: string;
   label: string;
@@ -20,6 +22,7 @@ interface TableProp {
   selected?: boolean;
   onSelectAllChange?: (checked: boolean) => void;
   selectAllComponent?: React.FC;
+  className?: ClassNameValue;
 }
 
 function Table({
@@ -28,11 +31,12 @@ function Table({
   selectAll,
   selected,
   selectAllComponent,
+  className,
   onSelectAllChange,
 }: TableProp) {
   return (
     <div className="w-full overflow-x-auto rounded-lg border">
-      <TableComponent className="min-w-[800px]">
+      <TableComponent className={cn("min-w-200", className)}>
         <TableHeader>
           <TableRow>
             {selectAll && (

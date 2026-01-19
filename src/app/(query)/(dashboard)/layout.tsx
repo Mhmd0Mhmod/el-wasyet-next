@@ -6,7 +6,7 @@ function layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AsideBar />
-      <SidebarInset className="px-8">
+      <SidebarInset className="overflow-auto px-8">
         <DashboardHeader />
         <main>{children}</main>
       </SidebarInset>

@@ -63,6 +63,10 @@ export const NAVBARLINKS: NavLink[] = [
         href: "/cashbox",
       },
       {
+        label: "طلبات الحاسبات",
+        href: "/accountant-requests",
+      },
+      {
         label: "الخصومات",
         href: "/discounts",
       },

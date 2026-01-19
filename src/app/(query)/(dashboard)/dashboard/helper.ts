@@ -5,6 +5,7 @@ import {
   Files,
   Handshake,
   Home,
+  Calculator,
 } from "lucide-react";
 
 export const NAVIGATION_LINKS = [
@@ -22,6 +23,11 @@ export const NAVIGATION_LINKS = [
     label: "الخزنه",
     href: "/cashbox",
     icon: CircleDollarSign,
+  },
+  {
+    label: "طلبات الحاسبات",
+    href: "/accountant-requests",
+    icon: Calculator,
   },
   {
     label: "الخصومات",

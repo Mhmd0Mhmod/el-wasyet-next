@@ -3,35 +3,27 @@ import { useAccountantRequests } from "@/components/providers/AccountantRequests
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { MoreVertical } from "lucide-react";
 import { useState } from "react";
+import AcceptAskExpenseDialog from "./AcceptAskExpenseDialog";
+import PartialAcceptDialog from "./PartialAcceptDialog";
+import RejectRequestDialog from "./RejectRequestDialog";
 function translateAction(action?: string | null) {
   switch (action) {
     case "accept":
-      return "تم القبول";
+      return "القبول";
     case "reject":
-      return "تم الرفض";
+      return "الرفض";
     case "partial":
-      return "تم القبول جزئياً";
+      return "القبول جزئياً";
     case "askExpense":
-      return "تم قبول طلب التحصيل";
+      return "قبول طلب التحصيل";
     case "none":
       return "لم يتم اتخاذ إجراء";
     default:
@@ -40,54 +32,25 @@ function translateAction(action?: string | null) {
 }
 
 function AccountRequestActions({ requestId }: { requestId: number }) {
-  const {
-    acceptRequest,
-    rejectRequest,
-    clearRequestAction,
-    items,
-    acceptAskExpenseRequest,
-  } = useAccountantRequests();
+  const { acceptRequest, clearRequestAction, items } = useAccountantRequests();
   const item = items.find((i) => i.requestId === requestId);
 
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
-  const [partialDialogOpen, setPartialDialogOpen] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
-  const [partialAmount, setPartialAmount] = useState("");
-  const [askExpenseDialogOpen, setAskExpenseDialogOpen] = useState(false);
-  const [askCash, setAskCash] = useState("");
-  const [askCredit, setAskCredit] = useState("");
+  const [dialogType, setDialogType] = useState<
+    "reject" | "partial" | "askExpense" | null
+  >(null);
+
+  function closeDialog() {
+    setDialogType(null);
+  }
 
   const handleAccept = () => {
     acceptRequest(requestId);
   };
 
-  const handleReject = () => {
-    rejectRequest(requestId, rejectReason);
-    setRejectReason("");
-    setRejectDialogOpen(false);
-  };
-
-  const handlePartialAccept = () => {
-    const amount = parseFloat(partialAmount);
-    if (!isNaN(amount) && amount > 0) {
-      acceptRequest(requestId, amount);
-      setPartialAmount("");
-      setPartialDialogOpen(false);
-    }
-  };
-
   const ACCOUNTANT_REQUEST_ACTIONS = [
     {
-      label: "قبول",
-      action: handleAccept,
-    },
-    {
       label: "رفض",
-      action: () => setRejectDialogOpen(true),
-    },
-    {
-      label: "قبول جزئي",
-      action: () => setPartialDialogOpen(true),
+      action: () => setDialogType("reject"),
     },
   ];
   if (item?.action !== "none") {
@@ -96,13 +59,19 @@ function AccountRequestActions({ requestId }: { requestId: number }) {
       action: () => clearRequestAction(requestId),
     });
   }
-
-  console.log(item);
   if (item?.requestType === 1) {
-    ACCOUNTANT_REQUEST_ACTIONS.shift();
     ACCOUNTANT_REQUEST_ACTIONS.unshift({
       label: "قبول طلب تحصيل",
-      action: () => setAskExpenseDialogOpen(true),
+      action: () => setDialogType("askExpense"),
+    });
+  } else {
+    ACCOUNTANT_REQUEST_ACTIONS.unshift({
+      label: "قبول جزئي",
+      action: () => setDialogType("partial"),
+    });
+    ACCOUNTANT_REQUEST_ACTIONS.unshift({
+      label: "قبول",
+      action: handleAccept,
     });
   }
   return (
@@ -129,159 +98,25 @@ function AccountRequestActions({ requestId }: { requestId: number }) {
       </DropdownMenu>
 
       {/* Reject Dialog */}
-      <Dialog
-        open={rejectDialogOpen}
-        onOpenChange={(open) => {
-          setRejectDialogOpen(open);
-          setRejectReason(
-            open && item && item.action === "reject" ? item.reason : "",
-          );
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>رفض الطلب</DialogTitle>
-            <DialogDescription>
-              أدخل سبب الرفض للطلب رقم {requestId}.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="reason" className="text-right">
-                السبب
-              </Label>
-              <Textarea
-                id="reason"
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-                className="col-span-3"
-                placeholder="أدخل سبب الرفض..."
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleReject} disabled={!rejectReason.trim()}>
-              رفض
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <RejectRequestDialog
+        open={dialogType === "reject"}
+        setOpen={closeDialog}
+        requestId={requestId}
+      />
 
       {/* Partial Accept Dialog */}
-      <Dialog
-        open={partialDialogOpen}
-        onOpenChange={(open) => {
-          setPartialDialogOpen(open);
-          setPartialAmount(
-            open && item && item.action === "partial"
-              ? item.partialAcceptAmount.toString()
-              : "",
-          );
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>قبول جزئي</DialogTitle>
-            <DialogDescription>
-              أدخل المبلغ المقبول جزئيًا للطلب رقم {requestId}.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="amount" className="text-right">
-                المبلغ
-              </Label>
-              <Input
-                id="amount"
-                type="number"
-                value={partialAmount}
-                onChange={(e) => setPartialAmount(e.target.value)}
-                className="col-span-3"
-                placeholder="أدخل المبلغ..."
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={handlePartialAccept}
-              disabled={!partialAmount || parseFloat(partialAmount) <= 0}
-            >
-              قبول جزئي
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PartialAcceptDialog
+        open={dialogType === "partial"}
+        setOpen={closeDialog}
+        requestId={requestId}
+      />
 
       {/* Ask Expense Dialog */}
-      <Dialog
-        open={askExpenseDialogOpen}
-        onOpenChange={(open) => {
-          setAskExpenseDialogOpen(open);
-          if (open && item && item.action === "askExpense") {
-            setAskCash(String(item.cash ?? 0));
-            setAskCredit(String(item.credit ?? 0));
-          } else if (!open) {
-            setAskCash("");
-            setAskCredit("");
-          }
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>قبول طلب تحصيل</DialogTitle>
-            <DialogDescription>
-              أدخل مبالغ النقد والآجل للطلب رقم {requestId}.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 items-center gap-4 py-4">
-            <Label htmlFor="cash" className="text-right">
-              كاش
-            </Label>
-            <Input
-              id="cash"
-              type="number"
-              value={askCash}
-              onChange={(e) => setAskCash(e.target.value)}
-              className="col-span-3"
-              placeholder="أدخل المبلغ كاش..."
-            />
-            <Label htmlFor="credit" className="text-right">
-              كريديت
-            </Label>
-            <Input
-              id="credit"
-              type="number"
-              value={askCredit}
-              onChange={(e) => setAskCredit(e.target.value)}
-              className="col-span-3"
-              placeholder="أدخل مبلغ كريديت..."
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                const cash = parseFloat(askCash) || 0;
-                const credit = parseFloat(askCredit) || 0;
-                if (acceptAskExpenseRequest) {
-                  acceptAskExpenseRequest(requestId, cash, credit);
-                }
-                setAskCash("");
-                setAskCredit("");
-                setAskExpenseDialogOpen(false);
-              }}
-              disabled={
-                (!askCash && !askCredit) ||
-                (askCash !== "" && isNaN(parseFloat(askCash))) ||
-                (askCredit !== "" && isNaN(parseFloat(askCredit))) ||
-                (parseFloat(askCash || "0") <= 0 &&
-                  parseFloat(askCredit || "0") <= 0)
-              }
-            >
-              قبول طلب التحصيل
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AcceptAskExpenseDialog
+        open={dialogType === "askExpense"}
+        setOpen={closeDialog}
+        requestId={requestId}
+      />
     </div>
   );
 }

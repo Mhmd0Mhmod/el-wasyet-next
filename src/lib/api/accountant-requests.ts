@@ -1,3 +1,4 @@
+import { handleErrorResponse } from "@/actions/helper";
 import { authFetch } from "../axios";
 
 export type AccountantRequestsParams = {
@@ -5,6 +6,7 @@ export type AccountantRequestsParams = {
   toDate?: string;
   employeeid?: string;
   accountantid?: string;
+  page?: string;
 };
 export interface AccountantRequest {
   requests: AccountantRequestItem[];
@@ -46,7 +48,10 @@ export class AccountantRequestsAPI {
       const { data } = await authFetch.get<
         PaginatedResponse<AccountantRequest>
       >("/Request/AccountantRequests", {
-        params,
+        params: {
+          ...params,
+          pageNumber: params.page,
+        },
       });
       return data;
     } catch (error) {
@@ -71,6 +76,73 @@ export class AccountantRequestsAPI {
       return data;
     } catch (error) {
       throw error;
+    }
+  }
+  static async submitAccountantRequestAcceptances(acceptances: {
+    requestId: number;
+    amount?: number;
+    cash?: number;
+    credit?: number;
+  }): Promise<APIResponse<void>> {
+    try {
+      const hasAmount =
+        typeof acceptances.amount === "number" &&
+        !Number.isNaN(acceptances.amount);
+      const hasCashCredit =
+        (typeof acceptances.cash === "number" &&
+          !Number.isNaN(acceptances.cash)) ||
+        (typeof acceptances.credit === "number" &&
+          !Number.isNaN(acceptances.credit));
+
+      if (hasCashCredit) {
+        const response = await authFetch.post(
+          `/Request/approve/${acceptances.requestId}`,
+          {
+            cash: acceptances.cash ?? null,
+            credit: acceptances.credit ?? null,
+          },
+        );
+        return response.data;
+      }
+
+      if (hasAmount) {
+        const response = await authFetch.post(
+          `/Request/approve/${acceptances.requestId}`,
+          { remainingvalue: acceptances.amount },
+        );
+        return response.data;
+      }
+
+      const response = await authFetch.post(
+        `/Request/approve/${acceptances.requestId}`,
+      );
+      return {
+        success: true,
+        message: "تم حفظ الإجراء بنجاح",
+        data: response.data,
+      };
+    } catch (error) {
+      return handleErrorResponse(error);
+    }
+  }
+  static async submitAccountantRequestRejections(rejections: {
+    requestId: number;
+    reason: string;
+  }): Promise<APIResponse<void>> {
+    try {
+      console.log(rejections.requestId);
+
+      const response = await authFetch.post(
+        `/Request/reject/${rejections.requestId}`,
+        rejections.reason,
+      );
+      return {
+        success: true,
+        message: "تم حفظ الإجراء بنجاح",
+        data: response.data,
+      };
+    } catch (error) {
+      return handleErrorResponse(error);
     }
   }
 }
