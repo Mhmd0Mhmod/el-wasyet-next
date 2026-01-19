@@ -81,40 +81,17 @@ export class AccountantRequestsAPI {
   static async submitAccountantRequestAcceptances(acceptances: {
     requestId: number;
     amount?: number;
-    cash?: number;
-    credit?: number;
+    cash?: number | null;
+    credit?: number | null;
   }): Promise<APIResponse<void>> {
     try {
-      const hasAmount =
-        typeof acceptances.amount === "number" &&
-        !Number.isNaN(acceptances.amount);
-      const hasCashCredit =
-        (typeof acceptances.cash === "number" &&
-          !Number.isNaN(acceptances.cash)) ||
-        (typeof acceptances.credit === "number" &&
-          !Number.isNaN(acceptances.credit));
-
-      if (hasCashCredit) {
-        const response = await authFetch.post(
-          `/Request/approve/${acceptances.requestId}`,
-          {
-            cash: acceptances.cash ?? null,
-            credit: acceptances.credit ?? null,
-          },
-        );
-        return response.data;
-      }
-
-      if (hasAmount) {
-        const response = await authFetch.post(
-          `/Request/approve/${acceptances.requestId}`,
-          { remainingvalue: acceptances.amount },
-        );
-        return response.data;
-      }
-
       const response = await authFetch.post(
         `/Request/approve/${acceptances.requestId}`,
+        {
+          amount: acceptances.amount ?? null,
+          cash: acceptances.cash ?? null,
+          credit: acceptances.credit ?? null,
+        },
       );
       return {
         success: true,

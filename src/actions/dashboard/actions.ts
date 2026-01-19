@@ -16,14 +16,9 @@ export async function submitAccountantRequest(
       .map((item) =>
         AccountantRequestsAPI.submitAccountantRequestAcceptances({
           requestId: item.requestId,
-          amount:
-            item.action === "partial"
-              ? item.partialAcceptAmount
-              : item.action === "accept"
-                ? item.amount
-                : undefined,
-          cash: item.action === "askExpense" ? item.cash : undefined,
-          credit: item.action === "askExpense" ? item.credit : undefined,
+          amount: item.amount ?? null,
+          cash: item.action === "askExpense" ? item.cash : null,
+          credit: item.action === "askExpense" ? item.credit : null,
         }),
       );
     const rejectedItems = items

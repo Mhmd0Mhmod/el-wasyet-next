@@ -48,10 +48,9 @@ export async function approveRequestNotification({
     if (!employeeId) {
       throw new Error("User not authenticated");
     }
-    const response = await authFetch.post(
-      `/Request/approve/${requestId}`,
-      Remainingvalue,
-    );
+    const response = await authFetch.post(`/Request/approve/${requestId}`, {
+      remainingvalue: Remainingvalue,
+    });
     await markNotificationAsRead(notificationId);
     revalidateTag("notifications");
     return {
