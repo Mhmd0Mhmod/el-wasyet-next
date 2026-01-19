@@ -79,7 +79,13 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
               {data.items.at(0)?.requests.map((request) => (
                 <TableRow key={request.requestId}>
                   <TableCell>
-                    <AccountRequestActions requestId={request.requestId} />
+                    <AccountRequestActions
+                      disabled={request.requestStatusName === "Pending"}
+                      requestId={request.requestId}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <RequestStatus status={request.requestStatusName} />
                   </TableCell>
                   <TableCell>{formatCurrency(request.amountInCash)}</TableCell>
                   <TableCell>
@@ -146,4 +152,17 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
   );
 }
 
+function RequestStatus({ status }: { status: string }) {
+  const translatedStatus = {
+    Pending: "قيد الانتظار",
+    Approved: "تمت الموافقة",
+    Rejected: "تم الرفض",
+  };
+
+  return (
+    <span>
+      {translatedStatus[status as keyof typeof translatedStatus] || status}
+    </span>
+  );
+}
 export default page;

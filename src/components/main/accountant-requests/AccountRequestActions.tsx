@@ -31,7 +31,13 @@ function translateAction(action?: string | null) {
   }
 }
 
-function AccountRequestActions({ requestId }: { requestId: number }) {
+function AccountRequestActions({
+  requestId,
+  disabled = false,
+}: {
+  requestId: number;
+  disabled?: boolean;
+}) {
   const { acceptRequest, clearRequestAction, items } = useAccountantRequests();
   const item = items.find((i) => i.requestId === requestId);
 
@@ -81,7 +87,7 @@ function AccountRequestActions({ requestId }: { requestId: number }) {
         <h4>{translateAction(item?.action) || "لم يتم اتخاذ إجراء"}</h4>
       </div>
       <DropdownMenu dir="rtl">
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild disabled={disabled}>
           <Button variant="ghost" size={"icon-sm"}>
             <MoreVertical size={24} />
           </Button>
