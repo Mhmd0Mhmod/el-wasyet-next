@@ -15,6 +15,7 @@ import AccountRequestActions, {
   PartialAcceptRequestAction,
   RejectRequestAction,
 } from "./AccountRequestActions";
+import Link from "@/components/shared/Link";
 
 function AccountantRequestsTables({ data }: { data: AccountantRequestItem[] }) {
   return (
@@ -44,6 +45,14 @@ function RenderRequestRow({ request }: { request: AccountantRequestItem }) {
           <RejectRequestAction />
         </TableCell>
       </AccountRequestActions>
+      <TableCell>
+        <Link
+          href={`/orders/${request.orderId}`}
+          className="text-primary hover:underline"
+        >
+          {request.orderId}
+        </Link>
+      </TableCell>
       <TableCell>
         <RequestStatus status={request.requestStatusName} />
       </TableCell>

@@ -1,12 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
 import { User } from "lucide-react";
-import { getCurrentUser } from "@/actions/auth/actions";
+import { Session } from "next-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import LogoutButton from "./logout-button";
 
-async function UserProfileButton() {
-  const user = await getCurrentUser();
+function UserProfileButton({ user }: { user?: Session["user"] }) {
   if (!user) {
     return null;
   }

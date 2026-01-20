@@ -25,10 +25,14 @@ function NotificationButton({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant={"ghost"} className="relative">
-          <BellIcon />
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          className="relative h-9 w-9 sm:h-10 sm:w-10"
+        >
+          <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           {unReadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white sm:h-5 sm:w-5 sm:text-[10px]">
               {unReadCount > 99 ? "99+" : unReadCount}
             </span>
           )}

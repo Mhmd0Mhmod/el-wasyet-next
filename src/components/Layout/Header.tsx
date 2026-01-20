@@ -4,28 +4,15 @@ import {
   NavigationMenu,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { getNotifications } from "@/data/notifications";
 import { NAVBARLINKS, NavLink } from "@/lib/helper";
-import { BellIcon, PanelLeftClose } from "lucide-react";
+import { BellIcon } from "lucide-react";
 import { Suspense } from "react";
 import NotificationButton from "../notificaitons/NotificationButton";
-import { ScrollArea } from "../ui/scroll-area";
-import HeaderNavItem from "./header-nav-item";
+import HeaderSheet from "./HeaderSheet";
 import Logo from "./Logo";
-import LogoutButton from "./logout-button";
 import NavigationItem from "./NavigationItem";
 import UserProfileButton from "./UserProfileButton";
-import UserProfileDetails from "./UserProfileDetails";
 
 async function Header() {
   const user = await getCurrentUser();
@@ -57,14 +44,14 @@ async function Header() {
   const navlinks = filterNavLinks(NAVBARLINKS);
 
   return (
-    <header className="flex h-16 items-center border-b">
-      <div className="flex w-full items-center justify-between px-2 md:justify-around">
-        <div>
-          <Logo withText width={150} height={40} />
+    <header className="flex h-14 items-center border-b sm:h-16">
+      <div className="flex w-full items-center justify-between gap-2 md:px-6">
+        <div className="shrink-0">
+          <Logo withText width={120} height={32} />
         </div>
-        <nav className="mr-10 hidden gap-6 md:flex">
+        <nav className="mr-4 hidden flex-1 justify-center gap-4 lg:flex lg:gap-6">
           <NavigationMenu dir="rtl">
-            <NavigationMenuList className="gap-2">
+            <NavigationMenuList className="gap-1 lg:gap-2">
               {navlinks.map((link) => (
                 <NavigationItem key={link.label} link={link} />
               ))}
@@ -72,23 +59,27 @@ async function Header() {
           </NavigationMenu>
         </nav>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Suspense
             fallback={
-              <Button variant={"ghost"} size={"icon"}>
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                className="h-9 w-9 sm:h-10 sm:w-10"
+              >
                 <div className="animate-pulse">
-                  <BellIcon />
+                  <BellIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
               </Button>
             }
           >
             <NotficationsButtonWrapper />
           </Suspense>
-          <div className="hidden md:block">
-            <UserProfileButton />
+          <div className="hidden lg:block">
+            <UserProfileButton user={user} />
           </div>
-          <div className="block md:hidden">
-            <SheetButton navlinks={navlinks} />
+          <div className="block lg:hidden">
+            <HeaderSheet navlinks={navlinks} user={user} />
           </div>
         </div>
       </div>
@@ -99,37 +90,4 @@ export default Header;
 async function NotficationsButtonWrapper() {
   const notifications = await getNotifications();
   return <NotificationButton notifications={notifications} />;
-}
-
-function SheetButton({ navlinks }: { navlinks: NavLink[] }) {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant={"ghost"} size={"icon"}>
-          <PanelLeftClose size={15} />
-        </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetClose />
-        <SheetHeader>
-          <SheetTitle className="m-auto">
-            <Logo withText width={120} height={30} />
-          </SheetTitle>
-        </SheetHeader>
-        <Separator />
-        <ScrollArea dir="rtl" className="h-72 overflow-auto">
-          <div className="flex flex-col gap-4 p-4">
-            {navlinks.map((link) => (
-              <HeaderNavItem key={link.label} link={link} />
-            ))}
-          </div>
-        </ScrollArea>
-        <Separator />
-        <SheetFooter>
-          <UserProfileDetails />
-          <LogoutButton />
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  );
 }

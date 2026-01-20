@@ -24,7 +24,7 @@ function LogoutButton() {
       className="w-full justify-start gap-3 text-red-400"
       onClick={handleLogout}
     >
-      <LogOut className="h-4 w-4 flex-shrink-0" />
+      <LogOut className="h-4 w-4 shrink-0" />
       <span className="group-data-[collapsible=icon]:hidden">تسجيل الخروج</span>
     </Button>
   );
