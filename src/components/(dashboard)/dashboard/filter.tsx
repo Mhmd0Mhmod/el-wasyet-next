@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -20,10 +20,11 @@ function FilterSection() {
   });
   const pathName = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const onSubmit = useCallback(
     (data: FilterValues) => {
       if (!data.fromDate && !data.toDate) {
-        router.push(`${pathName}`, {
+        router.replace(`${pathName}?${searchParams.toString()}`, {
           scroll: false,
         });
         return;
@@ -31,12 +32,15 @@ function FilterSection() {
       if (!data.fromDate || !data.toDate) {
         return;
       }
-      const query = new URLSearchParams(data).toString();
-      router.push(`${pathName}?${query}`, {
+      const query = new URLSearchParams({
+        ...data,
+        ...Object.fromEntries(searchParams),
+      }).toString();
+      router.replace(`${pathName}?${query}`, {
         scroll: false,
       });
     },
-    [pathName, router],
+    [pathName, router, searchParams],
   );
   return (
     <form

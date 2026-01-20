@@ -55,9 +55,9 @@ function OrderLogs({ order }: { order: Order }) {
   const totalPages = 1;
 
   return (
-    <Card className="w-full">
+    <Card className="w-full overflow-auto">
       <CardHeader className="border-b">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between">
           <div>
             <CardTitle className="text-xl">سجل الامر رقم :</CardTitle>
             <p className="text-muted-foreground mt-2">
@@ -77,7 +77,7 @@ function OrderLogs({ order }: { order: Order }) {
         </div>
       </CardHeader>
 
-      <CardContent className="p-0">
+      <CardContent>
         {isLoading ? (
           <LoadingSkeleton />
         ) : error ? (
@@ -86,7 +86,7 @@ function OrderLogs({ order }: { order: Order }) {
           <div className="text-muted-foreground p-4">لا توجد سجلات لعرضها.</div>
         ) : (
           <>
-            <div className="relative max-h-[40vh] overflow-auto p-4">
+            <>
               <Table
                 columns={COLUMNS}
                 renderData={orderLogs?.map((log) => (
@@ -135,7 +135,7 @@ function OrderLogs({ order }: { order: Order }) {
                   </TableRow>
                 ))}
               />
-            </div>
+            </>
 
             {totalPages > 1 && (
               <div className="border-t p-4">

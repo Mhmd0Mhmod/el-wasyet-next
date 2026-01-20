@@ -7,6 +7,7 @@ export type AccountantRequestsParams = {
   employeeid?: string;
   accountantid?: string;
   page?: string;
+  RequestTypeId?: string;
 };
 export interface AccountantRequest {
   requests: AccountantRequestItem[];
@@ -19,27 +20,31 @@ export interface AccountantRequest {
 export interface AccountantRequestItem {
   requestId: number;
   requestDate: string;
-  requestType: number;
+  requestType: RequestTypeId;
   amount: number;
   amountInCash: number;
   amountInCredit: number;
+  orderId: number;
   requestStatusName: string;
-  requestTypeName: keyof typeof RequestType;
+  requestTypeName: RequestTypeKey;
   fromEmployeeName: string;
   toEmployeeName: string;
 }
-export interface Employee {
-  id: number;
-  name: string;
-}
-export enum RequestType {
-  AskExpense = "طلب تحصيل مصاريف",
-  RefundExpense = "طلب رد مصاريف",
-  CashTransfer = "طلب تحويل نقدي",
-  RefundOrder = "طلب مرتجع",
-  CancelOrderWithoutForms = "طلب الغاء",
-  CancelOrderWithForms = "طلب الغاء باستماره",
-}
+export const RequestTypes = {
+  AskExpense: { id: 1, label: "طلب تحصيل مصاريف" },
+  RefundExpense: { id: 2, label: "طلب رد مصاريف" },
+  CashTransfer: { id: 3, label: "طلب تحويل نقدي" },
+  RefundOrder: { id: 4, label: "طلب مرتجع" },
+  CancelOrderWithoutForms: { id: 5, label: "طلب الغاء" },
+  CancelOrderWithForms: { id: 6, label: "طلب الغاء باستماره" },
+} as const;
+
+export type RequestTypeId =
+  (typeof RequestTypes)[keyof typeof RequestTypes]["id"];
+export type RequestTypeKey = keyof typeof RequestTypes;
+export type RequestTypeLabel =
+  (typeof RequestTypes)[keyof typeof RequestTypes]["label"];
+
 export class AccountantRequestsAPI {
   static async fetchAccountantRequests(
     params: AccountantRequestsParams,

@@ -41,7 +41,10 @@ function AcceptAskExpenseDialog({
   function onSubmit(data: AcceptAskExpenseFormInputs) {
     const cashAmount = parseFloat(data.cash) || 0;
     const creditAmount = parseFloat(data.credit) || 0;
-    acceptAskExpenseRequest(requestId, cashAmount, creditAmount);
+    acceptAskExpenseRequest(requestId, {
+      cash: cashAmount,
+      credit: creditAmount,
+    });
     setOpen(false);
   }
   return (

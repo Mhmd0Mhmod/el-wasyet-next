@@ -238,7 +238,7 @@ async function page({
       }
     >
       <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-        <div className="w-full sm:w-auto sm:min-w-[200px] sm:flex-1">
+        <div className="w-full sm:w-auto sm:min-w-50 sm:flex-1">
           <SearchInput title="بحث .." />
         </div>
         <Select

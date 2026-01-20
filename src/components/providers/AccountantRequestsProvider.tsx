@@ -34,8 +34,7 @@ interface AccountantRequestsContextType {
   rejectRequest: (requestId: number, reason: string) => void;
   acceptAskExpenseRequest: (
     requestId: number,
-    cash: number,
-    credit: number,
+    { cash, credit }: { cash: number; credit: number },
   ) => void;
   clearRequestAction: (requestId: number) => void;
   toggleSelectAll: () => void;
@@ -134,8 +133,7 @@ function AccountantRequestsProvider({
   };
   const acceptAskExpenseRequest = (
     requestId: number,
-    cash: number,
-    credit: number,
+    { cash, credit }: { cash: number; credit: number },
   ) => {
     const findExisting = askExpenseItems.find((a) => a.requestId === requestId);
     if (findExisting) {
@@ -239,4 +237,5 @@ export function useAccountantRequests() {
   }
   return context;
 }
+
 export default AccountantRequestsProvider;

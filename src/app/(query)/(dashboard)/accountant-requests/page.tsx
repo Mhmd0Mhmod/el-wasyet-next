@@ -1,22 +1,19 @@
+import AccountantRequestsTables from "@/components/(dashboard)/accountant-requests/AccountantRequestsTable";
+import AskExpensesTable from "@/components/(dashboard)/accountant-requests/AskExpensesTable";
 import FilterSection from "@/components/(dashboard)/dashboard/filter";
 import PageLayout from "@/components/Layout/PageLayout";
-import AccountRequestActions from "@/components/main/accountant-requests/AccountRequestActions";
-import SelectAll from "@/components/main/accountant-requests/SelectAll";
 import AccountantRequestsProvider from "@/components/providers/AccountantRequestsProvider";
 import ClearSearchParamsButton from "@/components/shared/ClearSearchParamsButton";
 import Pagination from "@/components/shared/Pagination";
 import Select from "@/components/shared/Select";
-import Table from "@/components/shared/Table";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { ACCOUNTANT_REQUESTS_COLUMNS } from "@/constants/Columns";
 import {
   AccountantRequestsAPI,
   AccountantRequestsParams,
-  RequestType,
+  RequestTypes,
 } from "@/lib/api/accountant-requests";
-import { formatCurrency, formatDate } from "@/lib/helper";
+import { formatCurrency } from "@/lib/helper";
 import { Suspense } from "react";
 interface Props {
   searchParams: Promise<AccountantRequestsParams>;
@@ -27,7 +24,21 @@ async function page({ searchParams }: Props) {
     AccountantRequestsAPI.getAccountants(),
   ]);
   return (
-    <PageLayout title="الحسابات" description="إداره الحسابات">
+    <PageLayout
+      title="الحسابات"
+      description="إداره الحسابات"
+      extra={
+        <Select
+          name="RequestTypeId"
+          placeholder="اختر نوع الطلب اولا"
+          selectItems={Object.values(RequestTypes).map((type) => ({
+            label: type.label,
+            value: type.id.toString(),
+          }))}
+          className="w-48"
+        />
+      }
+    >
       <div className="space-y-4">
         <FilterSection />
         <div className="grid grid-cols-1 justify-items-start gap-4 md:grid-cols-3">
@@ -65,54 +76,19 @@ async function page({ searchParams }: Props) {
 async function AccountantRequestsTableWrapper({ searchParams }: Props) {
   const params = await searchParams;
   const data = await AccountantRequestsAPI.fetchAccountantRequests(params);
-
+  const requestTypeId = params.RequestTypeId;
   const itemsData = data.items.at(0);
-  const rowsColors = {
-    Pending: "bg-yellow-100",
-    Approved: "bg-green-100",
-    Rejected: "bg-red-100",
-  };
+  const isAskExpenseType =
+    requestTypeId === RequestTypes.AskExpense.id.toString();
+
   return (
     <>
       <AccountantRequestsProvider data={itemsData?.requests || []}>
-        <Table
-          columns={ACCOUNTANT_REQUESTS_COLUMNS}
-          renderData={
-            <>
-              {data.items.at(0)?.requests.map((request) => (
-                <TableRow
-                  key={request.requestId}
-                  className={
-                    rowsColors[
-                      request.requestStatusName as keyof typeof rowsColors
-                    ]
-                  }
-                >
-                  <TableCell>
-                    <AccountRequestActions
-                      disabled={request.requestStatusName !== "Pending"}
-                      requestId={request.requestId}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <RequestStatus status={request.requestStatusName} />
-                  </TableCell>
-                  <TableCell>{formatCurrency(request.amountInCash)}</TableCell>
-                  <TableCell>
-                    {formatCurrency(request.amountInCredit)}
-                  </TableCell>
-                  <TableCell>{formatCurrency(request.amount)}</TableCell>
-                  <TableCell>{request.toEmployeeName}</TableCell>
-                  <TableCell>{request.fromEmployeeName}</TableCell>
-                  <TableCell>{RequestType[request.requestTypeName]}</TableCell>
-                  <TableCell>
-                    {formatDate(request.requestDate, "datetime")}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </>
-          }
-        />
+        {isAskExpenseType ? (
+          <AskExpensesTable data={itemsData?.requests || []} />
+        ) : (
+          <AccountantRequestsTables data={itemsData?.requests || []} />
+        )}
       </AccountantRequestsProvider>
       <Pagination
         page={data.pageNumber}
@@ -162,17 +138,4 @@ async function AccountantRequestsTableWrapper({ searchParams }: Props) {
   );
 }
 
-function RequestStatus({ status }: { status: string }) {
-  const translatedStatus = {
-    Pending: "قيد الانتظار",
-    Approved: "تمت الموافقة",
-    Rejected: "تم الرفض",
-  };
-
-  return (
-    <span>
-      {translatedStatus[status as keyof typeof translatedStatus] || status}
-    </span>
-  );
-}
 export default page;
