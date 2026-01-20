@@ -48,7 +48,7 @@ function PartialAcceptDialog({
         <DialogHeader className="sm:text-right">
           <DialogTitle>قبول جزئي</DialogTitle>
           <DialogDescription>
-            أدخل المبلغ المقبول جزئيًا للطلب رقم {requestId}.
+            أدخل المبلغ المتبقي للموظف علي الطلب رقم {item.requestId}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

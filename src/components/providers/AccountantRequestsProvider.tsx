@@ -1,9 +1,11 @@
 "use client";
+import { submitAccountantRequest } from "@/actions/dashboard/actions";
 import { AccountantRequestItem } from "@/lib/api/accountant-requests";
 import { createContext, useContext, useMemo, useState } from "react";
-import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { submitAccountantRequest } from "@/actions/dashboard/actions";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
 
 export type ExtendedAccountantRequestItem = AccountantRequestItem &
   (
@@ -37,7 +39,7 @@ interface AccountantRequestsContextType {
     { cash, credit }: { cash: number; credit: number },
   ) => void;
   clearRequestAction: (requestId: number) => void;
-  toggleSelectAll: () => void;
+  clearAllActions: () => void;
   submitActions: () => Promise<void>;
 }
 const AccountantRequestsContext = createContext<
@@ -166,13 +168,10 @@ function AccountantRequestsProvider({
     );
   };
 
-  const toggleSelectAll = () => {
-    if (isAllSelected) {
-      setAcceptedItems([]);
-      setRejectedItems([]);
-    } else {
-      setAcceptedItems(data.map((item) => ({ requestId: item.requestId })));
-    }
+  const clearAllActions = () => {
+    setAcceptedItems([]);
+    setAskExpenseItems([]);
+    setRejectedItems([]);
   };
 
   const resetActions = () => {
@@ -211,7 +210,7 @@ function AccountantRequestsProvider({
         acceptRequest,
         rejectRequest,
         clearRequestAction,
-        toggleSelectAll,
+        clearAllActions,
         submitActions,
         acceptAskExpenseRequest,
       }}
@@ -238,4 +237,75 @@ export function useAccountantRequests() {
   return context;
 }
 
+function AcceptAllRequests() {
+  const { items, acceptRequest, clearAllActions } = useAccountantRequests();
+  const isChecked = items.every((item) => item.action === "accept");
+  function handleClick() {
+    if (!isChecked) {
+      items.forEach((item) => {
+        acceptRequest(item.requestId);
+      });
+    } else {
+      clearAllActions();
+    }
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox checked={isChecked} onCheckedChange={handleClick} />
+      <Label>قبول الجميع</Label>
+    </div>
+  );
+}
+
+function AcceptAllAskExpenseActionWithCash() {
+  const { items, acceptAskExpenseRequest, clearAllActions } =
+    useAccountantRequests();
+  const isChecked = items.every(
+    (item) => item.action === "askExpense" && item.cash === item.amount,
+  );
+  function handleClick() {
+    if (!isChecked)
+      items.forEach((item) => {
+        acceptAskExpenseRequest(item.requestId, {
+          cash: item.amount,
+          credit: 0,
+        });
+      });
+    else clearAllActions();
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox checked={isChecked} onCheckedChange={handleClick} />
+      <Label>قبول كاش</Label>
+    </div>
+  );
+}
+function AcceptAllAskExpenseActionWithCredit() {
+  const { items, acceptAskExpenseRequest, clearAllActions } =
+    useAccountantRequests();
+  const isChecked = items.every(
+    (item) => item.action === "askExpense" && item.credit === item.amount,
+  );
+  function handleClick() {
+    if (!isChecked)
+      items.forEach((item) => {
+        acceptAskExpenseRequest(item.requestId, {
+          cash: 0,
+          credit: item.amount,
+        });
+      });
+    else clearAllActions();
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox checked={isChecked} onCheckedChange={handleClick} />
+      <Label>قبول كريديت</Label>
+    </div>
+  );
+}
 export default AccountantRequestsProvider;
+export {
+  AcceptAllAskExpenseActionWithCash,
+  AcceptAllAskExpenseActionWithCredit,
+  AcceptAllRequests,
+};

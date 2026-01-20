@@ -1,4 +1,4 @@
-const DefaultColumns = [
+export const ACCOUNTANT_REQUESTS_COLUMNS = [
   { label: "رقم الطلب", id: "orderId" },
   {
     label: "الحالة",
@@ -33,28 +33,7 @@ const DefaultColumns = [
     id: "date",
   },
 ];
-export const ACCOUNTANT_REQUESTS_COLUMNS = [
-  { label: "قبول كلي", id: "acceptAll" },
-  { label: "قبول جزئي", id: "acceptPartial" },
-  { label: "رفض", id: "reject" },
-  ...DefaultColumns,
-];
 
-export const ACCOUNTANT_REQUESTS_ASK_EXPENSES_COLUMNS = [
-  {
-    label: "قبول كاش",
-    id: "acceptCash",
-  },
-  {
-    label: "قبول كريديت",
-    id: "acceptCredit",
-  },
-  {
-    label: "رفض",
-    id: "reject",
-  },
-  ...DefaultColumns,
-];
 export const AccountantRequestRowColor = (status: string) => {
   const colors = {
     Pending: "bg-yellow-100",

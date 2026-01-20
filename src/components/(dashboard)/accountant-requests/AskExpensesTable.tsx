@@ -1,7 +1,17 @@
-import Table from "@/components/shared/Table";
-import { TableCell, TableRow } from "@/components/ui/table";
 import {
-  ACCOUNTANT_REQUESTS_ASK_EXPENSES_COLUMNS,
+  AcceptAllAskExpenseActionWithCash,
+  AcceptAllAskExpenseActionWithCredit,
+} from "@/components/providers/AccountantRequestsProvider";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  ACCOUNTANT_REQUESTS_COLUMNS,
   AccountantRequestRowColor,
 } from "@/constants/accountant-requests";
 import {
@@ -9,31 +19,52 @@ import {
   RequestTypes,
 } from "@/lib/api/accountant-requests";
 import { formatCurrency, formatDate } from "@/lib/helper";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 import RequestStatus from "./AccountantRequestStatus";
 import AccountRequestActions, {
   AcceptWithCashRequestAction,
   AcceptWithCreditRequestAction,
   RejectRequestAction,
 } from "./AccountRequestActions";
-import Link from "next/link";
 
 function AskExpensesTable({ data }: { data: AccountantRequestItem[] }) {
   return (
-    <Table
-      columns={ACCOUNTANT_REQUESTS_ASK_EXPENSES_COLUMNS}
-      renderData={
-        <>
+    <div className="w-full overflow-x-auto rounded-lg border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <AcceptAllAskExpenseActionWithCash />
+            </TableHead>
+            <TableHead>
+              <AcceptAllAskExpenseActionWithCredit />
+            </TableHead>
+            <TableHead>رفض</TableHead>
+            {ACCOUNTANT_REQUESTS_COLUMNS.map((column) => (
+              <TableHead key={column.id} className="text-center">
+                {column.label}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {data.map((request) => (
             <RenderRequestRow key={request.requestId} request={request} />
           ))}
-        </>
-      }
-    />
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 function RenderRequestRow({ request }: { request: AccountantRequestItem }) {
   return (
-    <TableRow className={AccountantRequestRowColor(request.requestStatusName)}>
+    <TableRow
+      className={cn(
+        AccountantRequestRowColor(request.requestStatusName),
+        "ps-2",
+      )}
+    >
       <AccountRequestActions requestId={request.requestId}>
         <TableCell>
           <AcceptWithCashRequestAction />

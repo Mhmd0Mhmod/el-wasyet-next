@@ -1,5 +1,13 @@
-import Table from "@/components/shared/Table";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { AcceptAllRequests } from "@/components/providers/AccountantRequestsProvider";
+import Link from "@/components/shared/Link";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   ACCOUNTANT_REQUESTS_COLUMNS,
   AccountantRequestRowColor,
@@ -15,20 +23,30 @@ import AccountRequestActions, {
   PartialAcceptRequestAction,
   RejectRequestAction,
 } from "./AccountRequestActions";
-import Link from "@/components/shared/Link";
 
 function AccountantRequestsTables({ data }: { data: AccountantRequestItem[] }) {
   return (
-    <Table
-      columns={ACCOUNTANT_REQUESTS_COLUMNS}
-      renderData={
-        <>
+    <div className="w-full overflow-x-auto rounded-lg border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <AcceptAllRequests />
+            </TableHead>
+            <TableHead>قبول جزئي</TableHead>
+            <TableHead>رفض</TableHead>
+            {ACCOUNTANT_REQUESTS_COLUMNS.map((column) => (
+              <TableHead key={column.id}>{column.label}</TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {data.map((request) => (
             <RenderRequestRow key={request.requestId} request={request} />
           ))}
-        </>
-      }
-    />
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 function RenderRequestRow({ request }: { request: AccountantRequestItem }) {
