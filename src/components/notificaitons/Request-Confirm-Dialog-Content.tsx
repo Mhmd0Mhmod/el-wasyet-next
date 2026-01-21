@@ -298,7 +298,7 @@ async function approveWithCash(notification: Notification) {
   return await approveRequestNotification({
     notificationId: notification.notificationId,
     requestId: notification.requestId,
-    cash: notification.amount,
+    cash: notification.amount!,
   });
 }
 async function approveWithCredit(notification: Notification) {
@@ -308,6 +308,6 @@ async function approveWithCredit(notification: Notification) {
   return await approveRequestNotification({
     notificationId: notification.notificationId,
     requestId: notification.requestId,
-    credit: notification.amount,
+    credit: notification.amount!,
   });
 }

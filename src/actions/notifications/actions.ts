@@ -37,14 +37,14 @@ export async function approveRequestNotification({
   notificationId,
   requestId,
   Remainingvalue = null,
-  cash = null,
-  credit = null,
+  cash = 0,
+  credit = 0,
 }: {
   notificationId: number;
   requestId: number;
   Remainingvalue?: string | null;
-  cash?: number | null;
-  credit?: number | null;
+  cash?: number;
+  credit?: number;
 }): Promise<APIResponse<void>> {
   try {
     const response = await authFetch.post(`/Request/approve/${requestId}`, {
