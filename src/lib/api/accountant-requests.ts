@@ -112,8 +112,6 @@ export class AccountantRequestsAPI {
     reason: string;
   }): Promise<APIResponse<void>> {
     try {
-      console.log(rejections.requestId);
-
       const response = await authFetch.post(
         `/Request/reject/${rejections.requestId}`,
         rejections.reason,

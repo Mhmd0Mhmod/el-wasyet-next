@@ -6,6 +6,12 @@ import { Notification } from "@/types/notification";
 import { useNotifications } from "@/components/providers/NotficationsProvider";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import {
+  approveRequestNotification,
+  approveRequestStockNotification,
+  rejectRequestNotification,
+  rejectRequestStockNotification,
+} from "@/actions/notifications/actions";
 
 function RequestConfirmDialogContent({
   notification,
@@ -18,8 +24,7 @@ function RequestConfirmDialogContent({
     "selecting",
   );
 
-  const { confirmFullAcceptanceNotificationRequest, markAsRead } =
-    useNotifications();
+  const { markAsRead } = useNotifications();
 
   const handleFullAcceptance = useCallback(async () => {
     markAsRead(notification.notificationId);
@@ -36,12 +41,7 @@ function RequestConfirmDialogContent({
     } catch {
       toast.error("حدث خطأ ما أثناء المعالجة.");
     }
-  }, [
-    confirmFullAcceptanceNotificationRequest,
-    notification,
-    setOpen,
-    markAsRead,
-  ]);
+  }, [notification, setOpen, markAsRead]);
 
   if (dialog === "reason") {
     return (
@@ -96,8 +96,7 @@ function ApprovalPartialForm({
   setOpen: (open: boolean) => void;
 }) {
   const [remainingValue, setRemainingValue] = useState("");
-  const { confirmPartialAcceptanceNotificationRequest, markAsRead } =
-    useNotifications();
+  const { markAsRead } = useNotifications();
 
   const handlePartialAcceptance = useCallback(async () => {
     if (!remainingValue || parseFloat(remainingValue) <= 0) {
@@ -121,13 +120,7 @@ function ApprovalPartialForm({
     } catch {
       toast.error("حدث خطأ ما أثناء المعالجة.");
     }
-  }, [
-    confirmPartialAcceptanceNotificationRequest,
-    notification,
-    remainingValue,
-    setOpen,
-    markAsRead,
-  ]);
+  }, [notification, remainingValue, setOpen, markAsRead]);
 
   return (
     <div className="grid gap-4 pt-4">
@@ -163,7 +156,7 @@ function RejectReasonForm({
   setOpen: (open: boolean) => void;
 }) {
   const [reason, setReason] = useState("");
-  const { rejectNotificationRequest, markAsRead } = useNotifications();
+  const { markAsRead } = useNotifications();
 
   const rejectRequest = useCallback(async () => {
     if (!reason.trim()) {
@@ -184,7 +177,7 @@ function RejectReasonForm({
     } catch {
       toast.error("حدث خطأ ما أثناء المعالجة.");
     }
-  }, [rejectNotificationRequest, notification, reason, setOpen, markAsRead]);
+  }, [notification, reason, setOpen, markAsRead]);
 
   return (
     <div className="grid gap-4 pt-4">
@@ -213,3 +206,55 @@ function RejectReasonForm({
 }
 
 export default RequestConfirmDialogContent;
+
+async function confirmFullAcceptanceNotificationRequest(
+  notification: Notification,
+): Promise<APIResponse<void>> {
+  if (notification.requestId && notification.isRequest) {
+    return await approveRequestNotification({
+      notificationId: notification.notificationId,
+      requestId: notification.requestId,
+    });
+  } else {
+    return await approveRequestStockNotification({
+      notificationId: notification.notificationId,
+      requestStockId: notification.requestStockId!,
+    });
+  }
+}
+async function confirmPartialAcceptanceNotificationRequest(
+  notification: Notification,
+  remainingValue: string,
+): Promise<APIResponse<void>> {
+  if (notification.requestId && notification.isRequest) {
+    return await approveRequestNotification({
+      notificationId: notification.notificationId,
+      requestId: notification.requestId,
+      Remainingvalue: remainingValue,
+    });
+  } else {
+    return await approveRequestStockNotification({
+      notificationId: notification.notificationId,
+      requestStockId: notification.requestStockId!,
+      Remainingvalue: remainingValue,
+    });
+  }
+}
+async function rejectNotificationRequest(
+  notification: Notification,
+  reason: string,
+): Promise<APIResponse<void>> {
+  if (notification.requestId && notification.isRequest) {
+    return await rejectRequestNotification({
+      notificationId: notification.notificationId,
+      requestId: notification.requestId,
+      reason,
+    });
+  } else {
+    return await rejectRequestStockNotification({
+      notificationId: notification.notificationId,
+      requestStockId: notification.requestStockId!,
+      reason,
+    });
+  }
+}

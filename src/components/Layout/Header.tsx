@@ -4,7 +4,7 @@ import {
   NavigationMenu,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { getNotifications } from "@/data/notifications";
+import { getNotificationsServer } from "@/data/notifications";
 import { NAVBARLINKS, NavLink } from "@/lib/helper";
 import { BellIcon } from "lucide-react";
 import { Suspense } from "react";
@@ -46,12 +46,11 @@ async function Header() {
   return (
     <header className="flex h-14 items-center border-b sm:h-16">
       <div className="flex w-full items-center justify-between gap-2 md:px-6">
-        <div className="shrink-0">
-          <Logo withText width={120} height={32} />
-        </div>
-        <nav className="mr-4 hidden flex-1 justify-center gap-4 lg:flex lg:gap-6">
+        <Logo withText />
+
+        <nav className="hidden flex-1 xl:flex">
           <NavigationMenu dir="rtl">
-            <NavigationMenuList className="gap-1 lg:gap-2">
+            <NavigationMenuList>
               {navlinks.map((link) => (
                 <NavigationItem key={link.label} link={link} />
               ))}
@@ -75,10 +74,10 @@ async function Header() {
           >
             <NotficationsButtonWrapper />
           </Suspense>
-          <div className="hidden lg:block">
+          <div className="hidden md:block">
             <UserProfileButton user={user} />
           </div>
-          <div className="block lg:hidden">
+          <div className="block xl:hidden">
             <HeaderSheet navlinks={navlinks} user={user} />
           </div>
         </div>
@@ -88,6 +87,6 @@ async function Header() {
 }
 export default Header;
 async function NotficationsButtonWrapper() {
-  const notifications = await getNotifications();
+  const notifications = await getNotificationsServer();
   return <NotificationButton notifications={notifications} />;
 }

@@ -1,9 +1,8 @@
 "use server";
 
-import { authFetch } from "@/lib/axios";
 import { handleErrorResponse } from "@/actions/helper";
+import { authFetch } from "@/lib/axios";
 import { revalidateTag } from "next/cache";
-import { getCurrentUser } from "../auth/actions";
 
 export async function markAllNotificationsAsRead(): Promise<APIResponse<void>> {
   try {
@@ -44,10 +43,6 @@ export async function approveRequestNotification({
   Remainingvalue?: string | null;
 }): Promise<APIResponse<void>> {
   try {
-    const employeeId = (await getCurrentUser())?.userId;
-    if (!employeeId) {
-      throw new Error("User not authenticated");
-    }
     const response = await authFetch.post(`/Request/approve/${requestId}`, {
       remainingvalue: Remainingvalue,
     });

@@ -1,6 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  markAllNotificationsAsRead,
+  markNotificationAsRead as markNotificationAsReadAction,
+} from "@/actions/notifications/actions";
 import { getNotifications } from "@/data/notifications";
-import { markAllNotificationsAsRead } from "@/actions/notifications/actions";
+import { Notification } from "@/types/notification";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 function useNotification() {
@@ -11,20 +15,51 @@ function useNotification() {
     refetchInterval: 60000,
     initialData: [],
   });
-  const mutation = useMutation({
-    mutationKey: ["markAllAsRead"],
-    mutationFn: markAllNotificationsAsRead,
+  const markNotificationAsRead = useMutation({
+    mutationFn: markNotificationAsReadAction,
+    onMutate: async (id: number) => {
+      await queryClient.cancelQueries({ queryKey: ["notifications"] });
 
-    onSuccess: () => {
-      toast.success("تم تعليم جميع الإشعارات كمقروءة.");
-      queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    },
-    onError: (error: Error) => {
-      toast.error(
-        "حدث خطأ ما أثناء تعليم جميع الإشعارات كمقروءة: " + error.message,
+      const previous = queryClient.getQueryData<Notification[]>([
+        "notifications",
+      ]);
+
+      queryClient.setQueryData(
+        ["notifications"],
+        (old: Notification[] | undefined) =>
+          old?.map((n: Notification) =>
+            n.notificationId === id ? { ...n, isRead: true } : n,
+          ),
       );
+
+      return { previous };
+    },
+
+    onError: (_, __, context) => {
+      queryClient.setQueryData(["notifications"], context?.previous);
+      toast.error("Failed to mark as read");
     },
   });
-  return { query, mutation };
+  const markALLNotificationAsRead = useMutation({
+    mutationFn: markAllNotificationsAsRead,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["notifications"] });
+
+      const previous = queryClient.getQueryData<Notification[]>([
+        "notifications",
+      ]);
+      queryClient.setQueryData(
+        ["notifications"],
+        (old: Notification[] | undefined) =>
+          old?.map((n: Notification) => ({ ...n, isRead: true })),
+      );
+      return { previous };
+    },
+    onError: (_, __, context) => {
+      queryClient.setQueryData(["notifications"], context?.previous);
+      toast.error("Failed to mark all as read");
+    },
+  });
+  return { query, markNotificationAsRead, markALLNotificationAsRead };
 }
 export { useNotification };

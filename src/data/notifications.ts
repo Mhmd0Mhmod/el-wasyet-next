@@ -1,25 +1,27 @@
-import { getToken } from "@/actions/auth/actions";
+import { authFetch } from "@/lib/axios";
 import { Notification } from "@/types/notification";
+import axios from "axios";
 
 export async function getNotifications(): Promise<Notification[]> {
   try {
-    const token = await getToken(); // Get the token
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/Notification`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+    const response = await axios.get("/api/notifications", {
+      fetchOptions: {
         next: {
           tags: ["notifications"],
           revalidate: 60,
         },
       },
-    );
-
-    if (!response.ok) throw new Error("Failed to fetch notifications");
-    return await response.json();
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    throw error;
+  }
+}
+export async function getNotificationsServer() {
+  try {
+    const { data } = await authFetch.get<Notification[]>(`/Notification`);
+    return data;
   } catch (error) {
     console.error("Error fetching notifications:", error);
     throw error;

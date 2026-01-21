@@ -12,7 +12,7 @@ import { NotificationCard } from "./NotificationCard";
 import LoadingNotificationCard from "./NotificationSkeleton";
 
 function NotificationSheetContent() {
-  const { unreadCount, isFetching, notifications, markAllAsRead } =
+  const { unreadCount, isFetchingNotifications, notifications, markAllAsRead } =
     useNotifications();
 
   const unreadNotifications = useMemo(
@@ -45,14 +45,14 @@ function NotificationSheetContent() {
         <TabsContent value="all" className="mt-4 space-y-4">
           <ScrollArea className="h-[calc(100vh-325px)]">
             <div className="space-y-3 pr-4">
-              {isFetching &&
+              {isFetchingNotifications &&
                 Array.from({ length: 3 }).map((_, index) => (
                   <LoadingNotificationCard key={index} />
                 ))}
-              {!isFetching && notifications?.length === 0 && (
+              {!isFetchingNotifications && notifications?.length === 0 && (
                 <EmptyState message="لا توجد إشعارات" />
               )}
-              {!isFetching &&
+              {!isFetchingNotifications &&
                 notifications?.length > 0 &&
                 notifications?.map((notification) => (
                   <NotificationCard
@@ -63,7 +63,7 @@ function NotificationSheetContent() {
             </div>
           </ScrollArea>
 
-          {!isFetching && unreadCount > 0 && (
+          {!isFetchingNotifications && unreadCount > 0 && (
             <MarkAllAsReadButton onAllMarkedAsRead={markAllAsRead} />
           )}
         </TabsContent>
@@ -71,7 +71,7 @@ function NotificationSheetContent() {
         <TabsContent value="unread" className="mt-4 space-y-4">
           <ScrollArea className="h-[calc(100vh-325px)]">
             <div className="space-y-3 pr-4">
-              {isFetching ? (
+              {isFetchingNotifications ? (
                 <>
                   <LoadingNotificationCard />
                   <LoadingNotificationCard />
@@ -90,7 +90,7 @@ function NotificationSheetContent() {
             </div>
           </ScrollArea>
 
-          {!isFetching && unreadCount > 0 && (
+          {!isFetchingNotifications && unreadCount > 0 && (
             <MarkAllAsReadButton onAllMarkedAsRead={markAllAsRead} />
           )}
         </TabsContent>

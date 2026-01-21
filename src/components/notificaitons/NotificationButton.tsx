@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Notification } from "@/types/notification";
 import { BellIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import NotificationSheetContent from "./NotificationSheetContent";
 function NotificationButton({
   notifications,
 }: {
   notifications?: Notification[];
 }) {
-  const [open, setOpen] = useState(false);
   const unReadCount = notifications
     ? notifications.filter((n) => !n.isRead).length
     : 0;
@@ -22,8 +21,9 @@ function NotificationButton({
     }, 60000);
     return () => clearInterval(id);
   }, []);
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet>
       <SheetTrigger asChild>
         <Button
           variant={"ghost"}
@@ -39,7 +39,7 @@ function NotificationButton({
         </Button>
       </SheetTrigger>
       <SheetContent dir="rtl" forceMount>
-        <NotificationsProvider open={open}>
+        <NotificationsProvider>
           <NotificationSheetContent />
         </NotificationsProvider>
       </SheetContent>

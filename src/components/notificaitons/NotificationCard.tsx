@@ -27,7 +27,7 @@ const openDialgCallback = (notification: Notification) => {
   ) {
     return true;
   }
-  return false;
+  return true;
 };
 export function NotificationCard({ notification }: NotificationCardProps) {
   const isClickable = openDialgCallback(notification);
