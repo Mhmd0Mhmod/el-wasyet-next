@@ -243,6 +243,7 @@ function AcceptAllRequests() {
   function handleClick() {
     if (!isChecked) {
       items.forEach((item) => {
+        if (item.requestStatusName !== "Pending") return;
         acceptRequest(item.requestId);
       });
     } else {
@@ -266,6 +267,7 @@ function AcceptAllAskExpenseActionWithCash() {
   function handleClick() {
     if (!isChecked)
       items.forEach((item) => {
+        if (item.requestStatusName !== "Pending") return;
         acceptAskExpenseRequest(item.requestId, {
           cash: item.amount,
           credit: 0,
@@ -289,6 +291,7 @@ function AcceptAllAskExpenseActionWithCredit() {
   function handleClick() {
     if (!isChecked)
       items.forEach((item) => {
+        if (item.requestStatusName !== "Pending") return;
         acceptAskExpenseRequest(item.requestId, {
           cash: 0,
           credit: item.amount,

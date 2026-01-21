@@ -9,8 +9,8 @@ import PartialAcceptDialog from "./PartialAcceptDialog";
 import RejectRequestDialog from "./RejectRequestDialog";
 
 interface AccountantRequestContextType {
-  requestId: number;
   requestItem: ExtendedAccountantRequestItem;
+  disabled?: boolean;
 }
 const AccountantRequest = createContext<AccountantRequestContextType | null>(
   null,
@@ -29,8 +29,9 @@ function AccountRequestActions({
       `Request item with id ${requestId} not found in AccountantRequestsProvider`,
     );
   }
+  const disabled = requestItem.requestStatusName !== "Pending";
   return (
-    <AccountantRequest.Provider value={{ requestId, requestItem }}>
+    <AccountantRequest.Provider value={{ requestItem, disabled }}>
       {children}
     </AccountantRequest.Provider>
   );
@@ -48,30 +49,40 @@ function useAccountantRequest() {
 
 function AcceptRequestAction() {
   const { acceptRequest, clearRequestAction } = useAccountantRequests();
-  const { requestId, requestItem } = useAccountantRequest();
+  const { disabled, requestItem } = useAccountantRequest();
   const isChecked = requestItem.action === "accept";
   function handleChange() {
-    if (!isChecked) acceptRequest(requestId);
-    else clearRequestAction(requestId);
+    if (!isChecked) acceptRequest(requestItem.requestId);
+    else clearRequestAction(requestItem.requestId);
   }
-  return <Checkbox checked={isChecked} onCheckedChange={handleChange} />;
+  return (
+    <Checkbox
+      checked={isChecked}
+      onCheckedChange={handleChange}
+      disabled={disabled}
+    />
+  );
 }
 function RejectRequestAction() {
   const [open, setOpen] = useState(false);
   const { clearRequestAction } = useAccountantRequests();
-  const { requestId, requestItem } = useAccountantRequest();
+  const { disabled, requestItem } = useAccountantRequest();
   const isChecked = requestItem.action === "reject";
   function handleChange() {
     if (!isChecked) setOpen(true);
-    else clearRequestAction(requestId);
+    else clearRequestAction(requestItem.requestId);
   }
   return (
     <>
-      <Checkbox checked={isChecked} onCheckedChange={handleChange} />
+      <Checkbox
+        checked={isChecked}
+        onCheckedChange={handleChange}
+        disabled={disabled}
+      />
       <RejectRequestDialog
         open={open}
         setOpen={setOpen}
-        requestId={requestId}
+        requestId={requestItem.requestId}
       />
     </>
   );
@@ -79,19 +90,23 @@ function RejectRequestAction() {
 function PartialAcceptRequestAction() {
   const [open, setOpen] = useState(false);
   const { clearRequestAction } = useAccountantRequests();
-  const { requestId, requestItem } = useAccountantRequest();
+  const { disabled, requestItem } = useAccountantRequest();
   const isChecked = requestItem.action === "partial";
   function handleChange() {
     if (!isChecked) setOpen(true);
-    else clearRequestAction(requestId);
+    else clearRequestAction(requestItem.requestId);
   }
   return (
     <>
-      <Checkbox checked={isChecked} onCheckedChange={handleChange} />
+      <Checkbox
+        checked={isChecked}
+        onCheckedChange={handleChange}
+        disabled={disabled}
+      />
       <PartialAcceptDialog
         open={open}
         setOpen={setOpen}
-        requestId={requestId}
+        requestId={requestItem.requestId}
       />
     </>
   );
@@ -99,38 +114,50 @@ function PartialAcceptRequestAction() {
 function AcceptWithCreditRequestAction() {
   const { acceptAskExpenseRequest, clearRequestAction } =
     useAccountantRequests();
-  const { requestId, requestItem } = useAccountantRequest();
+  const { disabled, requestItem } = useAccountantRequest();
   const isChecked =
     requestItem.action === "askExpense" && requestItem.cash === 0;
   function handleChange() {
     if (!isChecked)
-      acceptAskExpenseRequest(requestId, {
+      acceptAskExpenseRequest(requestItem.requestId, {
         cash: 0,
         credit: requestItem.amount,
       });
     else {
-      clearRequestAction(requestId);
+      clearRequestAction(requestItem.requestId);
     }
   }
-  return <Checkbox checked={isChecked} onCheckedChange={handleChange} />;
+  return (
+    <Checkbox
+      checked={isChecked}
+      onCheckedChange={handleChange}
+      disabled={disabled}
+    />
+  );
 }
 function AcceptWithCashRequestAction() {
   const { acceptAskExpenseRequest, clearRequestAction } =
     useAccountantRequests();
-  const { requestId, requestItem } = useAccountantRequest();
+  const { disabled, requestItem } = useAccountantRequest();
   const isChecked =
     requestItem.action === "askExpense" && requestItem.credit === 0;
   function handleChange() {
     if (!isChecked)
-      acceptAskExpenseRequest(requestId, {
+      acceptAskExpenseRequest(requestItem.requestId, {
         cash: requestItem.amount,
         credit: 0,
       });
     else {
-      clearRequestAction(requestId);
+      clearRequestAction(requestItem.requestId);
     }
   }
-  return <Checkbox checked={isChecked} onCheckedChange={handleChange} />;
+  return (
+    <Checkbox
+      checked={isChecked}
+      onCheckedChange={handleChange}
+      disabled={disabled}
+    />
+  );
 }
 export {
   AcceptRequestAction,
