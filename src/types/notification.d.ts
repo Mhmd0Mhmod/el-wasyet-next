@@ -8,4 +8,5 @@ export interface Notification {
   isRequest: boolean;
   requestId: number | null;
   requestStockId: number | null;
+  amount: number | null;
 }

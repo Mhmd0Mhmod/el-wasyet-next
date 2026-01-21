@@ -1,17 +1,17 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Notification } from "@/types/notification";
-import { useNotifications } from "@/components/providers/NotficationsProvider";
-import { useCallback, useState } from "react";
-import { toast } from "sonner";
 import {
   approveRequestNotification,
   approveRequestStockNotification,
   rejectRequestNotification,
   rejectRequestStockNotification,
 } from "@/actions/notifications/actions";
+import { useNotifications } from "@/components/providers/NotficationsProvider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Notification } from "@/types/notification";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 function RequestConfirmDialogContent({
   notification,
@@ -26,22 +26,34 @@ function RequestConfirmDialogContent({
 
   const { markAsRead } = useNotifications();
 
-  const handleFullAcceptance = useCallback(async () => {
-    markAsRead(notification.notificationId);
-    setOpen(false);
+  const handleFullAcceptance = useCallback(
+    async (type: "cash" | "credit" | "full") => {
+      markAsRead(notification.notificationId);
+      setOpen(false);
 
-    try {
-      const response =
-        await confirmFullAcceptanceNotificationRequest(notification);
-      if (response?.success) {
-        toast.success("تمت الموافقة بنجاح.");
-      } else {
-        toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message);
+      try {
+        let response;
+        if (type === "full") {
+          response =
+            await confirmFullAcceptanceNotificationRequest(notification);
+        } else if (type === "credit") {
+          response = await approveWithCredit(notification);
+        } else if (type === "cash") {
+          response = await approveWithCash(notification);
+        } else {
+          throw new Error("Invalid acceptance type");
+        }
+        if (response?.success) {
+          toast.success("تمت الموافقة بنجاح.");
+        } else {
+          toast.error("حدث خطأ ما أثناء المعالجة: " + response?.message);
+        }
+      } catch {
+        toast.error("حدث خطأ ما أثناء المعالجة.");
       }
-    } catch {
-      toast.error("حدث خطأ ما أثناء المعالجة.");
-    }
-  }, [notification, setOpen, markAsRead]);
+    },
+    [notification, setOpen, markAsRead],
+  );
 
   if (dialog === "reason") {
     return (
@@ -70,13 +82,34 @@ function RequestConfirmDialogContent({
   return (
     <div className="grid gap-4 pt-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-        <Button className="grow" onClick={handleFullAcceptance}>
-          قبول كلي
-        </Button>
         {!cantPartial && (
-          <Button className="grow" onClick={() => setDialog("partial")}>
-            قبول جزئي
-          </Button>
+          <>
+            <Button
+              className="grow"
+              onClick={() => handleFullAcceptance("full")}
+            >
+              قبول كلي
+            </Button>
+            <Button className="grow" onClick={() => setDialog("partial")}>
+              قبول جزئي
+            </Button>
+          </>
+        )}
+        {cantPartial && (
+          <>
+            <Button
+              className="grow"
+              onClick={() => handleFullAcceptance("cash")}
+            >
+              قبول كاش
+            </Button>
+            <Button
+              className="grow"
+              onClick={() => handleFullAcceptance("credit")}
+            >
+              قبول كريدت
+            </Button>
+          </>
         )}
       </div>
       <Button variant="outline" onClick={() => setDialog("reason")}>
@@ -257,4 +290,24 @@ async function rejectNotificationRequest(
       reason,
     });
   }
+}
+async function approveWithCash(notification: Notification) {
+  if (!notification.requestId || !notification.isRequest) {
+    throw new Error("Invalid notification for cash approval");
+  }
+  return await approveRequestNotification({
+    notificationId: notification.notificationId,
+    requestId: notification.requestId,
+    cash: notification.amount,
+  });
+}
+async function approveWithCredit(notification: Notification) {
+  if (!notification.requestId || !notification.isRequest) {
+    throw new Error("Invalid notification for cash approval");
+  }
+  return await approveRequestNotification({
+    notificationId: notification.notificationId,
+    requestId: notification.requestId,
+    credit: notification.amount,
+  });
 }
