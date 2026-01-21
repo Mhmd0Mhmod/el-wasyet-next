@@ -1,3 +1,4 @@
+"use client";
 import { User } from "lucide-react";
 import { Session } from "next-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
