@@ -1,4 +1,3 @@
-import { authFetch } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { AuthError } from "next-auth";
 

@@ -9,7 +9,7 @@ import SearchInput from "@/components/shared/SearchInput";
 import Select from "@/components/shared/Select";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import { ABILITY_IDS } from "@/constants/abilities";
-import { getOrdersByStatusIds, getServices } from "@/data/orders";
+import { getOrdersByStatusIds, getServicesServer } from "@/data/orders";
 import { OrderByStatus } from "@/types/order";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -175,7 +175,7 @@ async function page({ params, searchParams }: PageProps) {
       );
     }
   }
-  const services = await getServices();
+  const services = await getServicesServer();
 
   const searchParameters = await searchParams;
   const serviceIds = searchParameters.serviceIds

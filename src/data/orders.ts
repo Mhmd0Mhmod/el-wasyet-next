@@ -11,7 +11,7 @@ import {
 } from "@/types/order";
 import { OrderAction } from "@/types/order-actions";
 import { Service } from "@/types/service";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 // cacheTag removed — this module is used by client-side hooks
 
 export async function getOrders({
@@ -86,7 +86,8 @@ export async function getOrderById(id: string): Promise<OrderDetails> {
 
 export async function getServices() {
   try {
-    const res = await authFetch.get<Service[]>("/Order/getAll-Services");
+    const res = await axios.get<Service[]>("/api/orders/services");
+
     return res.data;
   } catch (err) {
     if (err instanceof AxiosError) {
@@ -101,6 +102,22 @@ export async function getServices() {
   }
 }
 
+export async function getServicesServer() {
+  try {
+    const res = await authFetch.get<Service[]>("/Order/getAll-Services");
+    return res.data;
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      const errors = Object.values(err.response?.data.errors || {})
+        .flat()
+        .join(" ");
+      throw new Error(errors || err.response?.data?.message || err.message);
+    }
+    if (err instanceof Error) throw new Error(err.message);
+
+    throw new Error("An unexpected error occurred");
+  }
+}
 export async function getOrderStatuses() {
   try {
     const res = await authFetch.get<
