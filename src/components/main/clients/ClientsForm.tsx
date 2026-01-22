@@ -24,7 +24,7 @@ import {
 import { Client } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, User } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import AddBranchClient from "./AddBranchClient";
@@ -37,16 +37,6 @@ interface ClientFormProps {
 
 function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
   const { client, isLoading: isLoadingClient } = useClient(clientId!);
-  const dialogCloseRef = useRef<HTMLButtonElement>(null);
-  const form = useForm<ClientFormValues>({
-    resolver: zodResolver(clientFormSchema),
-    defaultValues: generateDefaultValues(),
-  });
-  useEffect(() => {
-    if (client?.id) {
-      form.reset(generateDefaultValues(client));
-    }
-  }, [client, form]);
 
   const handleSubmit = useCallback(
     async (data: ClientFormValues) => {
@@ -70,7 +60,6 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
           .then((res) => {
             if (res.success) {
               toast.success("تم إضافة العميل بنجاح", { id });
-              form.reset();
             } else {
               toast.error(res.message, { id });
             }
@@ -81,7 +70,7 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
       }
       onFormSubmit?.(data);
     },
-    [client, onFormSubmit, form],
+    [client, onFormSubmit],
   );
   if (isLoadingClient) {
     return (
@@ -90,6 +79,27 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
       </div>
     );
   }
+  return (
+    <div
+      dir="rtl"
+      className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-4 shadow-sm sm:p-6"
+    >
+      <ClientFormContent client={client} onSubmit={handleSubmit} />
+    </div>
+  );
+}
+function ClientFormContent({
+  client,
+  onSubmit,
+}: {
+  client?: Client;
+  onSubmit: (data: ClientFormValues) => void;
+}) {
+  const dialogCloseRef = useRef<HTMLButtonElement>(null);
+  const form = useForm<ClientFormValues>({
+    resolver: zodResolver(clientFormSchema),
+    defaultValues: generateDefaultValues(client),
+  });
 
   const handleCancel = () => {
     form.reset();
@@ -113,185 +123,177 @@ function ClientForm({ clientId, onSubmit: onFormSubmit }: ClientFormProps) {
   const childClients = form.watch("childClients") || [];
   const updatedChildClients = form.watch("updateClientChildDTOs") || [];
 
-  const onSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    form.handleSubmit(handleSubmit)();
+    form.handleSubmit(onSubmit)();
   };
   const isLoading = form.formState.isSubmitting;
 
   return (
-    <div
-      dir="rtl"
-      className="mx-auto max-h-[80vh] max-w-2xl overflow-auto rounded-lg bg-white p-4 shadow-sm sm:p-6"
-    >
-      <Form {...form}>
-        <form onSubmit={onSubmit} className="space-y-6">
-          {/* Main Customer Information */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>الاسم الكامل</FormLabel>
-                    <FormControl>
-                      <Input placeholder="أدخل الاسم الكامل" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>البريد الإلكتروني</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="أدخل البريد الإلكتروني"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="phone1"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>رقم الهاتف 1</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="أدخل رقم الهاتف الأول"
-                        className="text-right"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="phone2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>رقم الهاتف 2</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="أدخل رقم الهاتف الثاني"
-                        className="text-right"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+    <Form {...form}>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Main Customer Information */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>الاسم الكامل</FormLabel>
+                  <FormControl>
+                    <Input placeholder="أدخل الاسم الكامل" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
-              name="address"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>العنوان</FormLabel>
+                  <FormLabel>البريد الإلكتروني</FormLabel>
                   <FormControl>
-                    <Input placeholder="أدخل العنوان الكامل" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="أدخل البريد الإلكتروني"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Dialog>
-            <Dialog.Trigger>
-              <Button variant="outline" className="w-full">
-                <Plus className="ml-2" />
-                إضافة عميل فرعي
-              </Button>
-            </Dialog.Trigger>
-            <Dialog.Content title="إضافة عميل فرعي">
-              <div className="max-h-[60vh] overflow-auto">
-                <AddBranchClient onSubmit={onAddChildClient} />
-              </div>
-              <DialogClose className="hidden" ref={dialogCloseRef} />
-            </Dialog.Content>
-          </Dialog>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-                <User className="text-primary h-5 w-5" />
-                العملاء الفرعيين (
-                {childClients.length + updatedChildClients.length})
-              </h3>
-            </div>
-            <div className="grid gap-4">
-              {updatedChildClients.map((client, index) => (
-                <BranchClientCard
-                  key={index}
-                  client={client}
-                  index={index}
-                  onRemove={onRemoveUpdatedChildClient}
-                  isLoading={isLoading}
-                />
-              ))}
-              {childClients.map((client, index) => (
-                <BranchClientCard
-                  key={index}
-                  client={client}
-                  index={index}
-                  onRemove={onRemoveChildClient}
-                  isLoading={isLoading}
-                />
-              ))}
-            </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="phone1"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>رقم الهاتف 1</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="أدخل رقم الهاتف الأول"
+                      className="text-right"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>رقم الهاتف 2</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="أدخل رقم الهاتف الثاني"
+                      className="text-right"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
-          <div className="flex gap-4 pt-6">
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>العنوان</FormLabel>
+                <FormControl>
+                  <Input placeholder="أدخل العنوان الكامل" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Dialog>
+          <Dialog.Trigger>
+            <Button variant="outline" className="w-full">
+              <Plus className="ml-2" />
+              إضافة عميل فرعي
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Content title="إضافة عميل فرعي">
+            <div className="max-h-[60vh] overflow-auto">
+              <AddBranchClient onSubmit={onAddChildClient} />
+            </div>
+            <DialogClose className="hidden" ref={dialogCloseRef} />
+          </Dialog.Content>
+        </Dialog>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
+              <User className="text-primary h-5 w-5" />
+              العملاء الفرعيين (
+              {childClients.length + updatedChildClients.length})
+            </h3>
+          </div>
+          <div className="grid gap-4">
+            {updatedChildClients.map((client, index) => (
+              <BranchClientCard
+                key={index}
+                client={client}
+                index={index}
+                onRemove={onRemoveUpdatedChildClient}
+                isLoading={isLoading}
+              />
+            ))}
+            {childClients.map((client, index) => (
+              <BranchClientCard
+                key={index}
+                client={client}
+                index={index}
+                onRemove={onRemoveChildClient}
+                isLoading={isLoading}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-4 pt-6">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className={cn("flex-1 rounded-lg py-3", isLoading && "opacity-70")}
+          >
+            {isLoading ? "جاري الحفظ..." : "حفظ"}
+          </Button>
+          <DialogClose asChild>
             <Button
-              type="submit"
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
               disabled={isLoading}
               className={cn(
                 "flex-1 rounded-lg py-3",
                 isLoading && "opacity-70",
               )}
             >
-              {isLoading ? "جاري الحفظ..." : "حفظ"}
+              إلغاء
             </Button>
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isLoading}
-                className={cn(
-                  "flex-1 rounded-lg py-3",
-                  isLoading && "opacity-70",
-                )}
-              >
-                إلغاء
-              </Button>
-            </DialogClose>
-          </div>
-        </form>
-      </Form>
-    </div>
+          </DialogClose>
+        </div>
+      </form>
+    </Form>
   );
 }
 

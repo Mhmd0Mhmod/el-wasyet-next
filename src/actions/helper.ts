@@ -22,6 +22,7 @@ export const handleErrorResponse = <T>(
       // Handle different error response formats
       // Priority: message > title (Problem Details format) > statusText > generic error message
       const message =
+        responseData?.details ||
         responseData?.message ||
         responseData?.title || // ASP.NET Problem Details format
         (typeof responseData === "string" ? responseData : null) ||
