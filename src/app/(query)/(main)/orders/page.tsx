@@ -1,12 +1,15 @@
+import { checkAccess } from "@/actions/auth/actions";
+import PageLayout from "@/components/Layout/PageLayout";
+import ClientDetails from "@/components/main/clients/ClientDetails";
+import OrderLogs from "@/components/main/orders/[id]/order-logs";
+import OrderTableDropDownMenu from "@/components/main/orders/OrderTableDropDownMenu";
 import Dialog from "@/components/shared/Dialog";
+import ExportButton from "@/components/shared/export-button";
 import Pagination from "@/components/shared/Pagination";
 import SearchInput from "@/components/shared/SearchInput";
 import Select from "@/components/shared/Select";
 import Table from "@/components/shared/Table";
 import TableSkeleton from "@/components/shared/TableSkeleton";
-import PageLayout from "@/components/Layout/PageLayout";
-import OrderLogs from "@/components/main/orders/[id]/order-logs";
-import OrderTableDropDownMenu from "@/components/main/orders/OrderTableDropDownMenu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,17 +18,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getOrders, getOrderStatuses, getServices } from "@/data/orders";
+import { ABILITY_IDS } from "@/constants/abilities";
+import { getOrders, getOrderStatuses, getServicesServer } from "@/data/orders";
 import { formatCurrency, formatDate } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import { Order } from "@/types/order";
 import { ClipboardIcon, Edit3, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import ExportButton from "@/components/shared/export-button";
-import ClientDetails from "@/components/main/clients/ClientDetails";
-import { checkAccess } from "@/actions/auth/actions";
-import { ABILITY_IDS } from "@/constants/abilities";
 
 const ORDER_TABLE_COLUMNS = [
   { id: "orderCode", label: "رقم الامر" },
@@ -220,7 +220,7 @@ async function page({
 }) {
   const searchParamsValues = await searchParams;
   const canCreate = await checkAccess(ABILITY_IDS.CREATE_ORDER);
-  const services = await getServices();
+  const services = await getServicesServer();
   const orderStatus = await getOrderStatuses();
   return (
     <PageLayout
