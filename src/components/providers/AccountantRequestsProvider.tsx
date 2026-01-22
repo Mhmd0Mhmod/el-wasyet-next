@@ -1,7 +1,7 @@
 "use client";
 import { submitAccountantRequest } from "@/actions/dashboard/actions";
 import { AccountantRequestItem } from "@/lib/api/accountant-requests";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -16,7 +16,7 @@ export type ExtendedAccountantRequestItem = AccountantRequestItem &
         action: "reject";
         reason: string;
       }
-    | { action: "partial"; partialAcceptAmount: number }
+    | { action: "partial"; remainingvalue: number }
     | {
         action: "askExpense";
         cash: number;
@@ -28,19 +28,17 @@ export type ExtendedAccountantRequestItem = AccountantRequestItem &
   );
 
 interface AccountantRequestsContextType {
-  isAllSelected: boolean;
   items: ExtendedAccountantRequestItem[];
-  acceptedItems: { requestId: number; amount?: number }[];
-  rejectedItems: { reason: string; requestId: number }[];
-  acceptRequest: (requestId: number, amount?: number) => void;
   rejectRequest: (requestId: number, reason: string) => void;
-  acceptAskExpenseRequest: (
-    requestId: number,
-    { cash, credit }: { cash: number; credit: number },
-  ) => void;
   clearRequestAction: (requestId: number) => void;
   clearAllActions: () => void;
   submitActions: () => Promise<void>;
+  acceptAskExpenseRequest: (
+    requestId: number,
+    data: { cash: number; credit: number },
+  ) => void;
+  acceptRequest: (requestId: number) => void;
+  partialAcceptRequest: (requestId: number, remainingvalue: number) => void;
 }
 const AccountantRequestsContext = createContext<
   AccountantRequestsContextType | undefined
@@ -52,176 +50,104 @@ function AccountantRequestsProvider({
   data: AccountantRequestItem[];
   children: React.ReactNode;
 }) {
-  const [acceptedItems, setAcceptedItems] = useState<
-    { requestId: number; amount?: number }[]
-  >([]);
-  const [rejectedItems, setRejectedItems] = useState<
-    { reason: string; requestId: number }[]
-  >([]);
-  const [askExpenseItems, setAskExpenseItems] = useState<
-    { requestId: number; cash: number; credit: number }[]
-  >([]);
-
-  const items: ExtendedAccountantRequestItem[] = useMemo(() => {
-    return data.map((item) => {
-      const acceptedItem = acceptedItems.find(
-        (a) => a.requestId === item.requestId,
-      );
-      if (acceptedItem) {
-        if (acceptedItem.amount !== undefined) {
-          return {
-            ...item,
-            action: "partial",
-            partialAcceptAmount: acceptedItem.amount,
-          };
-        }
-        return { ...item, action: "accept" };
-      }
-      const rejectedItem = rejectedItems.find(
-        (r) => r.requestId === item.requestId,
-      );
-      if (rejectedItem) {
-        return { ...item, action: "reject", reason: rejectedItem.reason };
-      }
-      const askExpenseItem = askExpenseItems.find(
-        (a) => a.requestId === item.requestId,
-      );
-      if (askExpenseItem) {
-        return {
-          ...item,
-          action: "askExpense",
-          cash: askExpenseItem.cash,
-          credit: askExpenseItem.credit,
-        };
-      }
-      return { ...item, action: "none" };
-    });
-  }, [data, acceptedItems, rejectedItems, askExpenseItems]);
-
-  const isAllSelected = items.every((item) => item.action === "accept");
-
-  const acceptRequest = (requestId: number, amount?: number) => {
-    const findExisting = acceptedItems.find((a) => a.requestId === requestId);
-    if (findExisting) {
-      // Update amount if already accepted
-      setAcceptedItems((prev) =>
-        prev.map((a) =>
-          a.requestId === requestId ? { ...a, amount: amount } : a,
-        ),
-      );
-      return;
-    }
-    setAcceptedItems((prev) => [...prev, { requestId, amount }]);
-    setRejectedItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
+  const [isPending, startTransition] = useTransition();
+  const [items, setItems] = useState<ExtendedAccountantRequestItem[]>(
+    data.map((item) => ({ ...item, action: "none" })),
+  );
+  const acceptRequest = (requestId: number) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.requestId === requestId ? { ...item, action: "accept" } : item,
+      ),
     );
   };
-
-  const rejectRequest = (requestId: number, reason: string) => {
-    const findExisting = rejectedItems.find((r) => r.requestId === requestId);
-    if (findExisting) {
-      // Update reason if already rejected
-      setRejectedItems((prev) =>
-        prev.map((r) =>
-          r.requestId === requestId ? { ...r, reason: reason } : r,
-        ),
-      );
-      return;
-    }
-    setRejectedItems((prev) => [...prev, { reason, requestId }]);
-    setAcceptedItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
+  const partialAcceptRequest = (requestId: number, remainingvalue: number) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.requestId === requestId
+          ? { ...item, action: "partial", remainingvalue }
+          : item,
+      ),
     );
   };
   const acceptAskExpenseRequest = (
     requestId: number,
     { cash, credit }: { cash: number; credit: number },
   ) => {
-    const findExisting = askExpenseItems.find((a) => a.requestId === requestId);
-    if (findExisting) {
-      // Update amounts if already exists
-      setAskExpenseItems((prev) =>
-        prev.map((a) =>
-          a.requestId === requestId ? { ...a, cash, credit } : a,
-        ),
-      );
-      return;
-    }
-    setAskExpenseItems((prev) => [...prev, { requestId, cash, credit }]);
-    setAcceptedItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
-    );
-    setRejectedItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
+    setItems((prev) =>
+      prev.map((item) =>
+        item.requestId === requestId
+          ? { ...item, action: "askExpense", cash, credit }
+          : item,
+      ),
     );
   };
-
+  const rejectRequest = (requestId: number, reason: string) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.requestId === requestId
+          ? { ...item, action: "reject", reason }
+          : item,
+      ),
+    );
+  };
   const clearRequestAction = (requestId: number) => {
-    setAcceptedItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
-    );
-    setAskExpenseItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
-    );
-    setRejectedItems((prev) =>
-      prev.filter((item) => item.requestId !== requestId),
+    setItems((prev) =>
+      prev.map((item) =>
+        item.requestId === requestId ? { ...item, action: "none" } : item,
+      ),
     );
   };
-
   const clearAllActions = () => {
-    setAcceptedItems([]);
-    setAskExpenseItems([]);
-    setRejectedItems([]);
+    setItems((prev) => prev.map((item) => ({ ...item, action: "none" })));
   };
 
-  const resetActions = () => {
-    setAcceptedItems([]);
-    setRejectedItems([]);
-    setAskExpenseItems([]);
-  };
   const submitActions = async () => {
-    try {
-      const filterItems = items.filter((item) => item.action !== "none");
-      const responses = await submitAccountantRequest(filterItems);
-      responses.forEach((response) => {
-        if (response.success) {
-          toast.success(response.message || "تم حفظ الإجراء بنجاح");
-        } else {
-          toast.error(response.message || "حدث خطأ أثناء حفظ الإجراء");
-        }
-      });
-      resetActions();
-    } catch {
-      toast.error("حدث خطأ أثناء حفظ الإجراءات");
-    }
+    startTransition(async () => {
+      try {
+        const filterItems = items.filter((item) => item.action !== "none");
+        const responses = await submitAccountantRequest(filterItems);
+        responses.forEach((response) => {
+          if (response.success) {
+            toast.success(response.message || "تم حفظ الإجراء بنجاح");
+          } else {
+            toast.error(response.message || "حدث خطأ أثناء حفظ الإجراء");
+          }
+        });
+        clearAllActions();
+      } catch {
+        toast.error("حدث خطأ أثناء حفظ الإجراءات");
+      }
+    });
   };
-  const isActionsPending =
-    acceptedItems.length > 0 ||
-    rejectedItems.length > 0 ||
-    askExpenseItems.length > 0;
+  const isActionsPending = items.some((item) => item.action !== "none");
 
   return (
     <AccountantRequestsContext.Provider
       value={{
-        isAllSelected,
         items,
-        acceptedItems,
-        rejectedItems,
-        acceptRequest,
         rejectRequest,
         clearRequestAction,
         clearAllActions,
         submitActions,
         acceptAskExpenseRequest,
+        acceptRequest,
+        partialAcceptRequest,
       }}
     >
       {children}
       {isActionsPending && (
         <div className="mr-auto w-fit space-x-4">
-          <Button onClick={resetActions} variant={"outline"}>
+          <Button
+            disabled={isPending}
+            onClick={clearAllActions}
+            variant={"outline"}
+          >
             مسح الإجراءات
           </Button>
-          <Button onClick={submitActions}>حفظ الإجراءات</Button>
+          <Button disabled={isPending} onClick={submitActions}>
+            حفظ الإجراءات
+          </Button>
         </div>
       )}
     </AccountantRequestsContext.Provider>

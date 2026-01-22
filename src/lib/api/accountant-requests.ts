@@ -85,7 +85,7 @@ export class AccountantRequestsAPI {
   }
   static async submitAccountantRequestAcceptances(acceptances: {
     requestId: number;
-    amount?: number;
+    remainingvalue?: number | null;
     cash?: number | null;
     credit?: number | null;
   }): Promise<APIResponse<void>> {
@@ -93,7 +93,7 @@ export class AccountantRequestsAPI {
       const response = await authFetch.post(
         `/Request/approve/${acceptances.requestId}`,
         {
-          remainingvalue: acceptances.amount ?? null,
+          remainingvalue: acceptances.remainingvalue ?? null,
           cash: acceptances.cash ?? null,
           credit: acceptances.credit ?? null,
         },

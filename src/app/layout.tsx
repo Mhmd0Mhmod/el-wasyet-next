@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${cairo.variable} antialiased`}>
+      <body className={`${cairo.variable} ${cairo.className} antialiased`}>
         {children}
         <Toaster position="bottom-right" />
       </body>

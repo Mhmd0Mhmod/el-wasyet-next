@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useForm, useWatch } from "react-hook-form";
 type PartialAcceptFormInputs = {
-  amount: string;
+  remainingvalue: string;
 };
 function PartialAcceptDialog({
   open,
@@ -25,20 +25,21 @@ function PartialAcceptDialog({
   setOpen: (open: boolean) => void;
   requestId: number;
 }) {
-  const { acceptRequest, items } = useAccountantRequests();
+  const { partialAcceptRequest, items } = useAccountantRequests();
+
   const item = items.find((i) => i.requestId === requestId);
   const form = useForm<PartialAcceptFormInputs>({
     defaultValues: {
-      amount: item?.action === "partial" ? item.amount.toString() : "",
+      remainingvalue: item?.action === "partial" ? item.amount.toString() : "",
     },
   });
   const onSubmit = async (data: PartialAcceptFormInputs) => {
-    acceptRequest(requestId, parseFloat(data.amount));
+    partialAcceptRequest(requestId, parseFloat(data.remainingvalue));
     setOpen(false);
   };
-  const amount = useWatch({
+  const remainingvalue = useWatch({
     control: form.control,
-    name: "amount",
+    name: "remainingvalue",
   });
   if (!item) return null;
   return (
@@ -58,10 +59,10 @@ function PartialAcceptDialog({
             type="number"
             placeholder="أدخل المبلغ..."
             step={"any"}
-            {...form.register("amount")}
+            {...form.register("remainingvalue")}
           />
           <DialogFooter>
-            <Button type="submit" disabled={amount.trim() === ""}>
+            <Button type="submit" disabled={remainingvalue.trim() === ""}>
               قبول جزئي
             </Button>
           </DialogFooter>

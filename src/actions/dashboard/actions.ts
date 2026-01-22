@@ -16,7 +16,8 @@ export async function submitAccountantRequest(
       .map((item) =>
         AccountantRequestsAPI.submitAccountantRequestAcceptances({
           requestId: item.requestId,
-          amount: item.amount ?? null,
+          remainingvalue:
+            item.action === "partial" ? item.remainingvalue : null,
           cash: item.action === "askExpense" ? item.cash : null,
           credit: item.action === "askExpense" ? item.credit : null,
         }),
