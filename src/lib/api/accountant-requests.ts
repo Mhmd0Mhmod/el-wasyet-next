@@ -93,7 +93,7 @@ export class AccountantRequestsAPI {
       const response = await authFetch.post(
         `/Request/approve/${acceptances.requestId}`,
         {
-          amount: acceptances.amount ?? null,
+          remainingvalue: acceptances.amount ?? null,
           cash: acceptances.cash ?? null,
           credit: acceptances.credit ?? null,
         },
