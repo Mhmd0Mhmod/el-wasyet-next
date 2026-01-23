@@ -19,6 +19,7 @@ interface Props {
   searchParams: Promise<AccountantRequestsParams>;
 }
 async function page({ searchParams }: Props) {
+  const params = await searchParams;
   const [employees, accountants] = await Promise.all([
     AccountantRequestsAPI.getEmployees(),
     AccountantRequestsAPI.getAccountants(),
@@ -67,7 +68,10 @@ async function page({ searchParams }: Props) {
           <ClearSearchParamsButton className="text-primary bg-primary/10 mr-auto w-1/2 cursor-pointer hover:text-white" />
         </div>
       </div>
-      <Suspense fallback={<TableSkeleton columns={9} rows={10} />}>
+      <Suspense
+        fallback={<TableSkeleton columns={9} rows={10} />}
+        key={Object.values(params).toString()}
+      >
         <AccountantRequestsTableWrapper searchParams={searchParams} />
       </Suspense>
     </PageLayout>

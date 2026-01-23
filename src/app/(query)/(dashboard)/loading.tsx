@@ -6,8 +6,8 @@ export default function Loading() {
     <div className="container mx-auto px-4 py-8">
       {/* Header Section */}
       <div className="mb-8">
-        <Skeleton className="mb-2 h-8 w-[250px]" />
-        <Skeleton className="h-4 w-[400px]" />
+        <Skeleton className="mb-2 h-8 w-62.5" />
+        <Skeleton className="h-4 w-100" />
       </div>
 
       {/* Cards Grid */}
@@ -15,8 +15,8 @@ export default function Loading() {
         {Array.from({ length: 6 }).map((_, index) => (
           <Card key={index}>
             <CardHeader>
-              <Skeleton className="h-5 w-[150px]" />
-              <Skeleton className="h-4 w-[100px]" />
+              <Skeleton className="h-5 w-73.5" />
+              <Skeleton className="h-4 w-25" />
             </CardHeader>
             <CardContent>
               <Skeleton className="mb-2 h-4 w-full" />
@@ -29,16 +29,16 @@ export default function Loading() {
       {/* Table Section */}
       <Card>
         <CardHeader>
-          <Skeleton className="h-6 w-[200px]" />
+          <Skeleton className="h-6 w-50" />
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} className="flex items-center space-x-4">
-                <Skeleton className="h-4 w-[100px]" />
-                <Skeleton className="h-4 w-[150px]" />
-                <Skeleton className="h-4 w-[120px]" />
-                <Skeleton className="h-4 w-[80px]" />
+                <Skeleton className="h-4 w-25" />
+                <Skeleton className="h-4 w-73.5" />
+                <Skeleton className="h-4 w-30" />
+                <Skeleton className="h-4 w-20" />
               </div>
             ))}
           </div>
