@@ -33,8 +33,8 @@ function FilterSection() {
         return;
       }
       const query = new URLSearchParams({
-        ...data,
         ...Object.fromEntries(searchParams),
+        ...data,
       }).toString();
       router.replace(`${pathName}?${query}`, {
         scroll: false,
