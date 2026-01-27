@@ -1,5 +1,6 @@
 import { handleErrorResponse } from "@/actions/helper";
 import { authFetch } from "../axios";
+import { revalidatePath } from "next/cache";
 
 export type AccountantRequestsParams = {
   fromDate?: string;
@@ -93,6 +94,7 @@ export class AccountantRequestsAPI {
   ): Promise<APIResponse<void>> {
     try {
       const response = await authFetch.post(`/Request/approve`, acceptances);
+      revalidatePath("/accountant-requests");
       return {
         success: true,
         message: "تم حفظ الإجراء بنجاح",
@@ -110,6 +112,7 @@ export class AccountantRequestsAPI {
   ): Promise<APIResponse<void>> {
     try {
       const response = await authFetch.post(`/Request/reject`, rejections);
+      revalidatePath("/accountant-requests");
       return {
         success: true,
         message: "تم حفظ الإجراء بنجاح",

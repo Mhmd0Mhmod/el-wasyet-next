@@ -25,9 +25,7 @@ function AccountRequestActions({
   const { items } = useAccountantRequests();
   const requestItem = items.find((item) => item.requestId === requestId);
   if (!requestItem) {
-    throw new Error(
-      `Request item with id ${requestId} not found in AccountantRequestsProvider`,
-    );
+    return null;
   }
   const disabled = requestItem.requestStatusName !== "Pending";
   return (
