@@ -47,11 +47,14 @@ export async function approveRequestNotification({
   credit?: number;
 }): Promise<APIResponse<void>> {
   try {
-    const response = await authFetch.post(`/Request/approve/${requestId}`, {
-      remainingvalue: Remainingvalue,
-      cash,
-      credit,
-    });
+    const response = await authFetch.post(`/Request/approve`, [
+      {
+        requestId: requestId,
+        remainingvalue: Remainingvalue,
+        cash,
+        credit,
+      },
+    ]);
     await markNotificationAsRead(notificationId);
     revalidateTag("notifications");
     return {
