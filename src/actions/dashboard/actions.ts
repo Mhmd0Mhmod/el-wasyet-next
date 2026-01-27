@@ -6,35 +6,16 @@ export async function submitAccountantRequest(
   items: ExtendedAccountantRequestItem[],
 ) {
   try {
-    const acceptedItemsRequests = items
-      .filter(
-        (item) =>
-          item.action === "accept" ||
-          item.action === "partial" ||
-          item.action === "askExpense",
-      )
-      .map((item) =>
-        AccountantRequestsAPI.submitAccountantRequestAcceptances({
-          requestId: item.requestId,
-          remainingvalue:
-            item.action === "partial" ? item.remainingvalue : null,
-          cash: item.action === "askExpense" ? item.cash : null,
-          credit: item.action === "askExpense" ? item.credit : null,
-        }),
-      );
-    const rejectedItems = items
-      .filter((item) => item.action === "reject")
-      .map((item) =>
-        AccountantRequestsAPI.submitAccountantRequestRejections({
-          requestId: item.requestId,
-          reason: item.reason || "",
-        }),
-      );
+    const acceptedItemsRequests = items.filter(
+      (item) => item.action !== "none" && item.action !== "reject",
+    );
+    const rejectedItems = items.filter((item) => item.action === "reject");
     const responses = await Promise.all([
-      ...acceptedItemsRequests,
-      ...rejectedItems,
+      AccountantRequestsAPI.submitAccountantRequestAcceptances(
+        acceptedItemsRequests,
+      ),
+      AccountantRequestsAPI.submitAccountantRequestRejections(rejectedItems),
     ]);
-
     return responses;
   } catch {
     throw new Error("Failed to submit accountant requests");

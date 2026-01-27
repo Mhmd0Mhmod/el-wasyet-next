@@ -83,21 +83,16 @@ export class AccountantRequestsAPI {
       throw error;
     }
   }
-  static async submitAccountantRequestAcceptances(acceptances: {
-    requestId: number;
-    remainingvalue?: number | null;
-    cash?: number | null;
-    credit?: number | null;
-  }): Promise<APIResponse<void>> {
+  static async submitAccountantRequestAcceptances(
+    acceptances: {
+      requestId: number;
+      remainingvalue?: number | null;
+      cash?: number | null;
+      credit?: number | null;
+    }[],
+  ): Promise<APIResponse<void>> {
     try {
-      const response = await authFetch.post(
-        `/Request/approve/${acceptances.requestId}`,
-        {
-          remainingvalue: acceptances.remainingvalue ?? null,
-          cash: acceptances.cash ?? null,
-          credit: acceptances.credit ?? null,
-        },
-      );
+      const response = await authFetch.post(`/Request/approve`, acceptances);
       return {
         success: true,
         message: "تم حفظ الإجراء بنجاح",
@@ -107,15 +102,14 @@ export class AccountantRequestsAPI {
       return handleErrorResponse(error);
     }
   }
-  static async submitAccountantRequestRejections(rejections: {
-    requestId: number;
-    reason: string;
-  }): Promise<APIResponse<void>> {
+  static async submitAccountantRequestRejections(
+    rejections: {
+      requestId: number;
+      reason: string;
+    }[],
+  ): Promise<APIResponse<void>> {
     try {
-      const response = await authFetch.post(
-        `/Request/reject/${rejections.requestId}`,
-        rejections.reason,
-      );
+      const response = await authFetch.post(`/Request/reject`, rejections);
       return {
         success: true,
         message: "تم حفظ الإجراء بنجاح",
